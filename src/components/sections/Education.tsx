@@ -33,11 +33,11 @@ export function Education() {
               >
                 {/* Timeline dot */}
                 <div
-                  className="absolute left-4 top-6 w-4 h-4 rounded-full bg-accent border-4 border-bg-secondary -translate-x-1/2 shadow-[0_0_12px_rgba(99,102,241,0.5)]"
+                  className="timeline-dot absolute left-4 top-6 w-3.5 h-3.5 rounded-full bg-accent border-2 border-bg-secondary -translate-x-1/2 shadow-[0_0_12px_rgba(123,110,246,0.5)]"
                   aria-hidden="true"
                 />
 
-                <div className="flex-1 p-6 rounded-2xl border border-border bg-surface hover:border-accent/30 transition-all duration-300 hover:shadow-[0_4px_25px_rgba(99,102,241,0.08)]">
+                <div className="card-elevated flex-1 p-6">
                   {/* Institution header */}
                   <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                     <div>

@@ -27,7 +27,7 @@ function RepoCard({ repo }: { repo: GitHubRepo }) {
   return (
     <motion.article
       variants={staggerItem}
-      className="group flex flex-col p-5 rounded-xl border border-border bg-surface hover:border-accent/30 hover:bg-surface-hover transition-all duration-300 hover:shadow-[0_4px_20px_rgba(99,102,241,0.08)]"
+      className="card group flex flex-col p-5 transition-all duration-300"
     >
       {/* Repo name + external link */}
       <div className="flex items-start justify-between gap-2 mb-2">
@@ -96,7 +96,7 @@ export function GithubProjects() {
         <SectionHeader
           eyebrow="GitHub"
           title="Open source & public work"
-          description="A live snapshot of what I've been pushing to GitHub. More projects live at my profile."
+          description="A snapshot of my GitHub activity. Plug in your GitHub API token to auto-sync live repo data, stars, and tech stacks."
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
@@ -108,7 +108,7 @@ export function GithubProjects() {
         <motion.div variants={staggerItem} className="flex justify-center">
           <Button variant="outline" size="lg" asChild>
             <Link
-              href="https://github.com/janudaw"
+              href="https://github.com/janudawithanage"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2"

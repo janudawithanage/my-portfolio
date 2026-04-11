@@ -23,13 +23,13 @@ function SkillBar({ name, level = 75, delay = 0 }: { name: string; level?: numbe
         <span className="text-text-secondary font-medium">{name}</span>
         <span className="text-text-muted text-xs">{level}%</span>
       </div>
-      <div className="h-1.5 rounded-full bg-surface-hover overflow-hidden">
+      <div className="skill-track">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${level}%` }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, delay, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full rounded-full bg-linear-to-r from-accent to-accent-light"
+          className="skill-fill"
         />
       </div>
     </div>
@@ -54,8 +54,8 @@ function CategoryCard({
       className={cn(
         "w-full text-left p-5 rounded-xl border transition-all duration-300 cursor-pointer",
         isActive
-          ? "bg-surface-hover border-accent/40 shadow-[0_0_25px_rgba(99,102,241,0.12)]"
-          : "bg-surface border-border hover:border-accent/30 hover:bg-surface-hover"
+          ? "bg-surface-raised border-accent/40 shadow-[0_0_25px_rgba(123,110,246,0.12)]"
+          : "bg-surface border-border hover:border-accent/30 hover:bg-surface-raised"
       )}
     >
       <div className="flex items-center gap-3 mb-2">
@@ -92,7 +92,7 @@ export function Skills() {
         <SectionHeader
           eyebrow="Skills"
           title="My technical toolkit"
-          description="Four years of deliberate practice across the full stack — from pixel-perfect UIs to Kubernetes clusters and penetration testing."
+          description="From frontend development to cloud deployments on Azure — here are the technologies I use day-to-day and the areas I'm actively growing in."
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -116,7 +116,7 @@ export function Skills() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -15 }}
               transition={{ duration: 0.3 }}
-              className="lg:col-span-3 p-6 rounded-xl bg-surface border border-border space-y-5"
+              className="lg:col-span-3 card-elevated p-6 space-y-5"
             >
               <div className="flex items-center gap-3 mb-6">
                 {(() => {
