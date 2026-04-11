@@ -10,7 +10,8 @@ interface BadgeProps {
 }
 
 /**
- * Minimal pill badge used for tech tags, status indicators, and labels.
+ * Minimal pill badge — tech tags, status indicators, labels.
+ * Designed to recede visually rather than compete with content.
  */
 export function Badge({
   children,
@@ -18,23 +19,33 @@ export function Badge({
   size = "sm",
   className,
 }: BadgeProps) {
-  const variants = {
-    default: "bg-surface border border-border text-text-secondary",
-    accent:  "bg-accent/15 border border-accent/30 text-accent-light",
-    gold:    "bg-gold/15 border border-gold/30 text-gold-light",
-    success: "bg-success/15 border border-success/30 text-success",
-    outline: "bg-transparent border border-border-light text-text-secondary",
+  const variants: Record<string, string> = {
+    // Neutral — most tech tags
+    default:
+      "bg-surface-raised border border-border-subtle text-text-secondary",
+    // Accent — highlighted categories, interest tags
+    accent:
+      "bg-[rgba(123,110,246,0.08)] border border-[rgba(123,110,246,0.18)] text-accent-light",
+    // Gold — achievements only
+    gold:
+      "bg-transparent border border-gold/30 text-gold",
+    // Status — available, online
+    success:
+      "bg-transparent border border-success/35 text-success",
+    // Minimal — just a border
+    outline:
+      "bg-transparent border border-border-strong text-text-muted",
   };
 
-  const sizes = {
-    sm: "px-2.5 py-0.5 text-xs",
-    md: "px-3 py-1 text-sm",
+  const sizes: Record<string, string> = {
+    sm: "px-2.5 py-[3px] text-[0.6875rem] tracking-[0.01em] rounded-md",
+    md: "px-3 py-1 text-xs tracking-[0.01em] rounded-lg",
   };
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 font-medium rounded-md whitespace-nowrap",
+        "inline-flex items-center gap-1 font-medium whitespace-nowrap",
         variants[variant],
         sizes[size],
         className
@@ -44,3 +55,4 @@ export function Badge({
     </span>
   );
 }
+

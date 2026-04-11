@@ -6,30 +6,65 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  // Base styles
-  "inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50 cursor-pointer select-none",
+  // ── Base ────────────────────────────────────────────────────────────────────
+  [
+    "inline-flex items-center justify-center gap-2",
+    "font-semibold tracking-[0.01em] rounded-xl",
+    "transition-all duration-250",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+    "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+    "disabled:pointer-events-none disabled:opacity-40",
+    "cursor-pointer select-none",
+  ].join(" "),
   {
     variants: {
       variant: {
-        primary:
-          "bg-accent text-white hover:bg-accent-light shadow-lg hover:shadow-[0_0_25px_rgba(99,102,241,0.45)] active:scale-[0.98]",
-        secondary:
-          "bg-surface border border-border text-text-primary hover:border-accent hover:text-accent-light hover:bg-surface-hover active:scale-[0.98]",
-        ghost:
-          "text-text-secondary hover:text-text-primary hover:bg-surface active:scale-[0.98]",
-        outline:
-          "border border-accent text-accent hover:bg-accent hover:text-white active:scale-[0.98]",
-        gold:
-          "bg-gold text-bg font-bold hover:bg-gold-light shadow-lg hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] active:scale-[0.98]",
-        link:
-          "text-accent underline-offset-4 hover:underline p-0 h-auto",
+        // Filled gradient — primary CTAs
+        primary: [
+          "bg-linear-to-br from-accent to-accent-light text-white",
+          "shadow-[0_1px_0_rgba(255,255,255,0.12)_inset,0_4px_20px_rgba(123,110,246,0.28)]",
+          "hover:shadow-[0_1px_0_rgba(255,255,255,0.14)_inset,0_4px_30px_rgba(123,110,246,0.45)]",
+          "active:brightness-90 active:scale-[0.99]",
+        ].join(" "),
+
+        // Outlined surface — secondary CTAs
+        secondary: [
+          "bg-surface text-text-primary",
+          "border border-border-subtle",
+          "hover:border-accent/40 hover:bg-surface-raised hover:text-accent-light",
+          "active:brightness-90 active:scale-[0.99]",
+        ].join(" "),
+
+        // Borderless — tertiary / in-line
+        ghost: [
+          "text-text-secondary hover:text-text-primary hover:bg-surface-raised",
+          "active:brightness-90",
+        ].join(" "),
+
+        // Explicit accent border — empty-state CTAs
+        outline: [
+          "border border-accent/40 text-accent-light",
+          "hover:bg-accent/10 hover:border-accent",
+          "active:brightness-90 active:scale-[0.99]",
+        ].join(" "),
+
+        // Achievement highlights only
+        gold: [
+          "bg-gold text-base font-bold",
+          "shadow-[0_1px_0_rgba(255,255,255,0.1)_inset,0_4px_16px_rgba(196,154,60,0.3)]",
+          "hover:bg-gold-light hover:shadow-[0_4px_24px_rgba(196,154,60,0.4)]",
+          "active:brightness-90 active:scale-[0.99]",
+        ].join(" "),
+
+        // Inline text links
+        link: "text-accent hover:text-accent-light underline-offset-4 hover:underline p-0 h-auto rounded-none",
       },
       size: {
-        sm:  "px-4 py-2 text-sm",
-        md:  "px-6 py-3 text-sm",
-        lg:  "px-8 py-4 text-base",
-        xl:  "px-10 py-5 text-lg",
-        icon: "h-10 w-10 p-0",
+        sm:   "px-4 py-2 text-xs h-8",
+        md:   "px-5 py-2.5 text-sm h-9",
+        lg:   "px-7 py-3.5 text-sm h-11",
+        xl:   "px-9 py-4 text-base h-14",
+        icon: "h-9 w-9 p-0",
       },
     },
     defaultVariants: {
@@ -61,3 +96,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
+

@@ -63,18 +63,18 @@ export function SectionHeader({
       )}
     >
       {eyebrow && (
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-widest uppercase bg-accent/10 text-accent border border-accent/20 mb-4">
-          {eyebrow}
-        </span>
+        <p className="text-eyebrow mb-4">{eyebrow}</p>
       )}
-      <h2
-        className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary mb-4"
-        style={{ fontFamily: "var(--font-syne, sans-serif)" }}
-      >
+      <h2 className="text-headline text-text-primary mb-5">
         {title}
       </h2>
       {description && (
-        <p className="text-text-secondary text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+        <p
+          className={cn(
+            "text-text-secondary sm:text-lg leading-relaxed",
+            align === "center" && "max-w-2xl mx-auto"
+          )}
+        >
           {description}
         </p>
       )}
