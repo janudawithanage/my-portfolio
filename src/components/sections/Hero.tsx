@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, ChevronDown, Sparkles } from "lucide-react";
-import Link from "next/link";
+import { ArrowUpRight, Sparkles, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { AnimatedText } from "@/components/ui/AnimatedText";
 import { fadeUp, fadeIn } from "@/lib/motion";
 
 const ROLES = [
   "Full-Stack Engineer",
-  "Cloud Architect",
-  "Security Researcher",
   "Software Engineer",
+  "Cloud Developer",
+  "Cybersecurity Learner",
 ];
 
 function TypewriterRole() {
@@ -24,7 +23,6 @@ function TypewriterRole() {
   useEffect(() => {
     const current = ROLES[roleIndex];
     let timeout: ReturnType<typeof setTimeout>;
-
     if (!deleting && charIndex < current.length) {
       timeout = setTimeout(() => {
         setDisplayed(current.slice(0, charIndex + 1));
@@ -41,17 +39,16 @@ function TypewriterRole() {
       setDeleting(false);
       setRoleIndex((i) => (i + 1) % ROLES.length);
     }
-
     return () => clearTimeout(timeout);
   }, [charIndex, deleting, roleIndex]);
 
   return (
-    <span className="gradient-text">
+    <span>
       {displayed}
       <motion.span
         animate={{ opacity: [1, 0] }}
         transition={{ duration: 0.6, repeat: Infinity, repeatType: "reverse" }}
-        className="inline-block ml-0.5 text-accent"
+        className="inline-block ml-0.5 text-gold"
       >
         |
       </motion.span>
@@ -60,174 +57,224 @@ function TypewriterRole() {
 }
 
 export function Hero() {
-  const handleScroll = (href: string) => {
+  const handleScroll = (href: string) =>
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden"
+      className="relative min-h-screen flex flex-col overflow-hidden bg-bg"
       aria-label="Hero section"
     >
-      {/* Background gradients */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-      >
-        {/* Primary radial */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-225 h-150 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(99,102,241,0.18),transparent)]" />
-        {/* Secondary accent bottom */}
-        <div className="absolute bottom-0 right-0 w-125 h-100 bg-[radial-gradient(ellipse_60%_40%_at_80%_100%,rgba(245,158,11,0.08),transparent)]" />
-        {/* Grid pattern */}
+      {/* Background */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-225 h-150 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(123,110,246,0.14),transparent)]" />
+        <div className="absolute bottom-0 right-0 w-150 h-125 bg-[radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(196,154,60,0.07),transparent)]" />
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.025]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
+              "linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)",
+            backgroundSize: "72px 72px",
           }}
         />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
-        {/* Eyebrow badge */}
+      {/* Main grid */}
+      <div className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-between max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-16 pt-32 pb-16 gap-10 lg:gap-16">
+
+        {/* ── Left column ──────────────────────────── */}
+        <div className="flex-1 min-w-0 flex flex-col gap-7">
+
+          {/* Availability pill */}
+          <motion.div
+            variants={fadeIn}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.05 }}
+            className="inline-flex items-center gap-2 w-fit px-4 py-1.5 rounded-full bg-[rgba(34,197,94,0.08)] border border-success/25 text-success text-xs font-semibold tracking-wider"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
+            </span>
+            Available for opportunities &middot; UCSC &apos;26
+          </motion.div>
+
+          {/* Display name */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.15 }}
+          >
+            <h1 className="text-[clamp(3rem,8vw,6rem)] font-extrabold text-text-primary leading-[0.9] tracking-[-0.04em] uppercase">
+              <span className="block">Januda</span>
+              <span className="block gradient-text">Withanage</span>
+            </h1>
+          </motion.div>
+
+          {/* Tag pills */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.28 }}
+            className="flex flex-wrap gap-2"
+          >
+            {["#Full-Stack", "#Cloud", "#Security", "#Open Source"].map((tag) => (
+              <span
+                key={tag}
+                className="px-3 py-1 rounded-full text-xs font-medium bg-surface border border-border-subtle text-text-secondary tracking-wide"
+              >
+                {tag}
+              </span>
+            ))}
+          </motion.div>
+
+          {/* Typewriter role */}
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.38 }}
+            className="text-xl sm:text-2xl text-gold font-semibold h-8"
+            style={{ fontFamily: "var(--font-syne, sans-serif)" }}
+          >
+            <TypewriterRole />
+          </motion.p>
+
+          {/* Bio */}
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.46 }}
+            className="text-text-secondary sm:text-lg leading-relaxed max-w-lg"
+          >
+            I&apos;m Januda &mdash; a 3rd year Computer Science undergraduate at{" "}
+            <span className="text-text-primary font-medium">University of Colombo School of Computing (UCSC)</span>,
+            Sri Lanka. I build full-stack web apps, deploy to the cloud with Azure, and I&apos;m actively learning cybersecurity.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.55 }}
+            className="flex flex-wrap gap-3"
+          >
+            <Button
+              variant="gold"
+              size="lg"
+              onClick={() => handleScroll("#projects")}
+              className="group"
+            >
+              View My Work
+              <ArrowUpRight
+                size={18}
+                className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+              />
+            </Button>
+            <Button variant="secondary" size="lg" onClick={() => handleScroll("#contact")}>
+              Start a Project &#8599;
+            </Button>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.65 }}
+            className="flex flex-wrap gap-8 pt-4 border-t border-border"
+          >
+            {[
+              { value: "3+",  label: "Years Coding" },
+              { value: "10+", label: "Projects Built" },
+              { value: "21st",label: "UCSC Batch" },
+              { value: "2026", label: "Expected Grad." },
+            ].map(({ value, label }) => (
+              <div key={label}>
+                <div
+                  className="text-2xl font-extrabold gradient-text-gold"
+                  style={{ fontFamily: "var(--font-syne, sans-serif)" }}
+                >
+                  {value}
+                </div>
+                <div className="text-text-muted text-xs tracking-widest uppercase mt-0.5">
+                  {label}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* ── Right column — avatar card ────────────── */}
         <motion.div
           variants={fadeIn}
           initial="hidden"
           animate="visible"
-          transition={{ delay: 0.1 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-accent/10 text-accent border border-accent/20 mb-8"
+          transition={{ delay: 0.35 }}
+          className="relative shrink-0 lg:pl-8"
         >
-          <Sparkles size={12} />
-          Available for opportunities · UCSC &apos;26
-        </motion.div>
-
-        {/* Name */}
-        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.05] tracking-tight mb-4">
-          <AnimatedText
-            text="Januda"
-            className="text-text-primary"
-            byWord
-            delay={0.2}
+          {/* Glow */}
+          <div
+            className="absolute -inset-3 rounded-[2.5rem] opacity-30 blur-2xl pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(123,110,246,0.5) 0%, transparent 70%)" }}
+            aria-hidden="true"
           />
-          {" "}
-          <AnimatedText
-            text="Withanage"
-            className="text-text-primary"
-            byWord
-            delay={0.36}
-          />
-        </h1>
 
-        {/* Dynamic role */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.5 }}
-          className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-6 h-12 flex items-center justify-center"
-          style={{ fontFamily: "var(--font-syne, sans-serif)" }}
-        >
-          <TypewriterRole />
-        </motion.div>
-
-        {/* Bio */}
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.65 }}
-          className="text-text-secondary text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
-        >
-          CS student at{" "}
-          <span className="text-text-primary font-medium">UC Santa Cruz</span>{" "}
-          crafting reliable, scalable, and secure software. I bridge the gap between
-          elegant frontends and hardened cloud infrastructure.
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.8 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-        >
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => handleScroll("#projects")}
-            className="group"
-          >
-            View My Work
-            <ArrowUpRight
-              size={18}
-              className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+          {/* Card */}
+          <div className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-4xl bg-surface border border-border-subtle overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.6)]">
+            {/* Real photo */}
+            <Image
+              src="/images/photo1.png"
+              alt="Januda Withanage"
+              fill
+              sizes="(max-width: 640px) 288px, 320px"
+              className="object-cover object-top"
+              priority
             />
-          </Button>
-          <Button
-            variant="secondary"
-            size="lg"
-            onClick={() => handleScroll("#contact")}
-          >
-            Get in Touch
-          </Button>
-          <Link
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-text-secondary text-sm underline-offset-4 hover:underline hover:text-text-primary transition-colors"
-          >
-            Download Résumé ↗
-          </Link>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.95 }}
-          className="mt-16 flex flex-wrap items-center justify-center gap-8 sm:gap-12"
-        >
-          {[
-            { value: "3+", label: "Years Coding" },
-            { value: "10+", label: "Projects Built" },
-            { value: "4", label: "Core Domains" },
-            { value: "3.7", label: "GPA" },
-          ].map(({ value, label }) => (
-            <div key={label} className="text-center">
-              <div
-                className="text-3xl sm:text-4xl font-extrabold gradient-text-gold"
+            {/* Bottom gradient overlay */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-base/95 via-base/60 to-transparent">
+              <p
+                className="font-bold text-text-primary text-sm"
                 style={{ fontFamily: "var(--font-syne, sans-serif)" }}
               >
-                {value}
-              </div>
-              <div className="text-text-muted text-xs tracking-widest uppercase mt-1">
-                {label}
-              </div>
+                Januda Withanage
+              </p>
+              <p className="text-text-muted text-xs">CS Undergraduate &middot; UCSC Sri Lanka &apos;26</p>
             </div>
-          ))}
+          </div>
+
+          {/* Floating badges */}
+          <div className="absolute -top-4 -right-4 glass-light px-3 py-1.5 rounded-xl border border-border-subtle flex items-center gap-2 text-xs font-medium text-text-secondary">
+            <Sparkles size={12} className="text-gold" />
+            Open to Work
+          </div>
+          <div className="absolute -bottom-4 -left-4 glass-light px-3 py-1.5 rounded-xl border border-border-subtle text-xs text-text-muted font-mono">
+            janudaw.dev
+          </div>
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll cue */}
       <motion.button
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.4, duration: 0.6 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
         onClick={() => handleScroll("#about")}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-text-muted hover:text-accent transition-colors group cursor-pointer"
+        className="relative z-10 mx-auto mb-8 flex flex-col items-center gap-1.5 text-text-muted hover:text-accent transition-colors cursor-pointer"
         aria-label="Scroll to About section"
       >
-        <span className="text-xs tracking-widest uppercase">Scroll</span>
+        <span className="text-[10px] tracking-widest uppercase">Scroll</span>
         <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ChevronDown size={20} />
+          <ChevronDown size={18} />
         </motion.div>
       </motion.button>
     </section>
