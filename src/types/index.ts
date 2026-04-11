@@ -91,3 +91,42 @@ export interface ContactFormData {
   subject: string;
   message: string;
 }
+
+// ─── Experience ───────────────────────────────────────────────────────────────
+export interface Experience {
+  id: string;
+  company: string;
+  role: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  type: "full-time" | "part-time" | "internship" | "contract" | "freelance";
+  description: string;
+  highlights: string[];
+  tech: string[];
+}
+
+// ─── Service ──────────────────────────────────────────────────────────────────
+export interface Service {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+}
+
+// ─── Testimonial ──────────────────────────────────────────────────────────────
+export interface Testimonial {
+  id: string;
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
+  rating: number;
+}
+
+// ─── FAQ ──────────────────────────────────────────────────────────────────────
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+}
