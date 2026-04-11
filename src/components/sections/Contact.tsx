@@ -90,7 +90,7 @@ function Field({
 }
 
 const inputClass =
-  "w-full px-4 py-3 rounded-lg bg-surface border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors";
+  "w-full px-4 py-3 rounded-lg bg-surface border border-border-subtle text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export function Contact() {
@@ -131,8 +131,8 @@ export function Contact() {
           <motion.div variants={staggerItem} className="lg:col-span-2 space-y-6">
             <div className="space-y-4">
               {[
-                { icon: Mail,    label: "Email",    value: "januda@example.com",     href: "mailto:januda@example.com" },
-                { icon: MapPin,  label: "Location", value: "Santa Cruz, CA",          href: null },
+                { icon: Mail,    label: "Email",    value: "janudawithanage@gmail.com",        href: "mailto:janudawithanage@gmail.com" },
+                { icon: MapPin,  label: "Location", value: "Colombo, Sri Lanka",               href: null },
               ].map(({ icon: Icon, label, value, href }) => (
                 <div key={label} className="flex items-center gap-3">
                   <span className="w-9 h-9 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
@@ -170,7 +170,7 @@ export function Contact() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
-                      className="w-10 h-10 rounded-lg bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-accent hover:border-accent/30 hover:bg-surface-hover transition-all duration-200"
+                      className="w-10 h-10 rounded-lg bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-accent hover:border-accent/30 hover:bg-surface-raised transition-all duration-200"
                     >
                       <Icon />
                     </Link>
@@ -186,7 +186,8 @@ export function Contact() {
                 <span className="text-success text-sm font-semibold">Available for Opportunities</span>
               </div>
               <p className="text-text-muted text-xs leading-relaxed">
-                Looking for Summer 2025 internships in full-stack, cloud, or security engineering.
+                Open to internships, collaborations, and project opportunities in
+                full-stack development, cloud engineering (Azure), or cybersecurity.
               </p>
             </div>
           </motion.div>
