@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { MapPin, GraduationCap, Zap } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
@@ -16,9 +17,9 @@ const interests = [
 ];
 
 const quickFacts = [
-  { icon: GraduationCap, label: "UCSC, B.S. Computer Science" },
-  { icon: MapPin,        label: "Santa Cruz, CA" },
-  { icon: Zap,           label: "Open to internships & co-ops" },
+  { icon: GraduationCap, label: "UCSC, B.S. Computer Science — 21st Batch" },
+  { icon: MapPin,        label: "Colombo, Sri Lanka" },
+  { icon: Zap,           label: "Open to opportunities & collaborations" },
 ];
 
 export function About() {
@@ -31,33 +32,46 @@ export function About() {
           description="I'm Januda — a passionate Computer Science student who loves building things that matter. My curiosity spans the full spectrum of software: elegant UIs, resilient APIs, scalable cloud systems, and hardened security postures."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Left — Avatar & quick facts */}
-          <motion.div variants={staggerItem} className="space-y-6">
-            {/* Avatar placeholder */}
-            <div className="relative w-64 h-64 mx-auto lg:mx-0">
-              <div className="w-full h-full rounded-2xl bg-surface border border-border overflow-hidden flex items-center justify-center">
-                {/* Replace with <Image> when you have a real photo */}
-                <div className="flex flex-col items-center gap-3 text-text-muted">
-                  <div className="w-20 h-20 rounded-full bg-accent/20 border-2 border-accent/30 flex items-center justify-center">
-                    <span
-                      className="text-3xl font-extrabold gradient-text"
-                      style={{ fontFamily: "var(--font-syne, sans-serif)" }}
-                    >
-                      JW
-                    </span>
-                  </div>
-                  <span className="text-xs tracking-widest uppercase">
-                    Profile Photo
-                  </span>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+          {/* Left — Photo & quick facts (2 cols) */}
+          <motion.div variants={staggerItem} className="lg:col-span-2 space-y-6">
+            {/* ── Photo frame ─────────────────────────── */}
+            <div className="relative w-64 h-80 sm:w-72 sm:h-96 mx-auto lg:mx-0">
+              {/* Decorative tilted background card */}
+              <div
+                className="absolute inset-0 rounded-2xl bg-linear-to-br from-accent/30 to-gold/20 border border-accent/20"
+                style={{ transform: "rotate(4deg) scale(1.03)" }}
+                aria-hidden="true"
+              />
+              {/* Second decorative layer */}
+              <div
+                className="absolute inset-0 rounded-2xl bg-surface border border-border"
+                style={{ transform: "rotate(-2deg) scale(1.015)" }}
+                aria-hidden="true"
+              />
+              {/* Main photo card */}
+              <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border-subtle shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+                <Image
+                  src="/images/photo2.png"
+                  alt="Januda Withanage"
+                  fill
+                  sizes="(max-width: 640px) 256px, 288px"
+                  className="object-cover object-top"
+                  priority
+                />
+                {/* Bottom overlay */}
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-base/90 to-transparent" />
               </div>
-              {/* Decorative ring */}
-              <div className="absolute -inset-1 rounded-2xl border border-accent/20 pointer-events-none" />
-              {/* Floating badge */}
-              <div className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-border shadow-lg">
+              {/* Floating badge — bottom right */}
+              <div className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-border shadow-lg z-10">
                 <span className="text-xs font-semibold text-text-secondary">
-                  🎓 Class of &apos;26
+                  🎓 UCSC 21st Batch &apos;26
+                </span>
+              </div>
+              {/* Floating badge — top left */}
+              <div className="absolute -top-3 -left-3 glass px-2.5 py-1.5 rounded-lg border border-accent/30 shadow-lg z-10">
+                <span className="text-[10px] font-semibold text-accent-light tracking-wide">
+                  ● Available for hire
                 </span>
               </div>
             </div>
@@ -75,27 +89,29 @@ export function About() {
             </ul>
           </motion.div>
 
-          {/* Right — Bio & interests */}
-          <motion.div variants={staggerItem} className="space-y-6">
+          {/* Right — Bio & interests (3 cols) */}
+          <motion.div variants={staggerItem} className="lg:col-span-3 space-y-6">
             <div className="space-y-4 text-text-secondary leading-relaxed">
               <p>
-                I started programming at 15, fascinated by how a few lines of code could
-                automate the world around me. Since then, that curiosity has evolved into
-                a deep passion for building software that is not just functional, but
-                <span className="text-text-primary font-medium"> resilient, elegant, and secure</span>.
+                I&apos;m Januda — a 3rd year Computer Science undergraduate at the{" "}
+                <span className="text-text-primary font-medium">University of Colombo School of Computing (UCSC)</span>, Sri Lanka.
+                My journey into software started with curiosity about how the internet works
+                and has grown into a passion for building things that are{" "}
+                <span className="text-text-primary font-medium">resilient, elegant, and secure</span>.
               </p>
               <p>
-                At UCSC, I&apos;ve been fortunate to study under world-class faculty while
-                taking on real-world challenges through hackathons, personal projects, and
-                campus leadership. I&apos;m particularly drawn to the intersection of
-                distributed systems and security — understanding not just how to build
-                systems, but{" "}
-                <span className="text-text-primary font-medium">how they break</span>.
+                I specialise in full-stack web development and have hands-on experience deploying
+                systems on{" "}
+                <span className="text-text-primary font-medium">Microsoft Azure</span> — including
+                microservices architecture, Docker containers, and API gateways. I&apos;m also
+                actively learning{" "}
+                <span className="text-text-primary font-medium">cybersecurity</span>: web app security,
+                OWASP Top 10, and CTF challenges.
               </p>
               <p>
-                Outside of code, you&apos;ll find me exploring hiking trails around Santa Cruz,
-                tinkering with CTF challenges, or reading about systems architecture over
-                a good cup of coffee.
+                When I&apos;m not building projects, I&apos;m diving into system design concepts,
+                exploring open-source tools, or sharpening my problem-solving with competitive
+                programming — always with a good cup of Sri Lankan tea.
               </p>
             </div>
 
@@ -116,14 +132,14 @@ export function About() {
             {/* Values */}
             <div className="grid grid-cols-2 gap-3 pt-2">
               {[
-                { title: "Clean Code",      desc: "Readable, maintainable, testable" },
-                { title: "Security First",  desc: "Built-in, not bolted-on" },
-                { title: "Ship Iteratively", desc: "Deliver value continuously" },
-                { title: "Learn Deeply",   desc: "First principles over shortcuts" },
+                { title: "Full-Stack",      desc: "Frontend to backend to cloud" },
+                { title: "Azure Cloud",     desc: "Real-world deployment experience" },
+                { title: "Security Minded", desc: "OWASP & security-first thinking" },
+                { title: "Always Learning", desc: "Cybersecurity & cloud in progress" },
               ].map(({ title, desc }) => (
                 <div
                   key={title}
-                  className="p-4 rounded-xl bg-surface border border-border hover:border-accent/30 transition-colors"
+                  className="card p-4"
                 >
                   <div className="text-sm font-semibold text-text-primary mb-0.5">{title}</div>
                   <div className="text-xs text-text-muted">{desc}</div>
