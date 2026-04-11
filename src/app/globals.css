@@ -1,134 +1,325 @@
 @import "tailwindcss";
 
-/* ──────────────────────────────────────────────
-   Design Tokens
-────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN SYSTEM — Januda Withanage Portfolio
+   Premium dark luxury — monochromatic with violet accent
+═══════════════════════════════════════════════════════════════ */
+
 @theme inline {
-  /* Brand palette */
-  --color-bg:             #0A0A0F;
-  --color-bg-secondary:   #0F0F18;
-  --color-surface:        #141420;
-  --color-surface-hover:  #1A1A2E;
-  --color-border:         #1E1E30;
-  --color-border-light:   #2A2A40;
 
-  /* Accents */
-  --color-accent:         #6366F1;
-  --color-accent-light:   #818CF8;
-  --color-gold:           #F59E0B;
-  --color-gold-light:     #FCD34D;
+  /* ── Depth layers ─────────────────────────────────────────────
+     Five-stop z-axis. Each 3-4 pts lighter in perceived value.   */
+  --color-base:           #06060E;   /* Deepest: true black-violet */
+  --color-bg:             #09091A;   /* Page background            */
+  --color-bg-secondary:   #0C0C1E;   /* Alternating sections       */
+  --color-surface:        #101024;   /* Cards, panels              */
+  --color-surface-raised: #15152E;   /* Hover state, dropdowns     */
 
-  /* Text */
-  --color-text-primary:   #F1F1F5;
-  --color-text-secondary: #9898AA;
-  --color-text-muted:     #55556A;
+  /* ── Borders ──────────────────────────────────────────────────
+     Ultra-thin — let depth do the separation work.               */
+  --color-border:         #1A1A34;   /* Default hairline           */
+  --color-border-subtle:  #222242;   /* Emphasis/hover borders     */
+  --color-border-strong:  #2E2E58;   /* Strong callouts            */
 
-  /* Status */
-  --color-success:        #10B981;
+  /* ── Accent — Soft violet ─────────────────────────────────────
+     Professional, not electric. Violet reads as "creative +
+     technical" without the startup-purple cliché.                */
+  --color-accent:         #7B6EF6;   /* Primary interactive        */
+  --color-accent-dim:     #6257D9;   /* Pressed / darker state     */
+  --color-accent-light:   #9D93FF;   /* Hover / lighter state      */
+  --color-accent-muted:   #7B6EF614; /* Transparent bg (8% alpha)  */
+  --color-accent-subtle:  #7B6EF60D; /* Very light bg (5% alpha)   */
+
+  /* ── Amber-gold — Used sparingly ─────────────────────────────
+     Muted brass tone. Only for achievements, GPA, awards.
+     Never for large decorative areas.                            */
+  --color-gold:           #C49A3C;
+  --color-gold-light:     #D4AE5A;
+
+  /* ── Text ─────────────────────────────────────────────────────
+     Three tiers create clear hierarchy without fighting colors.  */
+  --color-text-primary:   #ECEEF7;   /* Body copy, headings        */
+  --color-text-secondary: #8282A8;   /* Supporting text            */
+  --color-text-muted:     #4A4A6E;   /* Labels, placeholders       */
+
+  /* ── Semantic ────────────────────────────────────────────────  */
+  --color-success:        #22C55E;
   --color-error:          #EF4444;
 
-  /* Typography */
-  --font-sans: var(--font-inter);
+  /* ── Typography ──────────────────────────────────────────────  */
+  --font-sans:    var(--font-inter);
   --font-display: var(--font-syne);
 
-  /* Animations */
-  --animate-fade-up:   fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-fade-in:   fade-in 0.5s ease forwards;
-  --animate-slide-in:  slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-float:     float 3s ease-in-out infinite;
-  --animate-shimmer:   shimmer 2.5s linear infinite;
+  /* ── Shadows ─────────────────────────────────────────────────
+     Black-based depth. Glow only on interactive hover.          */
+  --shadow-xs:    0 1px 3px rgba(0,0,0,0.6);
+  --shadow-sm:    0 2px 8px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.6);
+  --shadow-md:    0 4px 20px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.5);
+  --shadow-lg:    0 8px 40px rgba(0,0,0,0.65), 0 2px 8px rgba(0,0,0,0.5);
+  --shadow-glow:  0 0 40px rgba(123,110,246,0.22), 0 0 12px rgba(123,110,246,0.12);
+  --shadow-glow-sm: 0 0 20px rgba(123,110,246,0.16);
+  --shadow-gold:  0 0 24px rgba(196,154,60,0.18);
+
+  /* ── Named Animations ────────────────────────────────────────  */
+  --animate-fade-up:  fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in:  fade-in 0.45s ease forwards;
+  --animate-float:    float 4s ease-in-out infinite;
+  --animate-shimmer:  shimmer 2.2s linear infinite;
 }
 
-/* ──────────────────────────────────────────────
-   Keyframes
-────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════════════════════════════════ */
+
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(28px); }
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-@keyframes slide-in {
-  from { opacity: 0; transform: translateX(-24px); }
-  to   { opacity: 1; transform: translateX(0); }
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
 }
 @keyframes shimmer {
   0%   { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-10px); }
-}
-@keyframes gradient-shift {
+@keyframes gradient-cycle {
   0%, 100% { background-position: 0% 50%; }
   50%       { background-position: 100% 50%; }
 }
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.4);  opacity: 0; }
+}
 
-/* ──────────────────────────────────────────────
-   Base
-────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   BASE RESET & GLOBAL STYLES
+═══════════════════════════════════════════════════════════════ */
+
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background-color: #0A0A0F;
-  color: #F1F1F5;
+  background-color: #09091A;
+  color: #ECEEF7;
   font-family: var(--font-inter), system-ui, sans-serif;
-  line-height: 1.7;
+  font-size: 0.9375rem;          /* 15px — slightly tighter than 16px for density */
+  line-height: 1.75;
   overflow-x: hidden;
+  /* OpenType features for Inter */
+  font-feature-settings: "cv02","cv03","cv04","cv11";
 }
 
 ::selection {
-  background: rgba(99, 102, 241, 0.35);
+  background: rgba(123, 110, 246, 0.30);
   color: #fff;
 }
 
-/* ──────────────────────────────────────────────
-   Scrollbar
-────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #0A0A0F; }
-::-webkit-scrollbar-thumb { background: #2A2A40; border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: #6366F1; }
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar              { width: 4px; }
+::-webkit-scrollbar-track        { background: #09091A; }
+::-webkit-scrollbar-thumb        { background: #222242; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover  { background: #7B6EF6; }
 
-/* ──────────────────────────────────────────────
-   Utility Classes
-────────────────────────────────────────────── */
+/* ── Focus ring ─────────────────────────────────────────────── */
+:focus-visible {
+  outline: 1.5px solid #7B6EF6;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY UTILITIES
+═══════════════════════════════════════════════════════════════ */
+
+/* Display — Hero name */
+.text-display {
+  font-family: var(--font-syne), sans-serif;
+  font-size: clamp(3.25rem, 8.5vw, 6.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.0;
+}
+
+/* Headline — Section titles */
+.text-headline {
+  font-family: var(--font-syne), sans-serif;
+  font-size: clamp(1.875rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.15;
+}
+
+/* Subheadline — Card titles */
+.text-subheadline {
+  font-family: var(--font-syne), sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  line-height: 1.3;
+}
+
+/* Eyebrow — Section category labels */
+.text-eyebrow {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7B6EF6;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRADIENT UTILITIES
+═══════════════════════════════════════════════════════════════ */
+
 .gradient-text {
-  background: linear-gradient(135deg, #6366F1 0%, #818CF8 50%, #A5B4FC 100%);
+  background: linear-gradient(135deg, #7B6EF6 0%, #9D93FF 55%, #BDB8FF 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradient-shift 4s ease infinite;
+  animation: gradient-cycle 5s ease infinite;
 }
 
 .gradient-text-gold {
-  background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
+  background: linear-gradient(135deg, #C49A3C 0%, #D4AE5A 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT UTILITIES
+═══════════════════════════════════════════════════════════════ */
+
 .section-padding {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+  padding-top: 7.5rem;
+  padding-bottom: 7.5rem;
 }
 
-.glass {
-  background: rgba(20, 20, 32, 0.75);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid #1E1E30;
+/* Content container — used inside each section */
+.container-section {
+  width: 100%;
+  max-width: 75rem; /* 1200px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   GLASS / SURFACE UTILITIES
+═══════════════════════════════════════════════════════════════ */
+
+.glass {
+  background: rgba(15, 15, 30, 0.82);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.glass-light {
+  background: rgba(21, 21, 46, 0.7);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD UTILITIES — Three-tier depth system
+═══════════════════════════════════════════════════════════════ */
+
+/* Tier 1 — Minimal (repo cards, stat tiles) */
+.card {
+  background: #101024;
+  border: 1px solid #1A1A34;
+  border-radius: 0.875rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+.card:hover {
+  border-color: #222242;
+  background: #15152E;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.55);
+}
+
+/* Tier 2 — Elevated (skill cards, education) */
+.card-elevated {
+  background: #101024;
+  border: 1px solid #1A1A34;
+  border-radius: 1rem;
+  box-shadow: 0 0 0 0.5px rgba(255,255,255,0.03) inset;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.card-elevated:hover {
+  border-color: #2E2E58;
+  background: #131330;
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.05) inset,
+    0 8px 32px rgba(0,0,0,0.6),
+    0 0 20px rgba(123,110,246,0.07);
+}
+
+/* Tier 3 — Premium (featured projects) — gradient border on hover */
+.card-premium {
+  position: relative;
+  isolation: isolate;     /* Own stacking context so content stays above ::after */
+  background: #101024;
+  border-radius: 1.125rem;
+  transition: background 0.35s ease, box-shadow 0.35s ease;
+}
+/* Inner static border */
+.card-premium::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid #1A1A34;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+/* Gradient border layer — revealed on hover */
+.card-premium::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(123,110,246,0.55) 0%, rgba(255,255,255,0.04) 50%, rgba(196,154,60,0.3) 100%);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+.card-premium:hover {
+  background: #131330;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.65), 0 0 30px rgba(123,110,246,0.12);
+}
+.card-premium:hover::before  { opacity: 0; }
+.card-premium:hover::after   { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════════════
+   LINK / HOVER UNDERLINE
+═══════════════════════════════════════════════════════════════ */
 
 .hover-underline {
   position: relative;
@@ -136,17 +327,61 @@ body {
 .hover-underline::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -1px;
   left: 0;
   width: 0;
   height: 1px;
-  background: linear-gradient(90deg, #6366F1, #818CF8);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: linear-gradient(90deg, #7B6EF6, #9D93FF);
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .hover-underline:hover::after { width: 100%; }
 
-:focus-visible {
-  outline: 2px solid #6366F1;
-  outline-offset: 3px;
-  border-radius: 4px;
+/* ═══════════════════════════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════════════════════════ */
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #1A1A34 20%, #1A1A34 80%, transparent);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SKILL BAR TRACK
+═══════════════════════════════════════════════════════════════ */
+
+.skill-track {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+.skill-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7B6EF6, #9D93FF);
+  position: relative;
+}
+/* Shimmer highlight on the fill bar */
+.skill-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2.2s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIMELINE DOT PULSE
+═══════════════════════════════════════════════════════════════ */
+
+.timeline-dot::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(123,110,246,0.4);
+  animation: pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
