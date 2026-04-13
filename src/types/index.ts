@@ -33,6 +33,19 @@ export interface GitHubRepo {
   fork: boolean;
 }
 
+/**
+ * Discriminated union returned by `fetchGitHubRepos()`.
+ * Always handle all three status branches in consuming components.
+ *
+ * `syncedAt` — ISO timestamp captured at fetch time on the server.
+ * Pass it down to client components so they can show a live-updating
+ * "Last synced X ago" indicator without any client-to-server round-trip.
+ */
+export type GitHubFetchResult =
+  | { status: "success"; repos: GitHubRepo[]; syncedAt: string }
+  | { status: "error"; message: string }
+  | { status: "empty" };
+
 // ─── Skills ───────────────────────────────────────────────────────────────────
 export interface SkillItem {
   name: string;
@@ -71,7 +84,7 @@ export interface Experience {
   startDate: string;
   endDate: string | "Present";
   location: string;
-  type: "full-time" | "part-time" | "internship" | "contract" | "freelance";
+  type: "full-time" | "part-time" | "internship" | "contract" | "freelance" | "university" | "personal";
   description: string;
   highlights: string[];
   tech: string[];
@@ -90,20 +103,6 @@ export interface ContactFormData {
   email: string;
   subject: string;
   message: string;
-}
-
-// ─── Experience ───────────────────────────────────────────────────────────────
-export interface Experience {
-  id: string;
-  company: string;
-  role: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  type: "full-time" | "part-time" | "internship" | "contract" | "freelance";
-  description: string;
-  highlights: string[];
-  tech: string[];
 }
 
 // ─── Service ──────────────────────────────────────────────────────────────────
