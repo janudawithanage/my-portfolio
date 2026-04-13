@@ -347,6 +347,28 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   SKELETON SHIMMER — used by loading/placeholder components
+═══════════════════════════════════════════════════════════════ */
+
+/**
+ * Drop `.skeleton` on any element to give it a sweeping shimmer.
+ * Built on the existing `shimmer` keyframe so it matches skill-bar
+ * shimmer timing and direction exactly.
+ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #101024 0%,
+    #15152E 40%,
+    #1A1A38 50%,
+    #15152E 60%,
+    #101024 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.2s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    SKILL BAR TRACK
 ═══════════════════════════════════════════════════════════════ */
 
