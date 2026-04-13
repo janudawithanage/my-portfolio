@@ -14,6 +14,8 @@ const typeLabels: Record<string, string> = {
   internship:   "Internship",
   contract:     "Contract",
   freelance:    "Freelance",
+  university:   "University",
+  personal:     "Personal Project",
 };
 
 export function Experience() {
@@ -22,8 +24,8 @@ export function Experience() {
       <div className="max-w-4xl mx-auto">
         <SectionHeader
           eyebrow="Experience"
-          title="What I've worked on"
-          description="Hands-on project experience from university coursework, cloud deployments, and full-stack development — all while studying at UCSC Sri Lanka."
+          title="Projects &amp; university work"
+          description="I don't have professional work experience yet — all my projects are personal ones I built to learn and push myself, alongside university coursework assigned throughout my degree at UCSC."
         />
 
         <div className="relative">
@@ -69,7 +71,9 @@ export function Experience() {
                       variant={exp.endDate === "Present" ? "gold" : "default"}
                       size="sm"
                     >
-                      {exp.endDate === "Present" ? "Current" : typeLabels[exp.type]}
+                      {exp.endDate === "Present"
+                        ? typeLabels[exp.type] ?? "Current"
+                        : typeLabels[exp.type]}
                     </Badge>
                   </div>
 
