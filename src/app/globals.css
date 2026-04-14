@@ -204,8 +204,8 @@ body {
 ═══════════════════════════════════════════════════════════════ */
 
 .section-padding {
-  padding-top: 7.5rem;
-  padding-bottom: 7.5rem;
+  padding-top:    6rem;
+  padding-bottom: 6rem;
 }
 
 /* Content container — used inside each section */
@@ -373,9 +373,9 @@ body {
 ═══════════════════════════════════════════════════════════════ */
 
 .skill-track {
-  height: 3px;
+  height: 4px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.06);
   overflow: hidden;
 }
 .skill-fill {
