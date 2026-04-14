@@ -7,10 +7,10 @@ const ITEMS = [
   "Cloud Engineering",
   "Cybersecurity",
   "React / Next.js",
-  "AWS Infrastructure",
+  "Microsoft Azure",
   "API Design",
   "DevOps & CI/CD",
-  "Pen Testing",
+  "Security Research",
   "TypeScript",
   "System Design",
 ];
@@ -22,7 +22,7 @@ function Strip({ reverse = false }: { reverse?: boolean }) {
       <motion.div
         className="flex gap-6 shrink-0"
         animate={{ x: reverse ? ["0%", "50%"] : ["0%", "-50%"] }}
-        transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 42, repeat: Infinity, ease: "linear" }}
       >
         {items.map((item, i) => (
           <span
