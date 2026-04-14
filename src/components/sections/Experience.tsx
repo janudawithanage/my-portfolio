@@ -24,8 +24,8 @@ export function Experience() {
       <div className="max-w-4xl mx-auto">
         <SectionHeader
           eyebrow="Experience"
-          title="Projects &amp; university work"
-          description="I don't have professional work experience yet — all my projects are personal ones I built to learn and push myself, alongside university coursework assigned throughout my degree at UCSC."
+          title="Technical journey"
+          description="A track record of personal projects, academic work, and continuous learning — each one pushing my skills forward."
         />
 
         <div className="relative">
