@@ -4,9 +4,7 @@ import type {
   SkillCategory,
   Education,
   SocialLink,
-  GitHubRepo,
   Experience,
-  Service,
 } from "@/types";
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
@@ -32,9 +30,7 @@ export const featuredProjects: Project[] = [
     id: "distributed-joke-system",
     title: "Distributed Joke System",
     description:
-      "A fully distributed microservices system with Node.js, RabbitMQ, MySQL, Kong API Gateway, Docker, and Azure-ready deployment workflows.",
-    longDescription:
-      "A production-style distributed system built entirely as a personal project. Features multi-service architecture, message queuing with RabbitMQ, Kong API Gateway for routing and rate limiting, Docker containerisation, and a moderation pipeline with MySQL persistence.",
+      "A production-style distributed system: Node.js microservices, RabbitMQ message queuing, Kong API Gateway, Docker containers, MySQL persistence, and an Azure-ready deployment workflow.",
     tech: ["Node.js", "RabbitMQ", "MySQL", "Kong", "Docker", "Azure", "JavaScript"],
     githubUrl: "https://github.com/janudawithanage/distributed-joke-system",
     featured: true,
@@ -43,11 +39,9 @@ export const featuredProjects: Project[] = [
   },
   {
     id: "betting-system",
-    title: "Betting System",
+    title: "Sports Betting Platform",
     description:
-      "A premium sportsbook platform built end-to-end in TypeScript, with complex domain logic for odds, markets, and bet management.",
-    longDescription:
-      "A full-stack betting/sportsbook platform built from scratch in TypeScript. Covers complex domain modelling for events, markets, odds, and user accounts — a challenging project for practising advanced TypeScript patterns and full-stack architecture.",
+      "A full-stack sportsbook built end-to-end in TypeScript. Complex domain logic covers odds calculation, markets, bet placement, and user account management.",
     tech: ["TypeScript", "Node.js", "React"],
     githubUrl: "https://github.com/janudawithanage/betting-system",
     featured: true,
@@ -58,9 +52,7 @@ export const featuredProjects: Project[] = [
     id: "esp32-sensovault",
     title: "ESP32 SensoVault",
     description:
-      "Real-time IoT monitoring system — an ESP32 reads temperature, humidity, and light sensors and streams data via MQTT to a live web dashboard.",
-    longDescription:
-      "A hardware + software project built to explore IoT. An ESP32 microcontroller reads sensor data and publishes it over MQTT. A web dashboard visualises the live readings with real-time charts and threshold alerts.",
+      "Real-time IoT monitoring system. An ESP32 reads temperature, humidity, and light sensors and streams live data via MQTT to a web dashboard with threshold alerts.",
     tech: ["ESP32", "MQTT", "C++", "HTML", "CSS", "JavaScript"],
     githubUrl: "https://github.com/janudawithanage/esp32-sensovault",
     featured: true,
@@ -69,14 +61,11 @@ export const featuredProjects: Project[] = [
   },
   {
     id: "portfolio-site",
-    title: "Personal Portfolio Website",
+    title: "This Portfolio",
     description:
-      "This portfolio — built with Next.js 15, TypeScript, Tailwind CSS v4, and Framer Motion, with a live GitHub API integration.",
-    longDescription:
-      "A premium dark-luxury portfolio built from scratch with Next.js 15 App Router, TypeScript, Tailwind CSS v4, and Framer Motion animations. Features a GitHub API integration that auto-updates the projects section and dynamically adjusts skill percentages from real repo usage.",
+      "Built with Next.js 15, TypeScript, Tailwind CSS v4, and Framer Motion. Features a live GitHub API integration with ISR caching and a GitHub-driven skills section.",
     tech: ["Next.js 15", "TypeScript", "Tailwind CSS v4", "Framer Motion", "Vercel"],
     githubUrl: "https://github.com/janudawithanage/my-portfolio",
-    liveUrl: "#",
     featured: true,
     status: "in-progress",
     year: "2026",
@@ -162,88 +151,6 @@ export const educationData: Education[] = [
       "Specialisation interests: Full-Stack Development, Cloud Computing (Azure) & Cybersecurity",
       "Expected graduation: 2026",
     ],
-  },
-];
-
-// ─── GitHub Repos (placeholder — replace with live API data) ──────────────────
-export const placeholderRepos: GitHubRepo[] = [
-  {
-    id: 1,
-    name: "distributed-joke-system",
-    description: "Microservices system on Azure with Kong gateway, ETL pipeline, and monitoring.",
-    html_url: "https://github.com/janudawithanage",
-    homepage: null,
-    language: "JavaScript",
-    stargazers_count: 0,
-    forks_count: 0,
-    topics: ["azure", "docker", "microservices", "kong"],
-    updated_at: "2025-03-15T00:00:00Z",
-    fork: false,
-  },
-  {
-    id: 2,
-    name: "doctor-booking-system",
-    description: "Full-stack doctor appointment booking app with patient and admin portals.",
-    html_url: "https://github.com/janudawithanage",
-    homepage: null,
-    language: "TypeScript",
-    stargazers_count: 0,
-    forks_count: 0,
-    topics: ["react", "nodejs", "mongodb", "fullstack"],
-    updated_at: "2025-02-20T00:00:00Z",
-    fork: false,
-  },
-  {
-    id: 3,
-    name: "my-portfolio",
-    description: "Personal portfolio — Next.js 15, TypeScript, Tailwind v4, Framer Motion.",
-    html_url: "https://github.com/janudawithanage",
-    homepage: "#",
-    language: "TypeScript",
-    stargazers_count: 0,
-    forks_count: 0,
-    topics: ["nextjs", "portfolio", "tailwindcss", "typescript"],
-    updated_at: "2025-04-10T00:00:00Z",
-    fork: false,
-  },
-  {
-    id: 4,
-    name: "ucsc-coursework",
-    description: "Collection of UCSC CS coursework — algorithms, OS, networks, SE projects.",
-    html_url: "https://github.com/janudawithanage",
-    homepage: null,
-    language: "Java",
-    stargazers_count: 0,
-    forks_count: 0,
-    topics: ["ucsc", "algorithms", "java", "coursework"],
-    updated_at: "2025-01-10T00:00:00Z",
-    fork: false,
-  },
-  {
-    id: 5,
-    name: "azure-cloud-projects",
-    description: "Azure cloud project experiments — containers, networking, CI/CD pipelines.",
-    html_url: "https://github.com/janudawithanage",
-    homepage: null,
-    language: "Shell",
-    stargazers_count: 0,
-    forks_count: 0,
-    topics: ["azure", "cloud", "devops", "docker"],
-    updated_at: "2025-03-05T00:00:00Z",
-    fork: false,
-  },
-  {
-    id: 6,
-    name: "security-learning",
-    description: "CTF writeups, OWASP notes, and web security experiments as I learn cybersecurity.",
-    html_url: "https://github.com/janudawithanage",
-    homepage: null,
-    language: "Python",
-    stargazers_count: 0,
-    forks_count: 0,
-    topics: ["security", "ctf", "owasp", "learning"],
-    updated_at: "2025-02-28T00:00:00Z",
-    fork: false,
   },
 ];
 
@@ -337,34 +244,4 @@ export const experienceData: Experience[] = [
   },
 ];
 
-// ─── Services / What I Build ──────────────────────────────────────────────────
-export const servicesData: Service[] = [
-  {
-    id: "fullstack",
-    title: "Full-Stack Web Development",
-    description:
-      "End-to-end web applications — from pixel-perfect React/Next.js frontends to robust Node.js or Python backends with PostgreSQL or MongoDB. I build things that are fast, accessible, and maintainable.",
-    tags: ["Next.js", "React", "Node.js", "TypeScript", "PostgreSQL", "MongoDB"],
-  },
-  {
-    id: "cloud",
-    title: "Cloud & DevOps (Azure)",
-    description:
-      "Deploying and operating scalable services on Microsoft Azure. I containerise apps with Docker, wire up CI/CD pipelines with GitHub Actions, and work with cloud networking and API gateways.",
-    tags: ["Azure", "Docker", "GitHub Actions", "Kong Gateway", "Linux"],
-  },
-  {
-    id: "security",
-    title: "Cybersecurity — Actively Learning",
-    description:
-      "I'm actively studying cybersecurity: web application security, OWASP Top 10, network security fundamentals, and CTF challenges. Security-first thinking is baked into everything I build.",
-    tags: ["OWASP Top 10", "Web Security", "Network Security", "CTF", "Cryptography"],
-  },
-  {
-    id: "api",
-    title: "API Design & Backend Systems",
-    description:
-      "Designing RESTful APIs with clean architecture, proper authentication (JWT), and solid documentation. I've built and integrated APIs across multiple academic and personal projects.",
-    tags: ["REST APIs", "JWT Auth", "Express", "FastAPI", "Swagger / OpenAPI"],
-  },
-];
+
