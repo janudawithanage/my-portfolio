@@ -4,17 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { MapPin, GraduationCap, Zap } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
-import { Badge } from "@/components/ui/Badge";
 import { staggerItem } from "@/lib/motion";
-
-const interests = [
-  "Full-Stack Development",
-  "Cloud Engineering",
-  "Cybersecurity",
-  "System Design",
-  "Open Source",
-  "Algorithms",
-];
 
 const quickFacts = [
   { icon: GraduationCap, label: "UCSC, B.S. Computer Science — 21st Batch" },
@@ -29,10 +19,10 @@ export function About() {
         <SectionHeader
           eyebrow="About Me"
           title="Building at the intersection of code, cloud & security"
-          description="I'm Januda — a passionate Computer Science student who loves building things that matter. My curiosity spans the full spectrum of software: elegant UIs, resilient APIs, scalable cloud systems, and hardened security postures."
+          description="I&apos;m a Computer Science undergraduate at UCSC, Sri Lanka, focused on full-stack development, cloud engineering, and cybersecurity. I care about writing software that is reliable, well-designed, and actually maintainable."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
           {/* Left — Photo & quick facts (2 cols) */}
           <motion.div variants={staggerItem} className="lg:col-span-2 space-y-6">
             {/* ── Photo frame ─────────────────────────── */}
@@ -65,13 +55,7 @@ export function About() {
               {/* Floating badge — bottom right */}
               <div className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-border shadow-lg z-10">
                 <span className="text-xs font-semibold text-text-secondary">
-                  🎓 UCSC 21st Batch &apos;26
-                </span>
-              </div>
-              {/* Floating badge — top left */}
-              <div className="absolute -top-3 -left-3 glass px-2.5 py-1.5 rounded-lg border border-accent/30 shadow-lg z-10">
-                <span className="text-[10px] font-semibold text-accent-light tracking-wide">
-                  ● Available for hire
+                  UCSC &apos;26 · CS
                 </span>
               </div>
             </div>
@@ -109,25 +93,12 @@ export function About() {
                 OWASP Top 10, and CTF challenges.
               </p>
               <p>
-                When I&apos;m not building projects, I&apos;m diving into system design concepts,
-                exploring open-source tools, or sharpening my problem-solving with competitive
-                programming — always with a good cup of Sri Lankan tea.
+                When I&apos;m not deep in a project, I&apos;m reading about system design,
+                exploring open-source tools, or working through competitive programming problems.
+                I genuinely enjoy the process of learning and building — not just the outcomes.
               </p>
             </div>
 
-            {/* Interests */}
-            <div>
-              <h3 className="text-text-muted text-xs font-semibold tracking-widest uppercase mb-3">
-                Interests
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {interests.map((interest) => (
-                  <Badge key={interest} variant="accent">
-                    {interest}
-                  </Badge>
-                ))}
-              </div>
-            </div>
 
             {/* Values */}
             <div className="grid grid-cols-2 gap-3 pt-2">
