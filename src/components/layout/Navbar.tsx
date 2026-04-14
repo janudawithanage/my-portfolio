@@ -123,7 +123,7 @@ export function Navbar() {
               size="sm"
               onClick={() => handleNavClick("#contact")}
             >
-              Hire Me
+              Contact Me
             </Button>
           </div>
 
