@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Sparkles, ChevronDown } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { fadeUp, fadeIn } from "@/lib/motion";
 
@@ -98,7 +98,7 @@ export function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-60" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
             </span>
-            Available for opportunities &middot; UCSC &apos;26
+            Open to Opportunities &middot; UCSC &apos;26
           </motion.div>
 
           {/* Display name */}
@@ -112,24 +112,6 @@ export function Hero() {
               <span className="block">Januda</span>
               <span className="block gradient-text">Withanage</span>
             </h1>
-          </motion.div>
-
-          {/* Tag pills */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.28 }}
-            className="flex flex-wrap gap-2"
-          >
-            {["#Full-Stack", "#Cloud", "#Security", "#Open Source"].map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-surface border border-border-subtle text-text-secondary tracking-wide"
-              >
-                {tag}
-              </span>
-            ))}
           </motion.div>
 
           {/* Typewriter role */}
@@ -152,9 +134,11 @@ export function Hero() {
             transition={{ delay: 0.46 }}
             className="text-text-secondary sm:text-lg leading-relaxed max-w-lg"
           >
-            I&apos;m Januda &mdash; a 3rd year Computer Science undergraduate at{" "}
-            <span className="text-text-primary font-medium">University of Colombo School of Computing (UCSC)</span>,
-            Sri Lanka. I build full-stack web apps, deploy to the cloud with Azure, and I&apos;m actively learning cybersecurity.
+            I&apos;m a 3rd-year Computer Science student at{" "}
+            <span className="text-text-primary font-medium">UCSC, Sri Lanka</span>,
+            building full-stack web applications and cloud systems on Azure.
+            My next goal is cybersecurity — I&apos;m actively working toward it
+            through coursework, CTFs, and personal projects.
           </motion.p>
 
           {/* CTAs */}
@@ -178,7 +162,8 @@ export function Hero() {
               />
             </Button>
             <Button variant="secondary" size="lg" onClick={() => handleScroll("#contact")}>
-              Start a Project &#8599;
+              Let&apos;s Connect
+              <ArrowUpRight size={16} />
             </Button>
           </motion.div>
 
@@ -192,8 +177,8 @@ export function Hero() {
           >
             {[
               { value: "3+",  label: "Years Coding" },
-              { value: "10+", label: "Projects Built" },
-              { value: "21st",label: "UCSC Batch" },
+              { value: "10+", label: "Projects Shipped" },
+              { value: "4",   label: "Focus Areas" },
               { value: "2026", label: "Expected Grad." },
             ].map(({ value, label }) => (
               <div key={label}>
@@ -247,15 +232,6 @@ export function Hero() {
               </p>
               <p className="text-text-muted text-xs">CS Undergraduate &middot; UCSC Sri Lanka &apos;26</p>
             </div>
-          </div>
-
-          {/* Floating badges */}
-          <div className="absolute -top-4 -right-4 glass-light px-3 py-1.5 rounded-xl border border-border-subtle flex items-center gap-2 text-xs font-medium text-text-secondary">
-            <Sparkles size={12} className="text-gold" />
-            Open to Work
-          </div>
-          <div className="absolute -bottom-4 -left-4 glass-light px-3 py-1.5 rounded-xl border border-border-subtle text-xs text-text-muted font-mono">
-            janudaw.dev
           </div>
         </motion.div>
       </div>
