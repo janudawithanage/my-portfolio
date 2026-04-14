@@ -32,20 +32,19 @@ function SkillBar({
   boosted?: boolean;
 }) {
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-sm">
+    <div className="space-y-2">
+      <div className="flex items-center gap-1.5 text-sm">
         <span className="flex items-center gap-1.5 text-text-secondary font-medium">
           {name}
           {boosted && (
             <span
               title="Level calibrated from your GitHub repository activity"
-              className="inline-flex items-center gap-0.5 text-[10px] font-medium text-accent/70 select-none"
+              className="inline-flex items-center gap-0.5 text-[10px] font-medium text-accent/60 select-none"
             >
               <GitBranch size={9} aria-hidden />
             </span>
           )}
         </span>
-        <span className="text-text-muted text-xs">{level}%</span>
       </div>
       <div className="skill-track">
         <motion.div
@@ -149,7 +148,7 @@ export function SkillsClient({
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* ── Category selector ── */}
-          <div className="lg:col-span-2 grid grid-cols-2 lg:grid-cols-1 gap-3">
+          <div className="lg:col-span-2 flex flex-col gap-3">
             {skillCategories.map((category) => (
               <CategoryCard
                 key={category.id}
