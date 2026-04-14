@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
@@ -18,6 +18,9 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
+  // metadataBase is required for absolute OG/Twitter image URLs.
+  // Update to your production domain once deployed.
+  metadataBase: new URL("https://janudawithanage.github.io"),
   title: {
     default: "Januda Withanage — Full-Stack & Cloud Engineer",
     template: "%s | Januda Withanage",
@@ -56,6 +59,12 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#09091A",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
