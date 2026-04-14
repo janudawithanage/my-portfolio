@@ -9,7 +9,6 @@ export interface Project {
   id: string;
   title: string;
   description: string;
-  longDescription?: string;
   tech: string[];
   githubUrl?: string;
   liveUrl?: string;
@@ -97,35 +96,4 @@ export interface SocialLink {
   icon: string;
 }
 
-// ─── Contact ──────────────────────────────────────────────────────────────────
-export interface ContactFormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
 
-// ─── Service ──────────────────────────────────────────────────────────────────
-export interface Service {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-}
-
-// ─── Testimonial ──────────────────────────────────────────────────────────────
-export interface Testimonial {
-  id: string;
-  quote: string;
-  author: string;
-  role: string;
-  company: string;
-  rating: number;
-}
-
-// ─── FAQ ──────────────────────────────────────────────────────────────────────
-export interface FAQItem {
-  id: string;
-  question: string;
-  answer: string;
-}
