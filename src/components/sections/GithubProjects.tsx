@@ -26,9 +26,9 @@ export async function GithubProjects() {
     <SectionWrapper id="github">
       <div className="max-w-6xl mx-auto">
         <SectionHeader
-          eyebrow="GitHub"
+          eyebrow="Live from GitHub"
           title="Open source & public work"
-          description="A live snapshot of my public repositories — sorted by featured status, stars, and recent activity."
+          description="A live snapshot of my public repositories, auto-updated every hour. Sorted by featured status, stars, and recent activity."
         />
 
         <GithubProjectsGrid result={result} profileUrl={profileUrl} />
