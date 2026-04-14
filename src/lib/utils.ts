@@ -43,9 +43,3 @@ export function getLangColor(lang: string | null): string {
   return lang ? (map[lang] ?? "text-slate-400") : "text-slate-500";
 }
 
-/**
- * Stagger delay for list animations (in seconds).
- */
-export function staggerDelay(index: number, base = 0.1): number {
-  return index * base;
-}
