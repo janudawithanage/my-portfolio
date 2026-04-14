@@ -44,7 +44,7 @@ export function CTABanner() {
           transition={{ delay: 0 }}
           className="text-eyebrow mb-5"
         >
-          Got an idea?
+          Ready to connect?
         </motion.p>
 
         <motion.h2
@@ -67,8 +67,9 @@ export function CTABanner() {
           transition={{ delay: 0.2 }}
           className="text-text-secondary sm:text-lg leading-relaxed max-w-xl mx-auto mb-10"
         >
-          I&apos;m always open to exciting projects, collaborations, academic partnerships,
-          or just a conversation about technology. Let&apos;s build something together.
+          I&apos;m always open to internship opportunities, exciting collaborations,
+          and conversations with people building interesting things. If something here
+          caught your eye, I&apos;d love to hear from you.
         </motion.p>
 
         <motion.div
@@ -97,7 +98,7 @@ export function CTABanner() {
             asChild
           >
             <a href="mailto:janudawithanage@gmail.com">
-              janudawithanage@gmail.com
+              Send an Email
             </a>
           </Button>
         </motion.div>
