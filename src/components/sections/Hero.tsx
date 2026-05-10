@@ -1,11 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { fadeUp, fadeIn } from "@/lib/motion";
+import dynamic from "next/dynamic";
+
+// Lazy-load the heavy Three.js canvas
+const ParticleField  = dynamic(() => import("@/components/3d/ParticleField").then(m => ({ default: m.ParticleField  })), { ssr: false });
+const FloatingCards3D = dynamic(() => import("@/components/3d/FloatingCards3D").then(m => ({ default: m.FloatingCards3D })), { ssr: false });
 
 const ROLES = [
   "Full-Stack Engineer",
@@ -56,6 +61,102 @@ function TypewriterRole() {
   );
 }
 
+// ─── Magnetic tilt card ────────────────────────────────────────────────────────
+
+function TiltAvatarCard() {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(rawY, [-0.5, 0.5], [12, -12]), { stiffness: 220, damping: 22 });
+  const rotateY = useSpring(useTransform(rawX, [-0.5, 0.5], [-12, 12]), { stiffness: 220, damping: 22 });
+  const glareX  = useTransform(rawX, [-0.5, 0.5], ["-30%", "130%"]);
+  const glareY  = useTransform(rawY, [-0.5, 0.5], ["-30%", "130%"]);
+
+  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = cardRef.current!.getBoundingClientRect();
+    rawX.set((e.clientX - rect.left) / rect.width - 0.5);
+    rawY.set((e.clientY - rect.top) / rect.height - 0.5);
+  }
+  function onMouseLeave() {
+    rawX.set(0);
+    rawY.set(0);
+  }
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      className="relative cursor-pointer"
+    >
+      {/* Multi-layer glow */}
+      <div
+        className="absolute -inset-4 rounded-[3rem] opacity-40 blur-3xl pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(123,110,246,0.6) 0%, rgba(196,154,60,0.2) 60%, transparent 80%)" }}
+        aria-hidden="true"
+      />
+
+      {/* 3D depth layers pushed back with translateZ */}
+      {/* Back layer: accent card */}
+      <motion.div
+        style={{ transform: "translateZ(-18px)", transformStyle: "preserve-3d" }}
+        className="absolute inset-0 rounded-4xl bg-linear-to-br from-accent/25 to-gold/15 border border-accent/20"
+        aria-hidden="true"
+      />
+      {/* Mid layer */}
+      <motion.div
+        style={{ transform: "translateZ(-8px)", transformStyle: "preserve-3d" }}
+        className="absolute inset-0 rounded-4xl bg-surface border border-border"
+        aria-hidden="true"
+      />
+
+      {/* Front card */}
+      <div
+        className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-4xl bg-surface border border-border-subtle overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.7)]"
+        style={{ transform: "translateZ(0px)" }}
+      >
+        {/* Photo */}
+        <Image
+          src="/images/photo1.png"
+          alt="Januda Withanage"
+          fill
+          sizes="(max-width: 640px) 288px, 320px"
+          className="object-cover object-top"
+          priority
+        />
+        {/* Glare highlight */}
+        <motion.div
+          style={{ left: glareX, top: glareY }}
+          className="absolute w-48 h-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-2xl pointer-events-none"
+          aria-hidden="true"
+        />
+        {/* Bottom gradient overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-base/95 via-base/60 to-transparent">
+          <p
+            className="font-bold text-text-primary text-sm"
+            style={{ fontFamily: "var(--font-syne, sans-serif)" }}
+          >
+            Januda Withanage
+          </p>
+          <p className="text-text-muted text-xs">CS Undergraduate &middot; UCSC Sri Lanka &apos;26</p>
+        </div>
+      </div>
+
+      {/* Floating badge — bottom-right, raised forward */}
+      <motion.div
+        style={{ transform: "translateZ(20px)" }}
+        className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-accent/30 shadow-[0_0_20px_rgba(123,110,246,0.25)] z-10"
+      >
+        <span className="text-xs font-semibold text-accent">UCSC &apos;26 · CS</span>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ─── Hero ──────────────────────────────────────────────────────────────────────
+
 export function Hero() {
   const handleScroll = (href: string) =>
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
@@ -66,21 +167,28 @@ export function Hero() {
       className="relative min-h-screen flex flex-col overflow-hidden bg-bg"
       aria-label="Hero section"
     >
-      {/* Background */}
+      {/* ── 3D particle field background ── */}
+      <ParticleField />
+
+      {/* ── 3D floating cards (right side, behind content) ── */}
+      <FloatingCards3D />
+
+      {/* ── Static CSS background layers ── */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-225 h-150 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(123,110,246,0.14),transparent)]" />
-        <div className="absolute bottom-0 right-0 w-150 h-125 bg-[radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(196,154,60,0.07),transparent)]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-225 h-150 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(123,110,246,0.18),transparent)]" />
+        <div className="absolute bottom-0 right-0 w-150 h-125 bg-[radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(196,154,60,0.09),transparent)]" />
+        {/* Subtle grid */}
         <div
-          className="absolute inset-0 opacity-[0.025]"
+          className="absolute inset-0 opacity-[0.022]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)",
+              "linear-gradient(rgba(255,255,255,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.14) 1px, transparent 1px)",
             backgroundSize: "72px 72px",
           }}
         />
       </div>
 
-      {/* Main grid */}
+      {/* ── Main grid ── */}
       <div className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-between max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-16 pt-32 pb-16 gap-10 lg:gap-16">
 
         {/* ── Left column ──────────────────────────── */}
@@ -196,43 +304,16 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* ── Right column — avatar card ────────────── */}
+        {/* ── Right column — 3D tilt avatar ─────────── */}
         <motion.div
           variants={fadeIn}
           initial="hidden"
           animate="visible"
           transition={{ delay: 0.35 }}
           className="relative shrink-0 lg:pl-8"
+          style={{ perspective: 900 }}
         >
-          {/* Glow */}
-          <div
-            className="absolute -inset-3 rounded-[2.5rem] opacity-30 blur-2xl pointer-events-none"
-            style={{ background: "radial-gradient(circle, rgba(123,110,246,0.5) 0%, transparent 70%)" }}
-            aria-hidden="true"
-          />
-
-          {/* Card */}
-          <div className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-4xl bg-surface border border-border-subtle overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.6)]">
-            {/* Real photo */}
-            <Image
-              src="/images/photo1.png"
-              alt="Januda Withanage"
-              fill
-              sizes="(max-width: 640px) 288px, 320px"
-              className="object-cover object-top"
-              priority
-            />
-            {/* Bottom gradient overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-base/95 via-base/60 to-transparent">
-              <p
-                className="font-bold text-text-primary text-sm"
-                style={{ fontFamily: "var(--font-syne, sans-serif)" }}
-              >
-                Januda Withanage
-              </p>
-              <p className="text-text-muted text-xs">CS Undergraduate &middot; UCSC Sri Lanka &apos;26</p>
-            </div>
-          </div>
+          <TiltAvatarCard />
         </motion.div>
       </div>
 

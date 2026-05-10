@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Monitor, Server, Cloud, Shield, GitBranch } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { staggerItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { SkillCategory } from "@/types";
+import dynamic from "next/dynamic";
+
+const SkillGlobe3D = dynamic(
+  () => import("@/components/3d/SkillGlobe3D").then((m) => ({ default: m.SkillGlobe3D })),
+  { ssr: false }
+);
 
 // ─── Icon map ──────────────────────────────────────────────────────────────────
 
@@ -28,7 +34,6 @@ function SkillBar({
   name: string;
   level?: number;
   delay?: number;
-  /** True when GitHub data nudged this level above the hardcoded base. */
   boosted?: boolean;
 }) {
   return (
@@ -59,7 +64,7 @@ function SkillBar({
   );
 }
 
-// ─── Category selector card ────────────────────────────────────────────────────
+// ─── 3D tilt category card ─────────────────────────────────────────────────────
 
 function CategoryCard({
   category,
@@ -72,14 +77,32 @@ function CategoryCard({
 }) {
   const Icon = categoryIcons[category.icon] ?? Monitor;
 
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(rawY, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 25 });
+  const rotateY = useSpring(useTransform(rawX, [-0.5, 0.5], [-8, 8]), { stiffness: 300, damping: 25 });
+
+  function onMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    rawX.set((e.clientX - rect.left) / rect.width - 0.5);
+    rawY.set((e.clientY - rect.top) / rect.height - 0.5);
+  }
+  function onMouseLeave() {
+    rawX.set(0);
+    rawY.set(0);
+  }
+
   return (
     <motion.button
       variants={staggerItem}
       onClick={onClick}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       className={cn(
         "w-full text-left p-5 rounded-xl border transition-all duration-300 cursor-pointer",
         isActive
-          ? "bg-surface-raised border-accent/40 shadow-[0_0_25px_rgba(123,110,246,0.12)]"
+          ? "bg-surface-raised border-accent/40 shadow-[0_0_25px_rgba(123,110,246,0.18)]"
           : "bg-surface border-border hover:border-accent/30 hover:bg-surface-raised"
       )}
     >
@@ -89,6 +112,7 @@ function CategoryCard({
             "w-9 h-9 rounded-lg flex items-center justify-center transition-colors",
             isActive ? "bg-accent text-white" : "bg-accent/10 text-accent"
           )}
+          style={{ transform: "translateZ(6px)" }}
         >
           <Icon size={17} />
         </span>
@@ -97,14 +121,12 @@ function CategoryCard({
             "font-semibold text-sm transition-colors",
             isActive ? "text-text-primary" : "text-text-secondary"
           )}
-          style={{ fontFamily: "var(--font-syne, sans-serif)" }}
+          style={{ fontFamily: "var(--font-syne, sans-serif)", transform: "translateZ(4px)" }}
         >
           {category.title}
         </span>
       </div>
-      <p className="text-text-muted text-xs leading-relaxed">
-        {category.description}
-      </p>
+      <p className="text-text-muted text-xs leading-relaxed">{category.description}</p>
     </motion.button>
   );
 }
@@ -112,43 +134,33 @@ function CategoryCard({
 // ─── Props ─────────────────────────────────────────────────────────────────────
 
 interface SkillsClientProps {
-  /**
-   * Pre-computed skill categories with levels already merged from GitHub data.
-   * Passed down from the async server component wrapper.
-   */
   skillCategories: SkillCategory[];
-  /**
-   * Original (un-boosted) levels keyed by skill name.
-   * Used to detect which bars were nudged up by GitHub activity so we can
-   * show the subtle GitBranch indicator next to them.
-   */
   baseLevels: Record<string, number>;
-  /** How many repos were used to calibrate these levels (0 = GitHub unavailable). */
   repoCount: number;
 }
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 
-export function SkillsClient({
-  skillCategories,
-  baseLevels,
-  repoCount,
-}: SkillsClientProps) {
+export function SkillsClient({ skillCategories, baseLevels, repoCount }: SkillsClientProps) {
   const [activeId, setActiveId] = useState(skillCategories[0].id);
   const activeCategory = skillCategories.find((c) => c.id === activeId)!;
 
   return (
     <SectionWrapper id="skills">
       <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          eyebrow="Skills"
-          title="My technical toolkit"
-          description="From frontend development to cloud deployments on Azure — here are the technologies I use day-to-day and the areas I'm actively growing in."
-        />
+        <div className="flex items-start justify-between gap-6 mb-10 flex-wrap">
+          <SectionHeader
+            eyebrow="Skills"
+            title="My technical toolkit"
+            description="From frontend development to cloud deployments on Azure — here are the technologies I use day-to-day and the areas I'm actively growing in."
+          />
+          {/* 3D globe beside header */}
+          <SkillGlobe3D className="w-44 h-44 shrink-0 hidden lg:block" />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* ── Category selector ── */}
-          <div className="lg:col-span-2 flex flex-col gap-3">
+          <div className="lg:col-span-2 flex flex-col gap-3" style={{ perspective: "600px" }}>
             {skillCategories.map((category) => (
               <CategoryCard
                 key={category.id}
@@ -187,13 +199,10 @@ export function SkillsClient({
                     >
                       {activeCategory.title}
                     </h3>
-                    <p className="text-text-muted text-xs">
-                      {activeCategory.description}
-                    </p>
+                    <p className="text-text-muted text-xs">{activeCategory.description}</p>
                   </div>
                 </div>
 
-                {/* GitHub calibration badge — only shown when data is available */}
                 {repoCount > 0 && (
                   <span
                     className="shrink-0 flex items-center gap-1.5 text-[11px] text-text-muted/60 border border-border rounded-full px-2.5 py-1 select-none"

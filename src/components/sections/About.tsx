@@ -5,6 +5,12 @@ import Image from "next/image";
 import { MapPin, GraduationCap, Zap } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { staggerItem } from "@/lib/motion";
+import dynamic from "next/dynamic";
+
+const TechOrb3D = dynamic(
+  () => import("@/components/3d/TechOrb3D").then((m) => ({ default: m.TechOrb3D })),
+  { ssr: false }
+);
 
 const quickFacts = [
   { icon: GraduationCap, label: "UCSC, B.S. Computer Science — 21st Batch" },
@@ -25,8 +31,11 @@ export function About() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
           {/* Left — Photo & quick facts (2 cols) */}
           <motion.div variants={staggerItem} className="lg:col-span-2 space-y-6">
-            {/* ── Photo frame ─────────────────────────── */}
-            <div className="relative w-64 h-80 sm:w-72 sm:h-96 mx-auto lg:mx-0">
+            {/* ── Photo frame with 3D tilt ──────────────── */}
+            <div
+              className="relative w-64 h-80 sm:w-72 sm:h-96 mx-auto lg:mx-0"
+              style={{ perspective: "800px" }}
+            >
               {/* Decorative tilted background card */}
               <div
                 className="absolute inset-0 rounded-2xl bg-linear-to-br from-accent/30 to-gold/20 border border-accent/20"
@@ -52,6 +61,7 @@ export function About() {
                 {/* Bottom overlay */}
                 <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-base/90 to-transparent" />
               </div>
+
               {/* Floating badge — bottom right */}
               <div className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-border shadow-lg z-10">
                 <span className="text-xs font-semibold text-text-secondary">
@@ -75,6 +85,12 @@ export function About() {
 
           {/* Right — Bio & interests (3 cols) */}
           <motion.div variants={staggerItem} className="lg:col-span-3 space-y-6">
+
+            {/* 3D Tech Orb — decorative */}
+            <div className="flex justify-end mb-2">
+              <TechOrb3D className="w-32 h-32 opacity-90" />
+            </div>
+
             <div className="space-y-4 text-text-secondary leading-relaxed">
               <p>
                 I&apos;m Januda — a 3rd year Computer Science undergraduate at the{" "}
@@ -99,7 +115,6 @@ export function About() {
               </p>
             </div>
 
-
             {/* Values */}
             <div className="grid grid-cols-2 gap-3 pt-2">
               {[
@@ -108,13 +123,15 @@ export function About() {
                 { title: "Security Minded", desc: "OWASP & security-first thinking" },
                 { title: "Always Learning", desc: "Cybersecurity & cloud in progress" },
               ].map(({ title, desc }) => (
-                <div
+                <motion.div
                   key={title}
-                  className="card p-4"
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="card p-4 cursor-default"
                 >
                   <div className="text-sm font-semibold text-text-primary mb-0.5">{title}</div>
                   <div className="text-xs text-text-muted">{desc}</div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </motion.div>

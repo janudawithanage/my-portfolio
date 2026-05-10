@@ -95,6 +95,18 @@
   0%   { transform: scale(0.95); opacity: 0.6; }
   100% { transform: scale(1.4);  opacity: 0; }
 }
+@keyframes border-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(123,110,246,0); }
+  50%       { box-shadow: 0 0 0 3px rgba(123,110,246,0.18); }
+}
+@keyframes rotate-3d {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+}
 
 /* ═══════════════════════════════════════════════════════════════
    BASE RESET & GLOBAL STYLES
@@ -405,5 +417,33 @@ body {
   border-radius: 50%;
   border: 1.5px solid rgba(123,110,246,0.4);
   animation: pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   3D DESIGN UTILITIES
+═══════════════════════════════════════════════════════════════ */
+
+/* Perspective container — wrap 3D-tilt children in this */
+.perspective-800 { perspective: 800px; }
+.perspective-1200 { perspective: 1200px; }
+
+/* 3D card depth enhancement */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-3d:hover {
+  transform: translateZ(8px);
+}
+
+/* Luxury animated border glow — attach to premium cards */
+.glow-border {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* Three.js canvas fill helper */
+.canvas-fill canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
