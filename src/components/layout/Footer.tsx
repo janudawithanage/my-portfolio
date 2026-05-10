@@ -6,10 +6,12 @@ import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { socialLinks } from "@/data";
 
 // Map icon keys to components — only keys that appear in socialLinks data
-const iconMap: Record<string, React.ElementType> = {
-  github:   GithubIcon,
-  linkedin: LinkedinIcon,
-  mail:     Mail,
+type IconComponent = React.ComponentType<{ size?: number; className?: string }>;
+
+const iconMap: Record<string, IconComponent> = {
+  github:   GithubIcon as IconComponent,
+  linkedin: LinkedinIcon as IconComponent,
+  mail:     Mail as IconComponent,
 };
 
 const footerLinks = [

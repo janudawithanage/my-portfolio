@@ -16,11 +16,13 @@ const SkillGlobe3D = dynamic(
 
 // ─── Icon map ──────────────────────────────────────────────────────────────────
 
-const categoryIcons: Record<string, React.ElementType> = {
-  monitor: Monitor,
-  server:  Server,
-  cloud:   Cloud,
-  shield:  Shield,
+type IconComponent = React.ComponentType<{ size?: number; className?: string }>;
+
+const categoryIcons: Record<string, IconComponent> = {
+  monitor: Monitor as IconComponent,
+  server:  Server  as IconComponent,
+  cloud:   Cloud   as IconComponent,
+  shield:  Shield  as IconComponent,
 };
 
 // ─── Skill bar ─────────────────────────────────────────────────────────────────

@@ -24,10 +24,12 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-const socialIconMap: Record<string, React.ElementType> = {
-  github:   GithubIcon,
-  linkedin: LinkedinIcon,
-  mail:     Mail,
+type IconComponent = React.ComponentType<{ size?: number; className?: string }>;
+
+const socialIconMap: Record<string, IconComponent> = {
+  github:   GithubIcon as IconComponent,
+  linkedin: LinkedinIcon as IconComponent,
+  mail:     Mail as IconComponent,
 };
 
 // ─── Field wrapper ────────────────────────────────────────────────────────────
@@ -171,7 +173,7 @@ export function Contact() {
                       aria-label={social.label}
                       className="w-10 h-10 rounded-lg bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-accent hover:border-accent/30 hover:bg-surface-raised transition-all duration-200"
                     >
-                      <Icon />
+                      <Icon size={16} />
                     </Link>
                   );
                 })}
