@@ -450,8 +450,7 @@ section[id] {
   height: 100% !important;
 }
 
-/* Liquid glass details used across the portfolio. The hero and section backgrounds
-   stay solid; depth lives on the content surfaces. */
+/* Liquid glass details used across the portfolio. */
 .nav-shell {
   min-height: 4.25rem;
   border: 1px solid rgba(218, 241, 255, 0.2);
@@ -525,6 +524,81 @@ section[id] {
 
 .hero-section {
   border-bottom: 1px solid rgba(189, 227, 255, 0.14);
+  background-image:
+    radial-gradient(ellipse 42% 48% at 78% 40%, rgba(82, 158, 214, 0.14), transparent 75%),
+    radial-gradient(ellipse 40% 34% at 6% 84%, rgba(119, 105, 189, 0.075), transparent 80%);
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(173, 219, 251, 0.065) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(173, 219, 251, 0.065) 1px, transparent 1px),
+    radial-gradient(circle, rgba(184, 227, 255, 0.19) 1px, transparent 1.5px);
+  background-size: 80px 80px, 80px 80px, 80px 80px;
+  -webkit-mask-image: radial-gradient(ellipse 55% 68% at 76% 43%, #000 5%, transparent 83%);
+  mask-image: radial-gradient(ellipse 55% 68% at 76% 43%, #000 5%, transparent 83%);
+}
+
+/* Static architectural texture gives the open areas depth without moving
+   particles or objects behind the content. */
+.ambient-section {
+  --ambient-x: 88%;
+  --ambient-y: 24%;
+  --ambient-color: rgba(91, 171, 220, 0.11);
+  position: relative;
+  isolation: isolate;
+  background-image:
+    radial-gradient(ellipse 42rem 32rem at var(--ambient-x) var(--ambient-y), var(--ambient-color), transparent 76%),
+    radial-gradient(ellipse 32rem 25rem at 3% 95%, rgba(144, 124, 205, 0.055), transparent 80%);
+}
+
+#skills,
+#github,
+#contact {
+  --ambient-x: 10%;
+  --ambient-y: 28%;
+  --ambient-color: rgba(126, 146, 232, 0.1);
+}
+
+#experience,
+#education {
+  --ambient-color: rgba(217, 183, 122, 0.075);
+}
+
+.ambient-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(171, 216, 244, 0.052) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(171, 216, 244, 0.052) 1px, transparent 1px),
+    radial-gradient(circle, rgba(191, 228, 251, 0.15) 1px, transparent 1.5px);
+  background-size: 84px 84px, 84px 84px, 84px 84px;
+  -webkit-mask-image: radial-gradient(ellipse 68% 68% at var(--ambient-x) var(--ambient-y), #000 5%, transparent 88%);
+  mask-image: radial-gradient(ellipse 68% 68% at var(--ambient-x) var(--ambient-y), #000 5%, transparent 88%);
+}
+
+.ambient-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  .hero-section::before,
+  .ambient-section::before {
+    opacity: 0.55;
+  }
+
+  .hero-section::before {
+    -webkit-mask-image: radial-gradient(ellipse 85% 48% at 50% 78%, #000 5%, transparent 90%);
+    mask-image: radial-gradient(ellipse 85% 48% at 50% 78%, #000 5%, transparent 90%);
+  }
 }
 
 .hero-layout {

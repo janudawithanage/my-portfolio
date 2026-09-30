@@ -29,7 +29,7 @@ export function SectionWrapper({
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
       variants={staggerContainer(0.12, delay)}
-      className={cn("section-padding px-4 sm:px-6 lg:px-8", className)}
+      className={cn("ambient-section section-padding px-4 sm:px-6 lg:px-8", className)}
     >
       {children}
     </motion.section>
