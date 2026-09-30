@@ -96,9 +96,9 @@ function CategoryCard({
       onMouseLeave={onMouseLeave}
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       className={cn(
-        "w-full text-left p-5 rounded-xl border transition-all duration-300 cursor-pointer",
+        "skill-category w-full text-left p-5 rounded-xl border transition-all duration-300 cursor-pointer",
         isActive
-          ? "bg-surface-raised border-accent/40 shadow-[0_0_25px_rgba(123,110,246,0.18)]"
+          ? "bg-surface-raised border-accent/40 shadow-[0_0_25px_rgba(120,207,254,0.18)]"
           : "bg-surface border-border hover:border-accent/30 hover:bg-surface-raised"
       )}
     >
@@ -106,7 +106,7 @@ function CategoryCard({
         <span
           className={cn(
             "w-9 h-9 rounded-lg flex items-center justify-center transition-colors",
-            isActive ? "bg-accent text-white" : "bg-accent/10 text-accent"
+            isActive ? "bg-accent text-[#07121E]" : "bg-accent/10 text-accent"
           )}
           style={{ transform: "translateZ(6px)" }}
         >
@@ -171,7 +171,7 @@ export function SkillsClient({ skillCategories, baseLevels, repoCount }: SkillsC
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -15 }}
               transition={{ duration: 0.3 }}
-              className="lg:col-span-3 card-elevated p-6 space-y-5"
+              className="skills-panel lg:col-span-3 card-elevated p-6 space-y-5"
             >
               {/* Panel header */}
               <div className="flex items-center justify-between gap-3 mb-6">

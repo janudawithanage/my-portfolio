@@ -9,13 +9,13 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 /**
- * Format a GitHub date string to a human-readable relative time.
+ * Format a GitHub date string to a human-readable relative time using the
+ * same reference instant on the server and during client hydration.
  */
-export function formatRelativeDate(dateString: string): string {
+export function formatRelativeDate(dateString: string, referenceTime: number): string {
   const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffMs = referenceTime - date.getTime();
+  const diffDays = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
 
   if (diffDays === 0) return "today";
   if (diffDays === 1) return "yesterday";
@@ -23,6 +23,12 @@ export function formatRelativeDate(dateString: string): string {
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
   if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
   return `${Math.floor(diffDays / 365)} years ago`;
+}
+
+/** GitHub timestamps are UTC ISO strings; format the date without host locale. */
+export function formatGitHubDate(dateString: string): string {
+  const [year, month, day] = dateString.slice(0, 10).split("-");
+  return `${day}/${month}/${year}`;
 }
 
 /**
@@ -42,4 +48,3 @@ export function getLangColor(lang: string | null): string {
   };
   return lang ? (map[lang] ?? "text-slate-400") : "text-slate-500";
 }
-

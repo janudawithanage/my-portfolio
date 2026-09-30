@@ -129,7 +129,7 @@ export function Contact() {
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
           {/* Left — info */}
-          <motion.div variants={staggerItem} className="lg:col-span-2 space-y-6">
+          <motion.div variants={staggerItem} className="contact-info-shell lg:col-span-2 space-y-6">
             <div className="space-y-4">
               {[
                 { icon: Mail,    label: "Email",    value: "janudawithanage@gmail.com",        href: "mailto:janudawithanage@gmail.com" },
@@ -220,7 +220,7 @@ export function Contact() {
                 <motion.form
                   key="form"
                   onSubmit={handleSubmit(onSubmit)}
-                  className="p-6 sm:p-8 rounded-2xl border border-border bg-surface space-y-5"
+                  className="contact-glass p-6 sm:p-8 rounded-2xl border border-border bg-surface space-y-5"
                   noValidate
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

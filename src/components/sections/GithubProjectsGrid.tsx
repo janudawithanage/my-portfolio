@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Star,
@@ -15,7 +16,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { GithubIcon } from "@/components/ui/icons";
-import { getLangColor, formatRelativeDate } from "@/lib/utils";
+import { getLangColor, formatRelativeDate, formatGitHubDate } from "@/lib/utils";
 import { FEATURED_TOPICS } from "@/lib/github";
 import { useRelativeTime } from "@/hooks/useRelativeTime";
 import type { GitHubRepo, GitHubFetchResult } from "@/types";
@@ -60,8 +61,8 @@ const ctaVariants = {
 /** Repos pushed within this many days get a "Recently updated" indicator. */
 const RECENT_DAYS = 14;
 
-function isRecentlyUpdated(updatedAt: string): boolean {
-  const diff = Date.now() - new Date(updatedAt).getTime();
+function isRecentlyUpdated(updatedAt: string, referenceTime: number): boolean {
+  const diff = referenceTime - new Date(updatedAt).getTime();
   return diff < RECENT_DAYS * 24 * 60 * 60 * 1000;
 }
 
@@ -129,10 +130,11 @@ function SyncIndicator({ syncedAt, repoCount }: SyncIndicatorProps) {
 interface RepoCardProps {
   repo: GitHubRepo;
   isFeatured: boolean;
+  referenceTime: number;
 }
 
-function RepoCard({ repo, isFeatured }: RepoCardProps) {
-  const recent = isRecentlyUpdated(repo.updated_at);
+function RepoCard({ repo, isFeatured, referenceTime }: RepoCardProps) {
+  const recent = isRecentlyUpdated(repo.updated_at, referenceTime);
 
   const visibleTopics = repo.topics
     .filter((t) => !(FEATURED_TOPICS as readonly string[]).includes(t))
@@ -215,9 +217,9 @@ function RepoCard({ repo, isFeatured }: RepoCardProps) {
 
         <span
           className="ml-auto text-[11px] shrink-0"
-          title={`Last pushed: ${new Date(repo.updated_at).toLocaleDateString()}`}
+          title={`Last pushed: ${formatGitHubDate(repo.updated_at)}`}
         >
-          {formatRelativeDate(repo.updated_at)}
+          {formatRelativeDate(repo.updated_at, referenceTime)}
         </span>
 
         {/* External link — only visible on card hover */}
@@ -285,12 +287,25 @@ function EmptyState() {
 interface GithubProjectsGridProps {
   result: GitHubFetchResult;
   profileUrl: string;
+  renderedAt: string;
 }
 
 export function GithubProjectsGrid({
   result,
   profileUrl,
+  renderedAt,
 }: GithubProjectsGridProps) {
+  const [referenceTime, setReferenceTime] = useState(() => new Date(renderedAt).getTime());
+
+  useEffect(() => {
+    const immediate = setTimeout(() => setReferenceTime(Date.now()), 0);
+    const interval = setInterval(() => setReferenceTime(Date.now()), 60_000);
+    return () => {
+      clearTimeout(immediate);
+      clearInterval(interval);
+    };
+  }, [renderedAt]);
+
   if (result.status === "error") return <ErrorState message={result.message} />;
   if (result.status === "empty") return <EmptyState />;
 
@@ -314,6 +329,7 @@ export function GithubProjectsGrid({
             isFeatured={repo.topics.some((t) =>
               (FEATURED_TOPICS as readonly string[]).includes(t)
             )}
+            referenceTime={referenceTime}
           />
         ))}
       </motion.div>

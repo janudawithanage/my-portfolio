@@ -4,6 +4,11 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+const sample = (seed: number) => {
+  const value = Math.sin(seed * 12.9898) * 43758.5453;
+  return value - Math.floor(value);
+};
+
 // ─── Points distributed on sphere surface ──────────────────────────────────────
 
 function SkillGlobePoints({ count = 180 }: { count?: number }) {
@@ -25,7 +30,7 @@ function SkillGlobePoints({ count = 180 }: { count?: number }) {
       pos[i * 3 + 1] = r * Math.cos(phi);
       pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
 
-      const t = Math.random();
+      const t = sample(i + 1);
       const c = t < 0.6 ? violetC : t < 0.8 ? blueC : goldC;
       col[i * 3]     = c.r;
       col[i * 3 + 1] = c.g;

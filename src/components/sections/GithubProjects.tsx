@@ -21,6 +21,7 @@ const GITHUB_USERNAME = process.env.GITHUB_USERNAME ?? "janudawithanage";
 export async function GithubProjects() {
   const result = await fetchGitHubRepos();
   const profileUrl = `https://github.com/${GITHUB_USERNAME}`;
+  const renderedAt = new Date().toISOString();
 
   return (
     <SectionWrapper id="github">
@@ -31,9 +32,8 @@ export async function GithubProjects() {
           description="A live snapshot of my public repositories, auto-updated every hour. Sorted by featured status, stars, and recent activity."
         />
 
-        <GithubProjectsGrid result={result} profileUrl={profileUrl} />
+        <GithubProjectsGrid result={result} profileUrl={profileUrl} renderedAt={renderedAt} />
       </div>
     </SectionWrapper>
   );
 }
-

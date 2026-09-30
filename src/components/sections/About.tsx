@@ -27,7 +27,7 @@ export function About() {
           <motion.div variants={staggerItem} className="lg:col-span-2 space-y-6">
             {/* ── Photo frame with 3D tilt ──────────────── */}
             <div
-              className="relative w-64 h-80 sm:w-72 sm:h-96 mx-auto lg:mx-0"
+              className="about-portrait relative w-64 h-80 sm:w-72 sm:h-96 mx-auto lg:mx-0"
               style={{ perspective: "800px" }}
             >
               {/* Decorative tilted background card */}
@@ -43,9 +43,9 @@ export function About() {
                 aria-hidden="true"
               />
               {/* Main photo card */}
-              <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border-subtle shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+              <div className="about-photo relative w-full h-full rounded-2xl overflow-hidden border border-border-subtle shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
                 <Image
-                  src="/images/photo2.png"
+                  src="/images/photo1.png"
                   alt="Januda Withanage"
                   fill
                   sizes="(max-width: 640px) 256px, 288px"
@@ -65,7 +65,7 @@ export function About() {
             </div>
 
             {/* Quick facts */}
-            <ul className="space-y-3 pt-6">
+            <ul className="about-facts space-y-3 pt-6">
               {quickFacts.map(({ icon: Icon, label }) => (
                 <li key={label} className="flex items-center gap-3 text-text-secondary text-sm">
                   <span className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
@@ -79,7 +79,7 @@ export function About() {
 
           {/* Right — Bio & interests (3 cols) */}
           <motion.div variants={staggerItem} className="lg:col-span-3 space-y-6">
-            <div className="space-y-4 text-text-secondary leading-relaxed">
+            <div className="about-bio-panel space-y-4 text-text-secondary leading-relaxed">
               <p>
                 I&apos;m Januda — a 3rd year Computer Science undergraduate at the{" "}
                 <span className="text-text-primary font-medium">University of Colombo School of Computing (UCSC)</span>, Sri Lanka.

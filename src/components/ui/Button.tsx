@@ -21,15 +21,15 @@ const buttonVariants = cva(
       variant: {
         // Filled gradient — primary CTAs
         primary: [
-          "bg-linear-to-br from-accent to-accent-light text-white",
-          "shadow-[0_1px_0_rgba(255,255,255,0.12)_inset,0_4px_20px_rgba(123,110,246,0.28)]",
-          "hover:shadow-[0_1px_0_rgba(255,255,255,0.14)_inset,0_4px_30px_rgba(123,110,246,0.45)]",
+          "bg-linear-to-br from-accent-light via-accent to-accent-dim text-[#07121E]",
+          "border border-white/35 shadow-[0_1px_0_rgba(255,255,255,0.55)_inset,0_8px_24px_rgba(54,161,222,0.24)]",
+          "hover:shadow-[0_1px_0_rgba(255,255,255,0.65)_inset,0_12px_34px_rgba(54,161,222,0.38)] hover:-translate-y-0.5",
           "active:brightness-90 active:scale-[0.99]",
         ].join(" "),
 
         // Outlined surface — secondary CTAs
         secondary: [
-          "bg-surface text-text-primary",
+          "glass-light text-text-primary",
           "border border-border-subtle",
           "hover:border-accent/40 hover:bg-surface-raised hover:text-accent-light",
           "active:brightness-90 active:scale-[0.99]",
@@ -50,9 +50,9 @@ const buttonVariants = cva(
 
         // Achievement highlights only
         gold: [
-          "bg-gold text-base font-bold",
-          "shadow-[0_1px_0_rgba(255,255,255,0.1)_inset,0_4px_16px_rgba(196,154,60,0.3)]",
-          "hover:bg-gold-light hover:shadow-[0_4px_24px_rgba(196,154,60,0.4)]",
+          "bg-linear-to-br from-gold-light via-gold to-[#B38C53] text-[#07121E] font-bold border border-white/35",
+          "shadow-[0_1px_0_rgba(255,255,255,0.55)_inset,0_8px_24px_rgba(217,183,122,0.24)]",
+          "hover:shadow-[0_1px_0_rgba(255,255,255,0.65)_inset,0_12px_34px_rgba(217,183,122,0.38)] hover:-translate-y-0.5",
           "active:brightness-90 active:scale-[0.99]",
         ].join(" "),
 
@@ -96,4 +96,3 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-

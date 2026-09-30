@@ -48,8 +48,8 @@ function ExpCard({ exp, index }: { exp: typeof experienceData[0]; index: number 
         className={cn(
           "timeline-dot absolute left-3.5 top-5 w-3.5 h-3.5 rounded-full -translate-x-1/2 border-2",
           index === 0
-            ? "bg-gold border-gold-light shadow-[0_0_12px_rgba(196,154,60,0.5)]"
-            : "bg-accent border-accent-light shadow-[0_0_10px_rgba(123,110,246,0.4)]"
+            ? "bg-gold border-gold-light shadow-[0_0_12px_rgba(217,183,122,0.5)]"
+            : "bg-accent border-accent-light shadow-[0_0_10px_rgba(120,207,254,0.4)]"
         )}
         aria-hidden="true"
       />

@@ -25,7 +25,7 @@ export function Education() {
           />
 
           <div className="space-y-8">
-            {educationData.map((edu, index) => (
+            {educationData.map((edu) => (
               <motion.article
                 key={edu.id}
                 variants={staggerItem}
@@ -33,7 +33,7 @@ export function Education() {
               >
                 {/* Timeline dot */}
                 <div
-                  className="timeline-dot absolute left-4 top-6 w-3.5 h-3.5 rounded-full bg-accent border-2 border-bg-secondary -translate-x-1/2 shadow-[0_0_12px_rgba(123,110,246,0.5)]"
+                  className="timeline-dot absolute left-4 top-6 w-3.5 h-3.5 rounded-full bg-accent border-2 border-bg-secondary -translate-x-1/2 shadow-[0_0_12px_rgba(120,207,254,0.5)]"
                   aria-hidden="true"
                 />
 

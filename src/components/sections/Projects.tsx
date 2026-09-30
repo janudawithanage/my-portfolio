@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, ArrowUpRight, Globe } from "lucide-react";
+import { ExternalLink, ArrowUpRight, Globe, Network, Activity, Cpu, Code2 } from "lucide-react";
 import Link from "next/link";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
@@ -24,14 +24,35 @@ const statusLabels: Record<Project["status"], string> = {
   planned:      "Planned",
 };
 
+const projectVisualIcons = {
+  "distributed-joke-system": Network,
+  "betting-system": Activity,
+  "esp32-sensovault": Cpu,
+  "portfolio-site": Code2,
+};
+
 function ProjectCard({ project }: { project: Project }) {
+  const VisualIcon = projectVisualIcons[project.id as keyof typeof projectVisualIcons] ?? Code2;
+
   return (
     <motion.article
       variants={staggerItem}
       className="card-premium group relative flex flex-col p-6 transition-all duration-500 h-full"
     >
+      <div className={`project-visual project-visual-${project.id}`} aria-hidden="true">
+        <div className="project-visual-grid" />
+        <div className="project-visual-ring project-visual-ring-outer" />
+        <div className="project-visual-ring project-visual-ring-inner" />
+        <span className="project-visual-node project-visual-node-one" />
+        <span className="project-visual-node project-visual-node-two" />
+        <span className="project-visual-node project-visual-node-three" />
+        <div className="project-visual-core">
+          <VisualIcon size={37} strokeWidth={1.35} />
+        </div>
+      </div>
+
       {/* Year chip */}
-      <span className="absolute top-5 right-5 z-10 text-xs text-text-muted font-mono">
+      <span className="project-year absolute top-9 right-9 z-10 text-xs text-text-muted font-mono">
         {project.year}
       </span>
 

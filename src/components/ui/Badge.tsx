@@ -25,7 +25,7 @@ export function Badge({
       "bg-surface-raised border border-border-subtle text-text-secondary",
     // Accent — highlighted categories, interest tags
     accent:
-      "bg-[rgba(123,110,246,0.08)] border border-[rgba(123,110,246,0.18)] text-accent-light",
+      "bg-[rgba(120,207,254,0.08)] border border-[rgba(120,207,254,0.2)] text-accent-light",
     // Gold — achievements only
     gold:
       "bg-transparent border border-gold/30 text-gold",
@@ -55,4 +55,3 @@ export function Badge({
     </span>
   );
 }
-

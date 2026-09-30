@@ -36,8 +36,10 @@ function TypewriterRole() {
         setCharIndex((c) => c - 1);
       }, 35);
     } else if (deleting && charIndex === 0) {
-      setDeleting(false);
-      setRoleIndex((i) => (i + 1) % ROLES.length);
+      timeout = setTimeout(() => {
+        setDeleting(false);
+        setRoleIndex((i) => (i + 1) % ROLES.length);
+      }, 0);
     }
     return () => clearTimeout(timeout);
   }, [charIndex, deleting, roleIndex]);
@@ -86,13 +88,6 @@ function TiltAvatarCard() {
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       className="relative cursor-pointer"
     >
-      {/* Multi-layer glow */}
-      <div
-        className="absolute -inset-4 rounded-[3rem] opacity-40 blur-3xl pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(123,110,246,0.6) 0%, rgba(196,154,60,0.2) 60%, transparent 80%)" }}
-        aria-hidden="true"
-      />
-
       {/* 3D depth layers pushed back with translateZ */}
       {/* Back layer: accent card */}
       <motion.div
@@ -109,12 +104,12 @@ function TiltAvatarCard() {
 
       {/* Front card */}
       <div
-        className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-4xl bg-surface border border-border-subtle overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.7)]"
+        className="hero-portrait relative w-72 h-80 sm:w-80 sm:h-96 rounded-4xl bg-surface border border-border-subtle overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.7)]"
         style={{ transform: "translateZ(0px)" }}
       >
         {/* Photo */}
         <Image
-          src="/images/photo1.png"
+          src="/images/photo2.png"
           alt="Januda Withanage"
           fill
           sizes="(max-width: 640px) 288px, 320px"
@@ -142,7 +137,7 @@ function TiltAvatarCard() {
       {/* Floating badge — bottom-right, raised forward */}
       <motion.div
         style={{ transform: "translateZ(20px)" }}
-        className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-accent/30 shadow-[0_0_20px_rgba(123,110,246,0.25)] z-10"
+        className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-accent/30 z-10"
       >
         <span className="text-xs font-semibold text-accent">UCSC &apos;26 · CS</span>
       </motion.div>
@@ -159,11 +154,11 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col overflow-hidden bg-bg"
+      className="hero-section relative min-h-screen flex flex-col overflow-hidden bg-bg"
       aria-label="Hero section"
     >
       {/* ── Main grid ── */}
-      <div className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-between max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-16 pt-32 pb-16 gap-10 lg:gap-16">
+      <div className="hero-layout relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-between max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-16 pt-32 pb-16 gap-10 lg:gap-16">
 
         {/* ── Left column ──────────────────────────── */}
         <div className="flex-1 min-w-0 flex flex-col gap-7">
@@ -174,7 +169,7 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.05 }}
-            className="inline-flex items-center gap-2 w-fit px-4 py-1.5 rounded-full bg-[rgba(34,197,94,0.08)] border border-success/25 text-success text-xs font-semibold tracking-wider"
+            className="hero-availability inline-flex items-center gap-2 w-fit px-4 py-1.5 rounded-full border border-success/25 text-success text-xs font-semibold tracking-wider"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-60" />
@@ -202,7 +197,7 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.38 }}
-            className="text-xl sm:text-2xl text-gold font-semibold h-8"
+            className="hero-role text-xl sm:text-2xl text-gold font-semibold h-8"
             style={{ fontFamily: "var(--font-syne, sans-serif)" }}
           >
             <TypewriterRole />
@@ -229,7 +224,7 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.55 }}
-            className="flex flex-wrap gap-3"
+            className="hero-actions flex flex-wrap gap-3"
           >
             <Button
               variant="gold"
@@ -255,7 +250,7 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.65 }}
-            className="flex flex-wrap gap-8 pt-4 border-t border-border"
+            className="hero-stats flex flex-wrap gap-8 pt-4 border-t border-border"
           >
             {[
               { value: "3+",  label: "Years Coding" },
@@ -263,7 +258,7 @@ export function Hero() {
               { value: "4",   label: "Focus Areas" },
               { value: "2026", label: "Expected Grad." },
             ].map(({ value, label }) => (
-              <div key={label}>
+              <div key={label} className="hero-stat">
                 <div
                   className="text-2xl font-extrabold gradient-text-gold"
                   style={{ fontFamily: "var(--font-syne, sans-serif)" }}
@@ -284,7 +279,7 @@ export function Hero() {
           initial="hidden"
           animate="visible"
           transition={{ delay: 0.35 }}
-          className="relative shrink-0 lg:pl-8"
+          className="hero-stage relative shrink-0"
           style={{ perspective: 900 }}
         >
           <TiltAvatarCard />

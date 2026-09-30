@@ -12,7 +12,7 @@ export function CTABanner() {
   return (
     <section
       id="cta"
-      className="relative overflow-hidden border-y border-border"
+      className="cta-shell relative overflow-hidden border-y border-border"
       aria-label="Call to action"
     >
       {/* Background layers */}
@@ -21,7 +21,7 @@ export function CTABanner() {
         className="absolute inset-0 opacity-40"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(123,110,246,0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(120,207,254,0.16) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />
@@ -30,12 +30,12 @@ export function CTABanner() {
         className="absolute bottom-0 right-0 w-96 h-96 opacity-30"
         style={{
           background:
-            "radial-gradient(circle at 80% 100%, rgba(196,154,60,0.25) 0%, transparent 60%)",
+            "radial-gradient(circle at 80% 100%, rgba(217,183,122,0.28) 0%, transparent 60%)",
         }}
         aria-hidden="true"
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 py-24 sm:py-32 text-center">
+      <div className="cta-content relative z-10 max-w-5xl mx-auto px-6 sm:px-10 py-24 sm:py-32 text-center">
         <motion.p
           variants={fadeUp}
           initial="hidden"

@@ -57,27 +57,22 @@ export function SectionHeader({
     <motion.div
       variants={fadeUp}
       className={cn(
-        "mb-16",
-        align === "center" ? "text-center" : "text-left",
+        "section-heading mb-16",
+        align === "center" ? "section-heading-balanced" : "section-heading-left",
         className
       )}
     >
       {eyebrow && (
-        <p className="text-eyebrow mb-4">{eyebrow}</p>
+        <p className="text-eyebrow section-eyebrow">{eyebrow}</p>
       )}
-      <h2 className="text-headline text-text-primary mb-5">
-        {title}
-      </h2>
-      {description && (
-        <p
-          className={cn(
-            "text-text-secondary sm:text-lg leading-relaxed",
-            align === "center" && "max-w-2xl mx-auto"
-          )}
-        >
-          {description}
-        </p>
-      )}
+      <div className="section-heading-content">
+        <h2 className="text-headline text-text-primary">{title}</h2>
+        {description && (
+          <p className="text-text-secondary sm:text-lg leading-relaxed">
+            {description}
+          </p>
+        )}
+      </div>
     </motion.div>
   );
 }

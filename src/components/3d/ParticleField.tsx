@@ -4,6 +4,11 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+const sample = (seed: number) => {
+  const value = Math.sin(seed * 12.9898) * 43758.5453;
+  return value - Math.floor(value);
+};
+
 // ─── Individual particle system ────────────────────────────────────────────────
 
 function Particles({ count = 280 }: { count?: number }) {
@@ -23,12 +28,12 @@ function Particles({ count = 280 }: { count?: number }) {
 
     for (let i = 0; i < count; i++) {
       // Spread across a wide space
-      pos[i * 3]     = (Math.random() - 0.5) * 22;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 14;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      pos[i * 3]     = (sample(i * 4 + 1) - 0.5) * 22;
+      pos[i * 3 + 1] = (sample(i * 4 + 2) - 0.5) * 14;
+      pos[i * 3 + 2] = (sample(i * 4 + 3) - 0.5) * 10;
 
       // Vary colors: 65% violet, 20% dim blue, 15% gold
-      const r = Math.random();
+      const r = sample(i * 4 + 4);
       const c = r < 0.65 ? violetColor : r < 0.85 ? blueColor : goldColor;
       col[i * 3]     = c.r;
       col[i * 3 + 1] = c.g;

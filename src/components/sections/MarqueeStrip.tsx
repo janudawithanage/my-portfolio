@@ -27,7 +27,7 @@ function Strip({ reverse = false }: { reverse?: boolean }) {
         {items.map((item, i) => (
           <span
             key={i}
-            className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full
+            className="marquee-chip inline-flex items-center gap-2.5 px-5 py-2 rounded-full
               border border-border-subtle bg-surface text-text-muted text-sm font-medium
               hover:border-accent/30 hover:text-text-secondary transition-colors cursor-default select-none"
           >

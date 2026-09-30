@@ -72,11 +72,11 @@ export function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-          scrolled ? "glass py-3 shadow-lg" : "py-5 bg-transparent"
+          "fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 transition-all duration-500",
+          scrolled ? "py-3" : "py-5"
         )}
       >
-        <nav className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+        <nav className="nav-shell max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
