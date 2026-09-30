@@ -30,7 +30,7 @@ export const featuredProjects: Project[] = [
     id: "distributed-joke-system",
     title: "Distributed Joke System",
     description:
-      "A production-style distributed system: Node.js microservices, RabbitMQ message queuing, Kong API Gateway, Docker containers, MySQL persistence, and an Azure-ready deployment workflow.",
+      "A joke submission and moderation system built with Node.js microservices. RabbitMQ handles messaging, Kong routes API requests, MySQL stores data, and Docker packages the services.",
     tech: ["Node.js", "RabbitMQ", "MySQL", "Kong", "Docker", "Azure", "JavaScript"],
     githubUrl: "https://github.com/janudawithanage/distributed-joke-system",
     featured: true,
@@ -41,7 +41,7 @@ export const featuredProjects: Project[] = [
     id: "betting-system",
     title: "Sports Betting Platform",
     description:
-      "A full-stack sportsbook built end-to-end in TypeScript. Complex domain logic covers odds calculation, markets, bet placement, and user account management.",
+      "A full-stack sportsbook built with TypeScript, Node.js, and React, with domain logic for events, markets, odds, bets, and user accounts.",
     tech: ["TypeScript", "Node.js", "React"],
     githubUrl: "https://github.com/janudawithanage/betting-system",
     featured: true,
@@ -52,7 +52,7 @@ export const featuredProjects: Project[] = [
     id: "esp32-sensovault",
     title: "ESP32 SensoVault",
     description:
-      "Real-time IoT monitoring system. An ESP32 reads temperature, humidity, and light sensors and streams live data via MQTT to a web dashboard with threshold alerts.",
+      "An ESP32-based monitoring system that sends temperature, humidity, and light readings over MQTT to a web dashboard with charts and threshold alerts.",
     tech: ["ESP32", "MQTT", "C++", "HTML", "CSS", "JavaScript"],
     githubUrl: "https://github.com/janudawithanage/esp32-sensovault",
     featured: true,
@@ -63,8 +63,8 @@ export const featuredProjects: Project[] = [
     id: "portfolio-site",
     title: "This Portfolio",
     description:
-      "Built with Next.js 15, TypeScript, Tailwind CSS v4, and Framer Motion. Features a live GitHub API integration with ISR caching and a GitHub-driven skills section.",
-    tech: ["Next.js 15", "TypeScript", "Tailwind CSS v4", "Framer Motion", "Vercel"],
+      "A Next.js 16 portfolio built with TypeScript, Tailwind CSS 4, and Framer Motion. Cached public GitHub data informs the repository and skills sections.",
+    tech: ["Next.js 16", "TypeScript", "Tailwind CSS 4", "Framer Motion"],
     githubUrl: "https://github.com/janudawithanage/my-portfolio",
     featured: true,
     status: "in-progress",
@@ -78,7 +78,7 @@ export const skillCategories: SkillCategory[] = [
     id: "frontend",
     title: "Frontend",
     icon: "monitor",
-    description: "Building responsive, accessible, and visually polished UIs",
+    description: "Building responsive, accessible web interfaces",
     skills: [
       { name: "React / Next.js",  level: 85 },
       { name: "TypeScript",       level: 80 },
@@ -92,7 +92,7 @@ export const skillCategories: SkillCategory[] = [
     id: "backend",
     title: "Backend",
     icon: "server",
-    description: "Designing and building robust APIs and server-side systems",
+    description: "Designing APIs, services, and data models",
     skills: [
       { name: "Node.js / Express", level: 82 },
       { name: "Python",            level: 80 },
@@ -106,7 +106,7 @@ export const skillCategories: SkillCategory[] = [
     id: "cloud",
     title: "Cloud & DevOps",
     icon: "cloud",
-    description: "Deploying and operating systems on Azure and Docker",
+    description: "Working with Azure, containers, and CI/CD workflows",
     skills: [
       { name: "Microsoft Azure",       level: 75 },
       { name: "Docker & Containers",   level: 80 },
@@ -120,7 +120,7 @@ export const skillCategories: SkillCategory[] = [
     id: "security",
     title: "Cybersecurity",
     icon: "shield",
-    description: "Learning offensive & defensive security — actively studying",
+    description: "Studying web and network security through coursework and practice",
     skills: [
       { name: "Network Security",   level: 65 },
       { name: "OWASP Top 10",       level: 68 },
@@ -143,13 +143,13 @@ export const educationData: Education[] = [
     endDate: "Present",
     location: "Colombo, Sri Lanka",
     description:
-      "Pursuing a rigorous BSc in Computer Science at UCSC — one of Sri Lanka's premier computing faculties. Currently a 3rd year undergraduate (21st Batch) with a strong focus on software engineering, distributed systems, and cybersecurity fundamentals.",
+      "Computer Science studies at UCSC, covering algorithms, networks, operating systems, distributed systems, software engineering, and databases.",
     highlights: [
-      "21st Batch — Currently in 3rd Year",
-      "Core modules: Data Structures & Algorithms, Computer Networks, Operating Systems, Distributed Systems, Software Engineering, Database Systems",
-      "Active participant in university coding competitions and tech community events",
-      "Specialisation interests: Full-Stack Development, Cloud Computing (Azure) & Cybersecurity",
-      "Expected graduation: 2026",
+      "21st Batch",
+      "Built a compiler, Maze Runner, and Ludo simulations in C",
+      "Used SonarQube to analyse code quality in coursework",
+      "Collaborated on group projects using Git and Agile workflows",
+      "Focus areas: full-stack development, cloud computing, and cybersecurity",
     ],
   },
 ];
@@ -165,7 +165,7 @@ export const experienceData: Experience[] = [
     location: "Colombo, Sri Lanka",
     type: "personal",
     description:
-      "My most complex personal project — a fully distributed joke submission and moderation system with microservices architecture, message queuing, and API gateway. Built to learn real-world cloud and distributed systems patterns.",
+      "Designed a microservices-based joke submission and moderation system to explore message-driven workflows, API routing, and container deployment.",
     highlights: [
       "Designed multi-service architecture with Node.js microservices and RabbitMQ message queuing",
       "Configured Kong API Gateway for routing, rate limiting, and authentication",
@@ -183,11 +183,11 @@ export const experienceData: Experience[] = [
     location: "Colombo, Sri Lanka",
     type: "personal",
     description:
-      "A premium sportsbook / betting platform built with TypeScript — a challenging domain for practising complex state management, real-time data, and clean full-stack architecture.",
+      "Built a full-stack sportsbook in TypeScript with event, market, odds, bet, and account flows.",
     highlights: [
       "Built end-to-end in TypeScript with a focus on type safety and clean architecture",
       "Implemented complex domain logic for odds calculation and bet management",
-      "Designed a scalable data model for events, markets, and user accounts",
+      "Designed a data model for events, markets, and user accounts",
     ],
     tech: ["TypeScript", "Node.js", "React"],
   },
@@ -200,7 +200,7 @@ export const experienceData: Experience[] = [
     location: "Colombo, Sri Lanka",
     type: "personal",
     description:
-      "A real-time IoT monitoring system using an ESP32 microcontroller, MQTT protocol, and a live web dashboard — built to explore the intersection of hardware and software.",
+      "Built an IoT monitoring prototype that sends ESP32 sensor readings over MQTT to a web dashboard.",
     highlights: [
       "Programmed ESP32 to read temperature, humidity, and light sensors",
       "Streamed sensor data in real-time over MQTT to a web dashboard",
@@ -217,31 +217,11 @@ export const experienceData: Experience[] = [
     location: "Colombo, Sri Lanka",
     type: "personal",
     description:
-      "A movie browsing app built with JavaScript to practise working with third-party REST APIs, async data fetching, and dynamic UI rendering.",
+      "Built a responsive movie browser with a public REST API, asynchronous data fetching, search, and filtering.",
     highlights: [
       "Integrated with a public movie API for live search and browsing",
       "Built a responsive UI with dynamic rendering and filtering",
     ],
     tech: ["JavaScript", "HTML", "CSS", "REST API"],
   },
-  {
-    id: "ucsc-degree",
-    company: "University of Colombo School of Computing",
-    role: "BSc Computer Science — Undergraduate",
-    startDate: "Sep 2022",
-    endDate: "Present",
-    location: "Colombo, Sri Lanka",
-    type: "university",
-    description:
-      "Currently studying for a BSc in Computer Science at UCSC. University-assigned projects include a compiler in C, a maze game simulation, a Ludo game, and SonarQube-based code quality analysis.",
-    highlights: [
-      "Built a compiler as part of the Compiler Construction module (C)",
-      "Implemented a Maze Runner game and a Ludo game simulation in C",
-      "Completed modules in OS, Networks, Distributed Systems, SE, and Algorithms",
-      "Collaborated on group projects using Agile and Git branching workflows",
-    ],
-    tech: ["C", "Java", "Python", "SQL", "Git", "Linux", "Agile"],
-  },
 ];
-
-

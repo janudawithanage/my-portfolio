@@ -39,7 +39,7 @@ function SkillBar({
           {name}
           {boosted && (
             <span
-              title="Level calibrated from your GitHub repository activity"
+              title="Includes a small adjustment from public GitHub activity"
               className="inline-flex items-center gap-0.5 text-[10px] font-medium text-accent/60 select-none"
             >
               <GitBranch size={9} aria-hidden />
@@ -147,7 +147,7 @@ export function SkillsClient({ skillCategories, baseLevels, repoCount }: SkillsC
         <SectionHeader
           eyebrow="Skills"
           title="My technical toolkit"
-          description="From frontend development to cloud deployments on Azure — here are the technologies I use day-to-day and the areas I'm actively growing in."
+          description="Tools I use across frontend, backend, cloud, and security work. Skill levels are self-assessed, with a small adjustment from public GitHub activity where relevant."
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -198,7 +198,7 @@ export function SkillsClient({ skillCategories, baseLevels, repoCount }: SkillsC
                 {repoCount > 0 && (
                   <span
                     className="shrink-0 flex items-center gap-1.5 text-[11px] text-text-muted/60 border border-border rounded-full px-2.5 py-1 select-none"
-                    title={`Levels calibrated from ${repoCount} public GitHub ${repoCount === 1 ? "repo" : "repos"}`}
+                    title={`Skill levels include a small adjustment from ${repoCount} public GitHub ${repoCount === 1 ? "repository" : "repositories"}`}
                   >
                     <GitBranch size={10} aria-hidden />
                     {repoCount} repos

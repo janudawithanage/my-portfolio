@@ -130,7 +130,7 @@ function TiltAvatarCard() {
           >
             Januda Withanage
           </p>
-          <p className="text-text-muted text-xs">CS Undergraduate &middot; UCSC Sri Lanka &apos;26</p>
+          <p className="text-text-muted text-xs">Computer Science &middot; UCSC, Sri Lanka</p>
         </div>
       </div>
 
@@ -139,7 +139,7 @@ function TiltAvatarCard() {
         style={{ transform: "translateZ(20px)" }}
         className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-accent/30 z-10"
       >
-        <span className="text-xs font-semibold text-accent">UCSC &apos;26 · CS</span>
+        <span className="text-xs font-semibold text-accent">UCSC · Computer Science</span>
       </motion.div>
     </motion.div>
   );
@@ -175,7 +175,7 @@ export function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-60" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
             </span>
-            Open to Opportunities &middot; UCSC &apos;26
+            Open to Opportunities &middot; UCSC
           </motion.div>
 
           {/* Display name */}
@@ -211,11 +211,9 @@ export function Hero() {
             transition={{ delay: 0.46 }}
             className="text-text-secondary sm:text-lg leading-relaxed max-w-lg"
           >
-            I&apos;m a 3rd-year Computer Science student at{" "}
-            <span className="text-text-primary font-medium">UCSC, Sri Lanka</span>,
-            building full-stack web applications and cloud systems on Azure.
-            My next goal is cybersecurity — I&apos;m actively working toward it
-            through coursework, CTFs, and personal projects.
+            I build <span className="text-text-primary font-medium">full-stack applications</span>
+            {" "}and cloud-backed services, with a growing focus on cybersecurity.
+            My projects span distributed systems, TypeScript web apps, and IoT.
           </motion.p>
 
           {/* CTAs */}
@@ -254,9 +252,9 @@ export function Hero() {
           >
             {[
               { value: "3+",  label: "Years Coding" },
-              { value: "10+", label: "Projects Shipped" },
+              { value: "4",   label: "Featured Projects" },
               { value: "4",   label: "Focus Areas" },
-              { value: "2026", label: "Expected Grad." },
+              { value: "UCSC", label: "Computer Science" },
             ].map(({ value, label }) => (
               <div key={label} className="hero-stat">
                 <div

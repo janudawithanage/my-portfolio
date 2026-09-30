@@ -129,9 +129,9 @@ export function Experience() {
     <SectionWrapper id="experience" className="bg-bg-secondary">
       <div className="max-w-4xl mx-auto">
         <SectionHeader
-          eyebrow="Experience"
-          title="Technical journey"
-          description="A track record of personal projects, academic work, and continuous learning — each one pushing my skills forward."
+          eyebrow="Project Experience"
+          title="Engineering in practice"
+          description="Hands-on work across distributed systems, full-stack applications, IoT, and Computer Science coursework."
         />
 
         <div className="relative" style={{ perspective: "1200px" }}>

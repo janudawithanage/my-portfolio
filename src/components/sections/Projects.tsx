@@ -130,8 +130,8 @@ export function Projects() {
       <div className="max-w-6xl mx-auto">
         <SectionHeader
           eyebrow="Featured Projects"
-          title="Things I&apos;ve built"
-          description="A curated selection of projects — from distributed systems and IoT to full-stack web apps. Each one represents a real technical challenge I took on and shipped."
+          title="Selected projects"
+          description="A closer look at the systems and applications I have built, from microservices and full-stack web apps to IoT monitoring."
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
@@ -153,7 +153,7 @@ export function Projects() {
                 document.querySelector("#github")?.scrollIntoView({ behavior: "smooth" });
               }}
             >
-              View All on GitHub
+              Explore More Repositories
               <ArrowUpRight size={16} />
             </Link>
           </Button>

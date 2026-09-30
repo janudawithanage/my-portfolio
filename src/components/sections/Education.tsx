@@ -14,7 +14,7 @@ export function Education() {
         <SectionHeader
           eyebrow="Education"
           title="Academic foundation"
-          description="A rigorous computer science curriculum paired with real-world leadership and competitive programming experience."
+          description="Computer Science coursework and practical projects spanning software engineering, systems, and security fundamentals."
         />
 
         <div className="relative">

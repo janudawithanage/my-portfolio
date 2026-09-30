@@ -17,16 +17,17 @@ const syne = Syne({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+const siteDescription =
+  "Januda Withanage's portfolio of full-stack applications, cloud and IoT projects, and Computer Science work at UCSC. Explore selected projects, skills, and GitHub activity.";
+
 export const metadata: Metadata = {
-  // metadataBase is required for absolute OG/Twitter image URLs.
-  // Update to your production domain once deployed.
-  metadataBase: new URL("https://janudawithanage.github.io"),
+  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
   title: {
-    default: "Januda Withanage — Full-Stack & Cloud Engineer",
+    default: "Januda Withanage | Software Engineer",
     template: "%s | Januda Withanage",
   },
-  description:
-    "Computer Science student at UCSC specialising in Full-Stack Development, Cloud Engineering, and Cybersecurity. Building reliable, scalable, and secure software.",
+  description: siteDescription,
   keywords: [
     "Januda Withanage",
     "portfolio",
@@ -37,22 +38,20 @@ export const metadata: Metadata = {
     "Next.js",
     "TypeScript",
   ],
-  authors: [{ name: "Januda Withanage", url: "https://janudaw.dev" }],
+  authors: [{ name: "Januda Withanage", url: "https://github.com/janudawithanage" }],
   creator: "Januda Withanage",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://janudaw.dev",
-    title: "Januda Withanage — Full-Stack & Cloud Engineer",
-    description:
-      "Computer Science student at UCSC. Building reliable, scalable, and secure software.",
+    ...(siteUrl ? { url: siteUrl } : {}),
+    title: "Januda Withanage | Software Engineer",
+    description: siteDescription,
     siteName: "Januda Withanage",
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Januda Withanage",
-    description: "CS Student | Full-Stack · Cloud · Cybersecurity",
-    creator: "@janudaw",
+    card: "summary",
+    title: "Januda Withanage | Software Engineer",
+    description: siteDescription,
   },
   icons: {
     icon: [

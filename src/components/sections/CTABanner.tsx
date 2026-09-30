@@ -67,9 +67,8 @@ export function CTABanner() {
           transition={{ delay: 0.2 }}
           className="text-text-secondary sm:text-lg leading-relaxed max-w-xl mx-auto mb-10"
         >
-          I&apos;m always open to internship opportunities, exciting collaborations,
-          and conversations with people building interesting things. If something here
-          caught your eye, I&apos;d love to hear from you.
+          I&apos;m open to software engineering opportunities and collaborations in
+          full-stack development, cloud platforms, and security. Tell me what you&apos;re building.
         </motion.p>
 
         <motion.div

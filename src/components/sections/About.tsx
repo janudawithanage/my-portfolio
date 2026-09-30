@@ -7,7 +7,7 @@ import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { staggerItem } from "@/lib/motion";
 
 const quickFacts = [
-  { icon: GraduationCap, label: "UCSC, B.S. Computer Science — 21st Batch" },
+  { icon: GraduationCap, label: "UCSC, BSc Computer Science · 21st Batch" },
   { icon: MapPin,        label: "Colombo, Sri Lanka" },
   { icon: Zap,           label: "Open to opportunities & collaborations" },
 ];
@@ -19,7 +19,7 @@ export function About() {
         <SectionHeader
           eyebrow="About Me"
           title="Building at the intersection of code, cloud & security"
-          description="I&apos;m a Computer Science undergraduate at UCSC, Sri Lanka, focused on full-stack development, cloud engineering, and cybersecurity. I care about writing software that is reliable, well-designed, and actually maintainable."
+          description="I build web applications and distributed systems with attention to usability, reliability, and security."
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
@@ -59,7 +59,7 @@ export function About() {
               {/* Floating badge — bottom right */}
               <div className="absolute -bottom-4 -right-4 glass px-3 py-2 rounded-xl border border-border shadow-lg z-10">
                 <span className="text-xs font-semibold text-text-secondary">
-                  UCSC &apos;26 · CS
+                  UCSC · Computer Science
                 </span>
               </div>
             </div>
@@ -81,35 +81,29 @@ export function About() {
           <motion.div variants={staggerItem} className="lg:col-span-3 space-y-6">
             <div className="about-bio-panel space-y-4 text-text-secondary leading-relaxed">
               <p>
-                I&apos;m Januda — a 3rd year Computer Science undergraduate at the{" "}
-                <span className="text-text-primary font-medium">University of Colombo School of Computing (UCSC)</span>, Sri Lanka.
-                My journey into software started with curiosity about how the internet works
-                and has grown into a passion for building things that are{" "}
-                <span className="text-text-primary font-medium">resilient, elegant, and secure</span>.
+                I&apos;m Januda. My Computer Science studies at the{" "}
+                <span className="text-text-primary font-medium">University of Colombo School of Computing (UCSC)</span>
+                {" "}inform my work across the frontend, backend, and cloud.
               </p>
               <p>
-                I specialise in full-stack web development and have hands-on experience deploying
-                systems on{" "}
-                <span className="text-text-primary font-medium">Microsoft Azure</span> — including
-                microservices architecture, Docker containers, and API gateways. I&apos;m also
-                actively learning{" "}
-                <span className="text-text-primary font-medium">cybersecurity</span>: web app security,
-                OWASP Top 10, and CTF challenges.
+                Recent projects include a Node.js microservices system using RabbitMQ, Kong,
+                Docker, and MySQL; a TypeScript sports betting platform; and an ESP32 monitoring
+                dashboard. I also work with <span className="text-text-primary font-medium">Azure</span>
+                {" "}and container-based deployment workflows.
               </p>
               <p>
-                When I&apos;m not deep in a project, I&apos;m reading about system design,
-                exploring open-source tools, or working through competitive programming problems.
-                I genuinely enjoy the process of learning and building — not just the outcomes.
+                Alongside development, I study web application security, work through CTF
+                challenges, and explore system design and open-source tools.
               </p>
             </div>
 
             {/* Values */}
             <div className="grid grid-cols-2 gap-3 pt-2">
               {[
-                { title: "Full-Stack",      desc: "Frontend to backend to cloud" },
-                { title: "Azure Cloud",     desc: "Real-world deployment experience" },
-                { title: "Security Minded", desc: "OWASP & security-first thinking" },
-                { title: "Always Learning", desc: "Cybersecurity & cloud in progress" },
+                { title: "Full-Stack",      desc: "Interfaces, APIs, and data" },
+                { title: "Azure Cloud",     desc: "Containers and deployment workflows" },
+                { title: "Security Minded", desc: "Web security, OWASP, and CTFs" },
+                { title: "Always Learning", desc: "System design and new tools" },
               ].map(({ title, desc }) => (
                 <motion.div
                   key={title}

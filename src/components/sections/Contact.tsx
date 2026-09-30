@@ -75,6 +75,8 @@ const inputClass =
 export function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submitNotice, setSubmitNotice] = useState<string | null>(null);
+  const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
 
   const {
     register,
@@ -90,12 +92,9 @@ export function Contact() {
   const onSubmit = async (data: ContactFormData) => {
     setSubmitting(true);
     setSubmitError(null);
+    setSubmitNotice(null);
 
     try {
-      // Formspree integration — set NEXT_PUBLIC_FORMSPREE_ID in .env.local
-      // Sign up free at https://formspree.io and create a form to get your ID
-      const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
-
       if (formspreeId) {
         const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
           method: "POST",
@@ -103,14 +102,14 @@ export function Contact() {
           body: JSON.stringify(data),
         });
         if (!res.ok) throw new Error("Submission failed");
+        setSubmitted(true);
+        reset();
+        setTimeout(() => setSubmitted(false), 6000);
       } else {
-        // Fallback: open mailto link when Formspree is not configured
+        // An email draft still needs to be sent in the visitor's mail app.
         window.location.href = `mailto:janudawithanage@gmail.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(`Name: ${data.name}\n\n${data.message}`)}`;
+        setSubmitNotice("An email draft should open in your mail app. Please send it there to complete your message.");
       }
-
-      setSubmitted(true);
-      reset();
-      setTimeout(() => setSubmitted(false), 6000);
     } catch {
       setSubmitError("Something went wrong. Please try emailing me directly at janudawithanage@gmail.com");
     } finally {
@@ -124,7 +123,7 @@ export function Contact() {
         <SectionHeader
           eyebrow="Get in Touch"
           title="Let&apos;s work together"
-          description="Whether it&apos;s an internship opportunity, a collaboration on an interesting project, or just a conversation about technology — I&apos;d love to hear from you."
+          description="Have a software engineering opportunity, project idea, or technical question? Send me a note and I&apos;ll get back to you."
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
@@ -187,8 +186,8 @@ export function Contact() {
                 <span className="text-success text-sm font-semibold">Available for Opportunities</span>
               </div>
               <p className="text-text-muted text-xs leading-relaxed">
-                Open to internships, collaborations, and project opportunities in
-                full-stack development, cloud engineering (Azure), or cybersecurity.
+                Open to software engineering opportunities and collaborations involving
+                full-stack development, cloud platforms, and application security.
               </p>
             </div>
           </motion.div>
@@ -212,7 +211,7 @@ export function Contact() {
                       Message sent!
                     </h3>
                     <p className="text-text-secondary text-sm">
-                      Thank you for reaching out. I&apos;ll get back to you within 24–48 hours.
+                      Thanks for reaching out. I&apos;ll reply as soon as I can.
                     </p>
                   </div>
                 </motion.div>
@@ -275,6 +274,11 @@ export function Contact() {
                       {submitError}
                     </p>
                   )}
+                  {submitNotice && (
+                    <p className="text-text-secondary text-xs text-center leading-relaxed" role="status">
+                      {submitNotice}
+                    </p>
+                  )}
 
                   <Button
                     type="submit"
@@ -290,7 +294,7 @@ export function Contact() {
                       </>
                     ) : (
                       <>
-                        Send Message
+                        {formspreeId ? "Send Message" : "Open Email Draft"}
                         <Send size={16} />
                       </>
                     )}

@@ -43,7 +43,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
-              CS Student at UCSC · Building scalable, secure, and elegant software.
+              Computer Science at UCSC · Full-stack development, cloud, and security.
             </p>
           </div>
 
