@@ -5,12 +5,6 @@ import Image from "next/image";
 import { MapPin, GraduationCap, Zap } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { staggerItem } from "@/lib/motion";
-import dynamic from "next/dynamic";
-
-const TechOrb3D = dynamic(
-  () => import("@/components/3d/TechOrb3D").then((m) => ({ default: m.TechOrb3D })),
-  { ssr: false }
-);
 
 const quickFacts = [
   { icon: GraduationCap, label: "UCSC, B.S. Computer Science — 21st Batch" },
@@ -85,12 +79,6 @@ export function About() {
 
           {/* Right — Bio & interests (3 cols) */}
           <motion.div variants={staggerItem} className="lg:col-span-3 space-y-6">
-
-            {/* 3D Tech Orb — decorative */}
-            <div className="flex justify-end mb-2">
-              <TechOrb3D className="w-32 h-32 opacity-90" />
-            </div>
-
             <div className="space-y-4 text-text-secondary leading-relaxed">
               <p>
                 I&apos;m Januda — a 3rd year Computer Science undergraduate at the{" "}

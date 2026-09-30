@@ -7,12 +7,6 @@ import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { staggerItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { SkillCategory } from "@/types";
-import dynamic from "next/dynamic";
-
-const SkillGlobe3D = dynamic(
-  () => import("@/components/3d/SkillGlobe3D").then((m) => ({ default: m.SkillGlobe3D })),
-  { ssr: false }
-);
 
 // ─── Icon map ──────────────────────────────────────────────────────────────────
 
@@ -150,15 +144,11 @@ export function SkillsClient({ skillCategories, baseLevels, repoCount }: SkillsC
   return (
     <SectionWrapper id="skills">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-start justify-between gap-6 mb-10 flex-wrap">
-          <SectionHeader
-            eyebrow="Skills"
-            title="My technical toolkit"
-            description="From frontend development to cloud deployments on Azure — here are the technologies I use day-to-day and the areas I'm actively growing in."
-          />
-          {/* 3D globe beside header */}
-          <SkillGlobe3D className="w-44 h-44 shrink-0 hidden lg:block" />
-        </div>
+        <SectionHeader
+          eyebrow="Skills"
+          title="My technical toolkit"
+          description="From frontend development to cloud deployments on Azure — here are the technologies I use day-to-day and the areas I'm actively growing in."
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* ── Category selector ── */}

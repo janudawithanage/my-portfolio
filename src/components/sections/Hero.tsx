@@ -6,11 +6,6 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { fadeUp, fadeIn } from "@/lib/motion";
-import dynamic from "next/dynamic";
-
-// Lazy-load the heavy Three.js canvas
-const ParticleField  = dynamic(() => import("@/components/3d/ParticleField").then(m => ({ default: m.ParticleField  })), { ssr: false });
-const FloatingCards3D = dynamic(() => import("@/components/3d/FloatingCards3D").then(m => ({ default: m.FloatingCards3D })), { ssr: false });
 
 const ROLES = [
   "Full-Stack Engineer",
@@ -167,27 +162,6 @@ export function Hero() {
       className="relative min-h-screen flex flex-col overflow-hidden bg-bg"
       aria-label="Hero section"
     >
-      {/* ── 3D particle field background ── */}
-      <ParticleField />
-
-      {/* ── 3D floating cards (right side, behind content) ── */}
-      <FloatingCards3D />
-
-      {/* ── Static CSS background layers ── */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-225 h-150 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(123,110,246,0.18),transparent)]" />
-        <div className="absolute bottom-0 right-0 w-150 h-125 bg-[radial-gradient(ellipse_60%_50%_at_90%_100%,rgba(196,154,60,0.09),transparent)]" />
-        {/* Subtle grid */}
-        <div
-          className="absolute inset-0 opacity-[0.022]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.14) 1px, transparent 1px)",
-            backgroundSize: "72px 72px",
-          }}
-        />
-      </div>
-
       {/* ── Main grid ── */}
       <div className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-between max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-16 pt-32 pb-16 gap-10 lg:gap-16">
 
