@@ -109,7 +109,7 @@ function TiltAvatarCard() {
       >
         {/* Photo */}
         <Image
-          src="/images/photo2.png"
+          src="/images/photo1.png"
           alt="Januda Withanage"
           fill
           sizes="(max-width: 640px) 288px, 320px"

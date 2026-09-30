@@ -45,7 +45,7 @@ export function About() {
               {/* Main photo card */}
               <div className="about-photo relative w-full h-full rounded-2xl overflow-hidden border border-border-subtle shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
                 <Image
-                  src="/images/photo1.png"
+                  src="/images/photo2.png"
                   alt="Januda Withanage"
                   fill
                   sizes="(max-width: 640px) 256px, 288px"
