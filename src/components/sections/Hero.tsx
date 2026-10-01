@@ -6,6 +6,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { fadeUp, fadeIn } from "@/lib/motion";
+import { featuredProjects } from "@/data";
 
 const ROLES = [
   "Full-Stack Engineer",
@@ -252,7 +253,7 @@ export function Hero() {
           >
             {[
               { value: "3+",  label: "Years Coding" },
-              { value: "4",   label: "Featured Projects" },
+              { value: String(featuredProjects.length), label: "Featured Projects" },
               { value: "4",   label: "Focus Areas" },
               { value: "UCSC", label: "Computer Science" },
             ].map(({ value, label }) => (

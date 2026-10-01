@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, ArrowUpRight, Globe, Network, Activity, Cpu, Code2 } from "lucide-react";
+import { ExternalLink, ArrowUpRight, Globe, Network, Code2, House, ShoppingBag, Building2 } from "lucide-react";
 import Link from "next/link";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
@@ -26,9 +26,9 @@ const statusLabels: Record<Project["status"], string> = {
 
 const projectVisualIcons = {
   "distributed-joke-system": Network,
-  "betting-system": Activity,
-  "esp32-sensovault": Cpu,
-  "portfolio-site": Code2,
+  "smart-home-monitoring-control": House,
+  rentigo: Building2,
+  "becute-dreams-luxe": ShoppingBag,
 };
 
 function ProjectCard({ project }: { project: Project }) {
@@ -131,7 +131,7 @@ export function Projects() {
         <SectionHeader
           eyebrow="Featured Projects"
           title="Selected projects"
-          description="A closer look at the systems and applications I have built, from microservices and full-stack web apps to IoT monitoring."
+          description="Selected work across distributed systems, connected-home software, and web applications."
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">

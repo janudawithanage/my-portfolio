@@ -774,9 +774,9 @@ section[id] {
   perspective: 500px;
 }
 
-.project-visual-betting-system { --visual-light: #B4AFFE; }
-.project-visual-esp32-sensovault { --visual-light: #E3C18C; }
-.project-visual-portfolio-site { --visual-light: #9EDCD0; }
+.project-visual-smart-home-monitoring-control { --visual-light: #8CDDCB; }
+.project-visual-rentigo { --visual-light: #D2B7FF; }
+.project-visual-becute-dreams-luxe { --visual-light: #EAC3E1; }
 
 .project-visual-grid {
   position: absolute;
