@@ -1,199 +1,114 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Code2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { navItems } from "@/data";
-import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { Button } from "@/components/ui/Button";
 
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
-  const scrollProgress = useScrollProgress();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const navigationTargetRef = useRef<string | null>(null);
 
-  // Detect scroll to add glass background
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const dialog = dialogRef.current;
+    const trigger = triggerRef.current;
+    if (!dialog || !mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    return () => {
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      const destination = navigationTargetRef.current;
+      navigationTargetRef.current = null;
+      if (destination) document.querySelector<HTMLElement>(destination)?.focus({ preventScroll: true });
+      else if (window.innerWidth < 1024) trigger?.focus({ preventScroll: true });
+      else document.querySelector<HTMLElement>("header nav a")?.focus({ preventScroll: true });
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const onResize = () => {
+      if (media.matches) setMobileOpen(false);
+    };
+    media.addEventListener("change", onResize);
+    return () => media.removeEventListener("change", onResize);
   }, []);
 
-  // Track active section via IntersectionObserver
   useEffect(() => {
-    const sectionIds = navItems.map((item) => item.href.replace("#", ""));
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        });
-      },
-      { threshold: 0.4 }
-    );
-
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) setActiveSection(entry.target.id === "hero" ? "" : entry.target.id);
+      }
+    }, { rootMargin: "-80px 0px -55% 0px", threshold: 0 });
+    ["hero", ...navItems.map(item => item.href.slice(1))].forEach(id => {
+      const node = document.getElementById(id);
+      if (node) observer.observe(node);
     });
-
     return () => observer.disconnect();
   }, []);
 
-  // Close mobile menu on resize
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) setMobileOpen(false);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const handleNavClick = (href: string) => {
+  const navigate = (href: string) => {
+    navigationTargetRef.current = href;
+    dialogRef.current?.close();
     setMobileOpen(false);
-    const el = document.querySelector(href);
-    el?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <>
-      {/* Scroll progress bar */}
-      <div
-        className="fixed top-0 left-0 h-0.5 bg-linear-to-r from-accent to-accent-light z-60 transition-all"
-        style={{ width: `${scrollProgress * 100}%` }}
-        aria-hidden="true"
-      />
-
-      <motion.header
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 transition-all duration-500",
-          scrolled ? "py-3" : "py-5"
-        )}
-      >
-        <nav className="nav-shell max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 group"
-            aria-label="Januda Withanage — Home"
-          >
-            <span className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center group-hover:bg-accent/30 transition-colors">
-              <Code2 size={16} className="text-accent" />
-            </span>
-            <span
-              className="font-bold text-lg text-text-primary"
-              style={{ fontFamily: "var(--font-syne, sans-serif)" }}
-            >
-              JW
-            </span>
+      <header className="site-header">
+        <nav className="container-section site-nav" aria-label="Main navigation">
+          <Link href="/" className="inline-flex min-h-11 items-center gap-3" aria-label="Januda Withanage — home">
+            <span className="brand-mark" aria-hidden="true">JW<span className="text-text-muted">.</span></span>
+            <span className="text-sm font-medium hidden sm:inline">Januda Withanage</span>
           </Link>
-
-          {/* Desktop nav */}
-          <ul className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => {
-              const isActive = activeSection === item.href.replace("#", "");
-              return (
-                <li key={item.href}>
-                  <button
-                    onClick={() => handleNavClick(item.href)}
-                    className={cn(
-                      "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover-underline cursor-pointer",
-                      isActive
-                        ? "text-accent-light"
-                        : "text-text-secondary hover:text-text-primary"
-                    )}
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              );
-            })}
+          <ul className="hidden lg:flex items-center">
+            {navItems.filter(item => item.href !== "#contact").map(item => (
+              <li key={item.href}><a href={item.href} className="nav-link" aria-current={activeSection === item.href.slice(1) ? "location" : undefined}>{item.label}</a></li>
+            ))}
           </ul>
-
-          {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => handleNavClick("#contact")}
-            >
-              Contact Me
-            </Button>
+          <div className="flex items-center gap-3">
+            <Button asChild size="sm" className="hidden lg:inline-flex"><a href="#contact">Let&apos;s talk<ArrowUpRight size={15} aria-hidden="true" /></a></Button>
+            <div className="lg:hidden"><button ref={triggerRef} type="button" className="icon-link" onClick={() => setMobileOpen(true)} aria-label="Open navigation menu" aria-haspopup="dialog" aria-expanded={mobileOpen} aria-controls="mobile-navigation"><Menu size={21} aria-hidden="true" /></button></div>
           </div>
-
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden text-text-secondary hover:text-text-primary p-2 rounded-lg hover:bg-surface transition-colors"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
         </nav>
-      </motion.header>
-
-      {/* Mobile drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              key="overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-bg/80 backdrop-blur-sm md:hidden"
-              onClick={() => setMobileOpen(false)}
-              aria-hidden="true"
-            />
-            <motion.div
-              key="drawer"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 320, damping: 32 }}
-              className="fixed right-0 top-0 bottom-0 z-50 w-72 glass flex flex-col p-6 pt-20 md:hidden"
-            >
-              <ul className="flex flex-col gap-1">
-                {navItems.map((item) => {
-                  const isActive = activeSection === item.href.replace("#", "");
-                  return (
-                    <li key={item.href}>
-                      <button
-                        onClick={() => handleNavClick(item.href)}
-                        className={cn(
-                          "w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer",
-                          isActive
-                            ? "bg-accent/15 text-accent-light border-l-2 border-accent"
-                            : "text-text-secondary hover:text-text-primary hover:bg-surface"
-                        )}
-                      >
-                        {item.label}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="mt-auto pt-6 border-t border-border">
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="w-full"
-                  onClick={() => handleNavClick("#contact")}
-                >
-                  Hire Me
-                </Button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      </header>
+      <dialog
+        id="mobile-navigation"
+        ref={dialogRef}
+        className="mobile-menu"
+        aria-labelledby="mobile-menu-title"
+        onCancel={event => { event.preventDefault(); setMobileOpen(false); }}
+        onClose={() => setMobileOpen(false)}
+        onKeyDown={event => {
+          if (event.key !== "Tab" || event.ctrlKey || event.metaKey || event.altKey) return;
+          const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("a[href], button:not(:disabled)")).filter(node => node.getClientRects().length > 0);
+          if (!controls.length) return;
+          event.preventDefault();
+          const current = controls.indexOf(document.activeElement as HTMLElement);
+          const next = (current + (event.shiftKey ? -1 : 1) + controls.length) % controls.length;
+          controls[next].focus();
+        }}
+        onClick={event => {
+          if (event.target !== event.currentTarget) return;
+          const rect = event.currentTarget.getBoundingClientRect();
+          if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) setMobileOpen(false);
+        }}
+      >
+        <div className="flex items-center justify-between gap-4 mb-5">
+          <h2 id="mobile-menu-title" className="text-subheadline">Explore the portfolio</h2>
+          <button type="button" className="icon-link" onClick={() => setMobileOpen(false)} aria-label="Close navigation menu" autoFocus><X size={20} aria-hidden="true" /></button>
+        </div>
+        <nav aria-label="Mobile navigation">
+          <ul>{navItems.map(item => <li key={item.href}><a href={item.href} className="mobile-nav-link" aria-current={activeSection === item.href.slice(1) ? "location" : undefined} onClick={() => navigate(item.href)}>{item.label}<ArrowUpRight size={16} aria-hidden="true" /></a></li>)}</ul>
+        </nav>
+        <p className="mt-6 text-sm text-text-muted">Based in Colombo. Open to opportunities.</p>
+      </dialog>
     </>
   );
 }

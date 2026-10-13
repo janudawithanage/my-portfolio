@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Januda Withanage — Portfolio
 
-## Getting Started
+A project-first software engineering portfolio built with Next.js 16, React 19,
+TypeScript, Tailwind CSS 4, and Framer Motion.
 
-First, run the development server:
+The redesigned UI uses matte navy surfaces, cyan accents, Inter and Syne typography,
+responsive project cards, grouped skills, and accessible mobile navigation.
+Design guidance and tokens are documented in [the design system](design-system/januda-portfolio/MASTER.md).
 
-```bash
+## Development
+
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. Portfolio facts and project links live in
+`src/data/index.ts`; shared visual tokens live in `src/app/globals.css`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Integrations
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `GITHUB_USERNAME`: GitHub account; defaults to `janudawithanage`.
+- `GITHUB_TOKEN`: optional server-side token for public repository reads.
+- `NEXT_PUBLIC_FORMSPREE_ID`: optional contact form ID. When absent, the form opens
+  an email draft and accurately tells the visitor to send it in their mail app.
+- `NEXT_PUBLIC_SITE_URL`: optional canonical deployment origin for metadata.
 
-## Learn More
+Keep environment values in an untracked `.env.local`.
 
-To learn more about Next.js, take a look at the following resources:
+## Verification
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+npm run lint
+npx tsc --noEmit
+npm run build
+npx playwright install webkit
+npm run test:ui
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Browser regressions use installed Google Chrome and Playwright WebKit.
+The runner creates a disposable copy on port 3032 with mock GitHub data, test-only
+state previews, and a dummy contact form ID. All submissions are intercepted.
+It does not read the working app's environment files or add fixture routes to the
+production app. Reports are written to the ignored `playwright-report/` directory.
 
-## Deploy on Vercel
+Coverage includes 320–1920px layouts, phone/tablet landscape, navigation breakpoint
+boundaries, mobile dialog keyboard focus and dismissal, project highlights,
+repository expansion, contact validation/loading/error/success, GitHub states,
+reduced motion, zoom reflow, and enlarged text.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Visual review through Playwright MCP
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+With a local dev or production server running:
+
+```sh
+npm run review:ui -- chrome review http://localhost:3000
+node node_modules/@playwright/mcp/cli.js install-browser webkit
+npm run review:ui -- webkit review http://localhost:3000
+```
+
+The review client launches Microsoft's Playwright MCP over stdio with an isolated,
+headless browser. It captures desktop/mobile section screenshots and checks layout,
+navigation, focus, expansion, and reduced motion. Screenshots and metrics are stored
+in the ignored `artifacts/ui-review/` directory.

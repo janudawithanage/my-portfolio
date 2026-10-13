@@ -1,64 +1,29 @@
-/**
- * Skills — async React Server Component.
- *
- * Fetches GitHub repos server-side, computes a skill-bonus map from the real
- * language + topic distribution, merges it into the base levels defined in
- * data/index.ts, and passes the result down to SkillsClient (the interactive
- * client component that owns tab selection and animations).
- *
- * The GitHub fetch is automatically deduplicated by Next.js — if GithubProjects
- * also calls fetchGitHubRepos() in the same render pass, only ONE network
- * request is made. Both components share the same cached promise.
- */
+import { Cloud, Monitor, Server, Shield } from "lucide-react";
 import { skillCategories } from "@/data";
-import { fetchGitHubRepos, computeGitHubSkillBonus } from "@/lib/github";
-import { SkillsClient } from "./SkillsClient";
-import type { SkillCategory } from "@/types";
+import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
+import { Badge } from "@/components/ui/Badge";
 
-/** Clamp a number to [min, max] inclusive. */
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
+const icons = { monitor: Monitor, server: Server, cloud: Cloud, shield: Shield };
 
-export async function Skills() {
-  // Fetch repos — this call is deduplicated with GithubProjects' call when
-  // both render in the same request. Revalidates every hour via ISR.
-  const result = await fetchGitHubRepos();
-
-  // Build bonus map from real data; empty object = safe fallback (no change)
-  const bonus = result.status === "success"
-    ? computeGitHubSkillBonus(result.repos)
-    : {};
-
-  const repoCount = result.status === "success" ? result.repos.length : 0;
-
-  // Snapshot base levels before merging so the client can detect boosted bars
-  const baseLevels: Record<string, number> = {};
-  for (const cat of skillCategories) {
-    for (const skill of cat.skills) {
-      baseLevels[skill.name] = skill.level ?? 75;
-    }
-  }
-
-  // Merge: apply bonus on top of each skill's hardcoded base level
-  const enrichedCategories: SkillCategory[] = skillCategories.map((cat) => ({
-    ...cat,
-    skills: cat.skills.map((skill) => ({
-      ...skill,
-      level: clamp(
-        (skill.level ?? 75) + (bonus[skill.name] ?? 0),
-        40,   // floor — never show < 40% even for rarely-used skills
-        97    // ceiling — reserve 97–100 to avoid implying "perfect mastery"
-      ),
-    })),
-  }));
-
+export function Skills() {
   return (
-    <SkillsClient
-      skillCategories={enrichedCategories}
-      baseLevels={baseLevels}
-      repoCount={repoCount}
-    />
+    <SectionWrapper id="skills" className="section-border">
+      <div className="container-section">
+        <SectionHeader eyebrow="03 / The toolkit" title="The tools behind the work." description="Technologies I use and study across the stack. Always adding to the toolkit, always learning by building." />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {skillCategories.map(category => {
+            const Icon = icons[category.icon as keyof typeof icons] ?? Monitor;
+            return (
+              <article className="card skill-card" key={category.id}>
+                <Icon size={24} strokeWidth={1.5} className="text-accent mb-5" aria-hidden="true" />
+                <h3 className="text-subheadline">{category.title}</h3>
+                <p className="text-sm text-text-secondary mt-3 leading-relaxed">{category.description}</p>
+                <ul className="skill-list" aria-label={category.title + " tools"}>{category.skills.map(skill => <li key={skill.name}><Badge>{skill.name}</Badge></li>)}</ul>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </SectionWrapper>
   );
 }
-

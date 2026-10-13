@@ -9,10 +9,10 @@ import type {
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 export const navItems: NavItem[] = [
+  { label: "Work",       href: "#projects" },
   { label: "About",      href: "#about" },
   { label: "Skills",     href: "#skills" },
   { label: "Experience",  href: "#experience" },
-  { label: "Projects",   href: "#projects" },
   { label: "Education",  href: "#education" },
   { label: "Contact",    href: "#contact" },
 ];
@@ -140,18 +140,26 @@ export const educationData: Education[] = [
     institution: "University of Colombo School of Computing (UCSC)",
     degree: "Bachelor of Science",
     field: "Computer Science",
-    startDate: "September 2022",
+    startDate: "May 2024",
     endDate: "Present",
     location: "Colombo, Sri Lanka",
     description:
       "Computer Science studies at UCSC, covering algorithms, networks, operating systems, distributed systems, software engineering, and databases.",
-    highlights: [
-      "21st Batch",
-      "Built a compiler, Maze Runner, and Ludo simulations in C",
-      "Used SonarQube to analyse code quality in coursework",
-      "Collaborated on group projects using Git and Agile workflows",
-      "Focus areas: full-stack development, cloud computing, and cybersecurity",
-    ],
+    highlights: [],
+    logo: "/images/education/ucsc.jpg",
+  },
+  {
+    id: "rahula-college",
+    institution: "Rahula College, Matara",
+    degree: "G.C.E. A/L",
+    field: "Physical Science",
+    startDate: "2009",
+    endDate: "2022",
+    location: "Matara, Sri Lanka",
+    description: "Secondary education and Advanced Level studies in the Physical Science stream.",
+    result: "AAB",
+    highlights: [],
+    logo: "/images/education/rahula-college.png",
   },
 ];
 

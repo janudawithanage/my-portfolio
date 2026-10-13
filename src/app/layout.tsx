@@ -3,6 +3,7 @@ import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { MotionProvider } from "@/components/ui/MotionProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -84,9 +85,12 @@ export default function RootLayout({
       className={`${inter.variable} ${syne.variable} scroll-smooth`}
     >
       <body className="min-h-screen flex flex-col bg-bg text-text-primary antialiased">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <MotionProvider>
+          <a className="skip-link" href="#main-content">Skip to content</a>
+          <Navbar />
+          <main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
+          <Footer />
+        </MotionProvider>
       </body>
     </html>
   );

@@ -1,163 +1,56 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { ExternalLink, ArrowUpRight, Globe, Network, Code2, House, ShoppingBag, Building2 } from "lucide-react";
-import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Building2, Database, FileCheck2, Globe, House, KeyRound, Network, ShoppingBag, ShoppingCart, Smartphone, Sticker, Wifi } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { GithubIcon } from "@/components/ui/icons";
-import { staggerItem } from "@/lib/motion";
 import { featuredProjects } from "@/data";
 import type { Project } from "@/types";
-import { cn } from "@/lib/utils";
 
-const statusStyles: Record<Project["status"], string> = {
-  completed:    "bg-success/15 border-success/30 text-success",
-  "in-progress": "bg-gold/15 border-gold/30 text-gold",
-  planned:      "bg-text-muted/10 border-text-muted/20 text-text-muted",
+const visuals = {
+  "distributed-joke-system": { label: "Distributed systems", icons: [Globe, Network, Database], caption: "Node.js / RabbitMQ / MySQL" },
+  "smart-home-monitoring-control": { label: "Connected living", icons: [Smartphone, House, Wifi], caption: "React Native / Supabase / IoT" },
+  rentigo: { label: "Property management", icons: [KeyRound, Building2, FileCheck2], caption: "PHP / MySQL / MVC" },
+  "becute-dreams-luxe": { label: "E-commerce experience", icons: [Sticker, ShoppingBag, ShoppingCart], caption: "React / TypeScript / Zustand" },
 };
 
-const statusLabels: Record<Project["status"], string> = {
-  completed:    "Completed",
-  "in-progress": "In Progress",
-  planned:      "Planned",
-};
-
-const projectVisualIcons = {
-  "distributed-joke-system": Network,
-  "smart-home-monitoring-control": House,
-  rentigo: Building2,
-  "becute-dreams-luxe": ShoppingBag,
-};
-
-function ProjectCard({ project }: { project: Project }) {
-  const VisualIcon = projectVisualIcons[project.id as keyof typeof projectVisualIcons] ?? Code2;
-
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const visual = visuals[project.id as keyof typeof visuals] ?? visuals["distributed-joke-system"];
   return (
-    <motion.article
-      variants={staggerItem}
-      className="card-premium group relative flex flex-col p-6 transition-all duration-500 h-full"
-    >
-      <div className={`project-visual project-visual-${project.id}`} aria-hidden="true">
-        <div className="project-visual-grid" />
-        <div className="project-visual-ring project-visual-ring-outer" />
-        <div className="project-visual-ring project-visual-ring-inner" />
-        <span className="project-visual-node project-visual-node-one" />
-        <span className="project-visual-node project-visual-node-two" />
-        <span className="project-visual-node project-visual-node-three" />
-        <div className="project-visual-core">
-          <VisualIcon size={37} strokeWidth={1.35} />
-        </div>
-      </div>
-
-      {/* Year chip */}
-      <span className="project-year absolute top-9 right-9 z-10 text-xs text-text-muted font-mono">
-        {project.year}
-      </span>
-
-      <div className="flex flex-col gap-5 flex-1">
-        {/* Header */}
-        <div className="flex items-start gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mb-1.5">
-              <h3
-                className="font-semibold text-text-primary text-lg group-hover:text-accent-light transition-colors"
-                style={{ fontFamily: "var(--font-syne, sans-serif)" }}
-              >
-                {project.title}
-              </h3>
-              <span
-                className={cn(
-                  "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border",
-                  statusStyles[project.status]
-                )}
-              >
-                {statusLabels[project.status]}
-              </span>
+    <article className="card project-card">
+      <div className="project-art" aria-hidden="true">
+        <div className="project-art-meta"><span>{String(index + 1).padStart(2, "0")} / {visual.label}</span><span>{project.year}</span></div>
+        <div className="project-art-nodes">
+          {visual.icons.map((Icon, i) => (
+            <div key={i} className="flex items-center gap-2.5">
+              {i > 0 && <ArrowRight size={14} className="text-text-muted" />}
+              <span className={i === 1 ? "project-art-node project-art-node-main" : "project-art-node"}><Icon size={i === 1 ? 32 : 24} strokeWidth={1.4} /></span>
             </div>
-            <p className="text-text-secondary text-sm leading-relaxed">
-              {project.description}
-            </p>
-          </div>
-        </div>
-
-        {/* Tech stack */}
-        <div className="flex flex-wrap gap-1.5">
-          {project.tech.map((t) => (
-            <Badge key={t} variant="default">
-              {t}
-            </Badge>
           ))}
         </div>
-
-        {/* Links */}
-        <div className="flex items-center gap-4 mt-auto pt-3 border-t border-border">
-          {project.githubUrl && (
-            <Link
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-text-secondary text-sm hover:text-accent transition-colors"
-              aria-label={`GitHub repository for ${project.title}`}
-            >
-              <GithubIcon size={14} />
-              Source Code
-            </Link>
-          )}
-          {project.liveUrl && project.liveUrl.startsWith("http") && (
-            <Link
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-text-secondary text-sm hover:text-accent transition-colors"
-              aria-label={`Live demo for ${project.title}`}
-            >
-              <Globe size={14} />
-              Live Demo
-              <ExternalLink size={12} />
-            </Link>
-          )}
+        <p className="project-art-label">{visual.caption}</p>
+      </div>
+      <div className="project-content">
+        <div><Badge variant={project.status === "completed" ? "success" : "accent"}>{project.status === "completed" ? "Completed" : project.status === "in-progress" ? "In progress" : "Planned"}</Badge></div>
+        <h3 className="project-title">{project.title}</h3>
+        <p className="text-text-secondary leading-relaxed">{project.description}</p>
+        <ul className="flex flex-wrap gap-2 pb-2" aria-label={project.title + " technologies"}>
+          {project.tech.map(t => <li key={t}><Badge>{t}</Badge></li>)}
+        </ul>
+        <div className="project-links">
+          {project.githubUrl && <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-link" aria-label={"Source code for " + project.title}><GithubIcon size={16} />Source code<ArrowUpRight size={15} aria-hidden="true" /></a>}
+          {project.liveUrl?.startsWith("http") && <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-link" aria-label={"Live demo for " + project.title}>Live demo<ArrowUpRight size={15} aria-hidden="true" /></a>}
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }
 
 export function Projects() {
   return (
-    <SectionWrapper id="projects" className="bg-bg-secondary">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          eyebrow="Featured Projects"
-          title="Selected projects"
-          description="Selected work across distributed systems, connected-home software, and web applications."
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
-          {featuredProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
-
-        <motion.div variants={staggerItem} className="flex justify-center">
-          <Button
-            variant="secondary"
-            size="lg"
-            asChild
-          >
-            <Link
-              href="#github"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector("#github")?.scrollIntoView({ behavior: "smooth" });
-              }}
-            >
-              Explore More Repositories
-              <ArrowUpRight size={16} />
-            </Link>
-          </Button>
-        </motion.div>
+    <SectionWrapper id="projects" className="section-border bg-bg-secondary">
+      <div className="container-section">
+        <SectionHeader eyebrow="01 / Selected work" title="Ideas, turned into software." description="A selection of things I’ve built — from distributed services to connected homes and everyday web experiences." />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">{featuredProjects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} />)}</div>
+        <a href="#github" className="text-link mt-6">More experiments on GitHub<ArrowRight size={16} aria-hidden="true" /></a>
       </div>
     </SectionWrapper>
   );

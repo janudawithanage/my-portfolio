@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:ui": "playwright test",
+    "review:ui": "node scripts/review-ui-mcp.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -27,6 +29,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/mcp": "^0.0.83",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

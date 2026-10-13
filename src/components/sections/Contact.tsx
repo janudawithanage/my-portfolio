@@ -1,308 +1,118 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { motion, AnimatePresence } from "framer-motion";
-import { Mail, MapPin, Send, Check } from "lucide-react";
-import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowUpRight, Check, Mail, MapPin, Send } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
-import { staggerItem } from "@/lib/motion";
-import { cn } from "@/lib/utils";
 import { socialLinks } from "@/data";
 
-// ─── Form schema ──────────────────────────────────────────────────────────────
 const contactSchema = z.object({
-  name:    z.string().min(2, "Name must be at least 2 characters"),
-  email:   z.string().email("Please enter a valid email"),
-  subject: z.string().min(5, "Subject must be at least 5 characters"),
-  message: z.string().min(20, "Message must be at least 20 characters"),
+  name: z.string().trim().min(2, "Enter a name with at least 2 characters."),
+  email: z.string().trim().email("Enter a valid email address."),
+  subject: z.string().trim().min(5, "Add a subject with at least 5 characters."),
+  message: z.string().trim().min(20, "Tell me a little more — at least 20 characters."),
 });
-
 type ContactFormData = z.infer<typeof contactSchema>;
+const labels: Record<keyof ContactFormData, string> = { name: "Name", email: "Email", subject: "Subject", message: "Message" };
 
-type IconComponent = React.ComponentType<{ size?: number; className?: string }>;
-
-const socialIconMap: Record<string, IconComponent> = {
-  github:   GithubIcon as IconComponent,
-  linkedin: LinkedinIcon as IconComponent,
-  mail:     Mail as IconComponent,
-};
-
-// ─── Field wrapper ────────────────────────────────────────────────────────────
-function Field({
-  label,
-  htmlFor,
-  error,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
+function Field({ name, error, children }: { name: keyof ContactFormData; error?: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-text-secondary">
-        {label}
-        <span className="text-accent ml-1" aria-hidden="true">*</span>
-      </label>
+    <div className="space-y-2">
+      <div className="flex items-center gap-1"><label htmlFor={"contact-" + name} className="text-sm font-medium">{labels[name]}</label><span className="text-text-muted" aria-hidden="true">*</span></div>
       {children}
-      <AnimatePresence>
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            className="text-error text-xs"
-            role="alert"
-          >
-            {error}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      {error && <p id={"contact-" + name + "-error"} className="text-error text-sm">{error}</p>}
     </div>
   );
 }
 
-const inputClass =
-  "w-full px-4 py-3 rounded-lg bg-surface border border-border-subtle text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors";
-
-// ─── Component ────────────────────────────────────────────────────────────────
 export function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [submitNotice, setSubmitNotice] = useState<string | null>(null);
-  const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
-  });
-
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitNotice, setSubmitNotice] = useState<string | null>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<ContactFormData>({ resolver: zodResolver(contactSchema), shouldFocusError: false });
+  const errorFields = (Object.keys(labels) as (keyof ContactFormData)[]).filter(key => errors[key]);
+  const fieldProps = (name: keyof ContactFormData) => ({
+    id: "contact-" + name,
+    className: "contact-input",
+    required: true,
+    "aria-invalid": Boolean(errors[name]),
+    "aria-describedby": errors[name] ? "contact-" + name + "-error" : undefined,
+  });
 
   const onSubmit = async (data: ContactFormData) => {
     setSubmitting(true);
     setSubmitError(null);
     setSubmitNotice(null);
-
     try {
       if (formspreeId) {
-        const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        const response = await fetch("https://formspree.io/f/" + formspreeId, {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify(data),
         });
-        if (!res.ok) throw new Error("Submission failed");
+        if (!response.ok) throw new Error("Submission failed");
         setSubmitted(true);
         reset();
-        setTimeout(() => setSubmitted(false), 6000);
       } else {
-        // An email draft still needs to be sent in the visitor's mail app.
-        window.location.href = `mailto:janudawithanage@gmail.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(`Name: ${data.name}\n\n${data.message}`)}`;
-        setSubmitNotice("An email draft should open in your mail app. Please send it there to complete your message.");
+        const body = "Name: " + data.name + "\nEmail: " + data.email + "\n\n" + data.message;
+        window.location.href = "mailto:janudawithanage@gmail.com?subject=" + encodeURIComponent(data.subject) + "&body=" + encodeURIComponent(body);
+        setSubmitNotice("An email draft should open in your mail app. Send it there to complete your message.");
       }
     } catch {
-      setSubmitError("Something went wrong. Please try emailing me directly at janudawithanage@gmail.com");
+      setSubmitError("Your message couldn’t be sent. Please try again, or email me directly.");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <SectionWrapper id="contact">
-      <div className="max-w-5xl mx-auto">
-        <SectionHeader
-          eyebrow="Get in Touch"
-          title="Let&apos;s work together"
-          description="Have a software engineering opportunity, project idea, or technical question? Send me a note and I&apos;ll get back to you."
-        />
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
-          {/* Left — info */}
-          <motion.div variants={staggerItem} className="contact-info-shell lg:col-span-2 space-y-6">
+    <SectionWrapper id="contact" className="section-border">
+      <span id="cta" className="block" aria-hidden="true" />
+      <div className="container-section">
+        <SectionHeader eyebrow="07 / Get in touch" title="Let’s build what’s next." description="An engineering opportunity, a project idea, or a technical question? I’d love to hear from you." />
+        <div className="grid lg:grid-cols-[.85fr_1.15fr] gap-8 lg:gap-16">
+          <div className="space-y-7">
+            <div className="flex items-center gap-2 text-sm text-success"><span className="status-dot" aria-hidden="true" />Open to opportunities &amp; collaboration</div>
+            <p className="text-text-secondary max-w-md">I&apos;m interested in full-stack development, cloud platforms, and application security. Tell me what you&apos;re working on.</p>
             <div className="space-y-4">
-              {[
-                { icon: Mail,    label: "Email",    value: "janudawithanage@gmail.com",        href: "mailto:janudawithanage@gmail.com" },
-                { icon: MapPin,  label: "Location", value: "Colombo, Sri Lanka",               href: null },
-              ].map(({ icon: Icon, label, value, href }) => (
-                <div key={label} className="flex items-center gap-3">
-                  <span className="w-9 h-9 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
-                    <Icon size={15} className="text-accent" />
-                  </span>
-                  <div>
-                    <p className="text-text-muted text-xs uppercase tracking-wider">{label}</p>
-                    {href ? (
-                      <a
-                        href={href}
-                        className="text-text-primary text-sm font-medium hover:text-accent transition-colors"
-                      >
-                        {value}
-                      </a>
-                    ) : (
-                      <p className="text-text-primary text-sm font-medium">{value}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
+              <div><p className="text-xs text-text-muted mb-1">EMAIL</p><a href="mailto:janudawithanage@gmail.com" className="text-link [overflow-wrap:anywhere]"><Mail size={17} className="shrink-0 text-accent" aria-hidden="true" /><span className="min-w-0">janudawithanage@gmail.com</span><ArrowUpRight size={15} className="shrink-0" aria-hidden="true" /></a></div>
+              <div><p className="text-xs text-text-muted mb-2">BASED IN</p><p className="flex items-center gap-2 text-text-secondary"><MapPin size={17} className="text-accent" aria-hidden="true" />Colombo, Sri Lanka</p></div>
             </div>
-
-            {/* Social links */}
-            <div>
-              <p className="text-text-muted text-xs uppercase tracking-widest mb-3">
-                Find me on
-              </p>
-              <div className="flex gap-3">
-                {socialLinks.map((social) => {
-                  const Icon = socialIconMap[social.icon] ?? Mail;
-                  return (
-                    <Link
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.label}
-                      className="w-10 h-10 rounded-lg bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-accent hover:border-accent/30 hover:bg-surface-raised transition-all duration-200"
-                    >
-                      <Icon size={16} />
-                    </Link>
-                  );
-                })}
+            <div className="flex gap-3">{socialLinks.filter(s => s.icon !== "mail").map(social => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label={social.label}>{social.icon === "github" ? <GithubIcon size={18} /> : <LinkedinIcon size={18} />}</a>)}</div>
+          </div>
+          {submitted ? (
+            <motion.div initial={false} animate={{ opacity: 1 }} className="card p-8 sm:p-10 flex flex-col items-start justify-center gap-5" role="status">
+              <span className="size-12 rounded-full bg-success/10 text-success flex items-center justify-center"><Check size={24} aria-hidden="true" /></span>
+              <h3 className="text-subheadline">Thanks for reaching out.</h3>
+              <p className="text-text-secondary">Your message is on its way. I&apos;ll reply as soon as I can.</p>
+              <Button type="button" variant="secondary" onClick={() => setSubmitted(false)}>Send another message</Button>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleSubmit(onSubmit, () => requestAnimationFrame(() => summaryRef.current?.focus()))} className="card p-5 sm:p-7 space-y-5" noValidate aria-labelledby="contact-form-heading">
+              <div><h3 id="contact-form-heading" className="text-subheadline">Send a note</h3><p className="text-sm text-text-muted mt-2">{formspreeId ? "All fields are required." : "This opens a draft in your mail app. All fields are required."}</p></div>
+              {errorFields.length > 0 && <div ref={summaryRef} tabIndex={-1} className="rounded-lg border border-error/50 bg-error/5 p-4 text-sm" role="alert" aria-labelledby="contact-errors-heading">
+                <p id="contact-errors-heading" className="text-error font-medium">Please check the following fields:</p>
+                <ul className="mt-2 space-y-1">{errorFields.map(key => <li key={key}><a href={"#contact-" + key} className="inline-flex min-h-11 items-center text-error underline" onClick={() => document.getElementById("contact-" + key)?.focus()}>{labels[key]}: {errors[key]?.message}</a></li>)}</ul>
+              </div>}
+              <div className="grid sm:grid-cols-2 gap-5">
+                <Field name="name" error={errors.name?.message}><input {...register("name")} {...fieldProps("name")} type="text" autoComplete="name" placeholder="Your name" /></Field>
+                <Field name="email" error={errors.email?.message}><input {...register("email")} {...fieldProps("email")} type="email" autoComplete="email" placeholder="you@example.com" /></Field>
               </div>
-            </div>
-
-            {/* Availability card */}
-            <div className="p-4 rounded-xl border border-success/25 bg-success/5">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                <span className="text-success text-sm font-semibold">Available for Opportunities</span>
-              </div>
-              <p className="text-text-muted text-xs leading-relaxed">
-                Open to software engineering opportunities and collaborations involving
-                full-stack development, cloud platforms, and application security.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Right — form */}
-          <motion.div variants={staggerItem} className="lg:col-span-3">
-            <AnimatePresence mode="wait">
-              {submitted ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="h-full flex flex-col items-center justify-center gap-4 py-16 text-center p-8 rounded-2xl border border-success/20 bg-success/5"
-                >
-                  <span className="w-16 h-16 rounded-full bg-success/15 border border-success/30 flex items-center justify-center">
-                    <Check size={28} className="text-success" />
-                  </span>
-                  <div>
-                    <h3 className="font-bold text-text-primary text-xl mb-1">
-                      Message sent!
-                    </h3>
-                    <p className="text-text-secondary text-sm">
-                      Thanks for reaching out. I&apos;ll reply as soon as I can.
-                    </p>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.form
-                  key="form"
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="contact-glass p-6 sm:p-8 rounded-2xl border border-border bg-surface space-y-5"
-                  noValidate
-                >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <Field label="Name" htmlFor="contact-name" error={errors.name?.message}>
-                      <input
-                        {...register("name")}
-                        id="contact-name"
-                        type="text"
-                        placeholder="Your full name"
-                        autoComplete="name"
-                        className={cn(inputClass, errors.name && "border-error focus:border-error focus:ring-error/30")}
-                      />
-                    </Field>
-                    <Field label="Email" htmlFor="contact-email" error={errors.email?.message}>
-                      <input
-                        {...register("email")}
-                        id="contact-email"
-                        type="email"
-                        placeholder="you@example.com"
-                        autoComplete="email"
-                        className={cn(inputClass, errors.email && "border-error focus:border-error focus:ring-error/30")}
-                      />
-                    </Field>
-                  </div>
-
-                  <Field label="Subject" htmlFor="contact-subject" error={errors.subject?.message}>
-                    <input
-                      {...register("subject")}
-                      id="contact-subject"
-                      type="text"
-                      placeholder="What's this about?"
-                      className={cn(inputClass, errors.subject && "border-error focus:border-error focus:ring-error/30")}
-                    />
-                  </Field>
-
-                  <Field label="Message" htmlFor="contact-message" error={errors.message?.message}>
-                    <textarea
-                      {...register("message")}
-                      id="contact-message"
-                      rows={5}
-                      placeholder="Tell me about your project, opportunity, or question..."
-                      className={cn(
-                        inputClass,
-                        "resize-none",
-                        errors.message && "border-error focus:border-error focus:ring-error/30"
-                      )}
-                    />
-                  </Field>
-
-                  {submitError && (
-                    <p className="text-error text-xs text-center leading-relaxed" role="alert">
-                      {submitError}
-                    </p>
-                  )}
-                  {submitNotice && (
-                    <p className="text-text-secondary text-xs text-center leading-relaxed" role="status">
-                      {submitNotice}
-                    </p>
-                  )}
-
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    className="w-full"
-                    disabled={submitting}
-                  >
-                    {submitting ? (
-                      <>
-                        <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        {formspreeId ? "Send Message" : "Open Email Draft"}
-                        <Send size={16} />
-                      </>
-                    )}
-                  </Button>
-                </motion.form>
-              )}
-            </AnimatePresence>
-          </motion.div>
+              <Field name="subject" error={errors.subject?.message}><input {...register("subject")} {...fieldProps("subject")} type="text" placeholder="What’s on your mind?" /></Field>
+              <Field name="message" error={errors.message?.message}><textarea {...register("message")} {...fieldProps("message")} rows={5} placeholder="Tell me about your project, opportunity, or question…" /></Field>
+              {submitError && <p role="alert" className="text-error text-sm">{submitError} <a className="underline inline-flex min-h-11 items-center" href="mailto:janudawithanage@gmail.com">Email Januda</a></p>}
+              {submitNotice && <p role="status" className="text-text-secondary text-sm">{submitNotice}</p>}
+              <Button type="submit" size="lg" className="w-full" disabled={submitting}>{submitting ? <><span className="spinner" aria-hidden="true" />Sending…</> : <>{formspreeId ? "Send message" : "Open email draft"}<Send size={16} aria-hidden="true" /></>}</Button>
+            </form>
+          )}
         </div>
       </div>
     </SectionWrapper>

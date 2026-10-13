@@ -1,130 +1,18 @@
-"use client";
-
-import Link from "next/link";
-import { Mail, Code2, ArrowUpRight } from "lucide-react";
-import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
-import { socialLinks } from "@/data";
-
-// Map icon keys to components — only keys that appear in socialLinks data
-type IconComponent = React.ComponentType<{ size?: number; className?: string }>;
-
-const iconMap: Record<string, IconComponent> = {
-  github:   GithubIcon as IconComponent,
-  linkedin: LinkedinIcon as IconComponent,
-  mail:     Mail as IconComponent,
-};
-
-const footerLinks = [
-  { label: "About",      href: "#about" },
-  { label: "Skills",     href: "#skills" },
-  { label: "Projects",   href: "#projects" },
-  { label: "Education",  href: "#education" },
-  { label: "Contact",    href: "#contact" },
-];
+import { ArrowUp, ArrowUpRight } from "lucide-react";
+import { navItems, socialLinks } from "@/data";
 
 export function Footer() {
-  const year = new Date().getFullYear();
-
   return (
-    <footer className="border-t border-border bg-bg-secondary">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
-          {/* Brand column */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center">
-                <Code2 size={16} className="text-accent" />
-              </span>
-              <span
-                className="font-bold text-lg text-text-primary"
-                style={{ fontFamily: "var(--font-syne, sans-serif)" }}
-              >
-                Januda Withanage
-              </span>
-            </div>
-            <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
-              Computer Science at UCSC · Full-stack development, cloud, and security.
-            </p>
-          </div>
-
-          {/* Nav links */}
-          <div>
-            <h3 className="text-text-muted text-xs font-semibold tracking-widest uppercase mb-4">
-              Navigation
-            </h3>
-            <ul className="space-y-2">
-              {footerLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      document.querySelector(link.href)?.scrollIntoView({ behavior: "smooth" });
-                    }}
-                    className="text-text-secondary text-sm hover:text-accent transition-colors hover-underline cursor-pointer"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Social links */}
-          <div>
-            <h3 className="text-text-muted text-xs font-semibold tracking-widest uppercase mb-4">
-              Connect
-            </h3>
-            <ul className="space-y-2">
-              {socialLinks.map((link) => {
-                const Icon = iconMap[link.icon] ?? ArrowUpRight;
-                const isMail = link.href.startsWith("mailto:");
-                return (
-                  <li key={link.label}>
-                    {isMail ? (
-                      // mailto links must not use target="_blank" — open the mail client directly
-                      <a
-                        href={link.href}
-                        className="inline-flex items-center gap-2 text-text-secondary text-sm hover:text-accent transition-colors group"
-                      >
-                        <Icon size={14} />
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-text-secondary text-sm hover:text-accent transition-colors group"
-                      >
-                        <Icon size={14} />
-                        {link.label}
-                        <ArrowUpRight
-                          size={11}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+    <footer className="section-border bg-bg-secondary">
+      <div className="container-section py-10 sm:py-12">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 pb-8">
+          <div><p className="font-display text-xl font-semibold">Januda Withanage<span className="text-accent">.</span></p><p className="text-sm text-text-secondary mt-2 max-w-sm">Computer Science at UCSC.<br />Building across code, cloud, and security.</p></div>
+          <nav aria-label="Footer navigation"><ul className="flex flex-wrap max-w-sm gap-x-5 gap-y-1">{navItems.map(item => <li key={item.href}><a href={item.href} className="text-link text-text-secondary">{item.label}</a></li>)}</ul></nav>
+          <a href="#hero" className="icon-link" aria-label="Back to top"><ArrowUp size={19} aria-hidden="true" /></a>
         </div>
-
-        {/* Bottom bar */}
-        <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-text-muted text-xs">
-          <p>
-            &copy; {year} Januda Withanage. All rights reserved.
-          </p>
-          <p className="flex items-center gap-1">
-            Built with{" "}
-            <span className="text-accent font-medium">Next.js</span>
-            {" · "}
-            <span className="text-accent font-medium">TypeScript</span>
-            {" · "}
-            <span className="text-accent font-medium">Tailwind CSS</span>
-          </p>
+        <div className="flex flex-col sm:flex-row justify-between gap-4 border-t border-border pt-6 text-xs text-text-muted">
+          <p>© {new Date().getFullYear()} Januda Withanage</p>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2">{socialLinks.map(social => <li key={social.label}><a href={social.href} target={social.icon === "mail" ? undefined : "_blank"} rel={social.icon === "mail" ? undefined : "noopener noreferrer"} className="inline-flex min-h-11 items-center gap-1.5 hover:text-accent">{social.label}<ArrowUpRight size={13} aria-hidden="true" /></a></li>)}</ul>
         </div>
       </div>
     </footer>

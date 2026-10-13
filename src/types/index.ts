@@ -69,6 +69,7 @@ export interface Education {
   startDate: string;
   endDate: string | "Present";
   gpa?: string;
+  result?: string;
   location: string;
   description: string;
   highlights: string[];
@@ -95,5 +96,4 @@ export interface SocialLink {
   href: string;
   icon: string;
 }
-
 

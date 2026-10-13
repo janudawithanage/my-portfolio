@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/lib/utils";
 
 interface BadgeProps {
@@ -9,48 +7,16 @@ interface BadgeProps {
   className?: string;
 }
 
-/**
- * Minimal pill badge — tech tags, status indicators, labels.
- * Designed to recede visually rather than compete with content.
- */
-export function Badge({
-  children,
-  variant = "default",
-  size = "sm",
-  className,
-}: BadgeProps) {
-  const variants: Record<string, string> = {
-    // Neutral — most tech tags
-    default:
-      "bg-surface-raised border border-border-subtle text-text-secondary",
-    // Accent — highlighted categories, interest tags
-    accent:
-      "bg-[rgba(120,207,254,0.08)] border border-[rgba(120,207,254,0.2)] text-accent-light",
-    // Gold — achievements only
-    gold:
-      "bg-transparent border border-gold/30 text-gold",
-    // Status — available, online
-    success:
-      "bg-transparent border border-success/35 text-success",
-    // Minimal — just a border
-    outline:
-      "bg-transparent border border-border-strong text-text-muted",
+export function Badge({ children, variant = "default", size = "sm", className }: BadgeProps) {
+  const variants = {
+    default: "border-border-subtle bg-surface-raised text-text-secondary",
+    accent: "border-accent-dim bg-accent-subtle text-accent",
+    gold: "border-gold/40 text-gold-light",
+    success: "border-success/40 text-success",
+    outline: "border-border-subtle text-text-secondary",
   };
-
-  const sizes: Record<string, string> = {
-    sm: "px-2.5 py-[3px] text-[0.6875rem] tracking-[0.01em] rounded-md",
-    md: "px-3 py-1 text-xs tracking-[0.01em] rounded-lg",
-  };
-
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1 font-medium whitespace-nowrap",
-        variants[variant],
-        sizes[size],
-        className
-      )}
-    >
+    <span className={cn("inline-flex max-w-full items-center gap-1 rounded-md border font-medium [overflow-wrap:anywhere]", variants[variant], size === "sm" ? "px-2.5 py-1 text-xs" : "px-3 py-1.5 text-sm", className)}>
       {children}
     </span>
   );
