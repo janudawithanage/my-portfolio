@@ -17,6 +17,9 @@ npm run dev
 Open http://localhost:3000. Portfolio facts and project links live in
 `src/data/index.ts`; shared visual tokens live in `src/app/globals.css`.
 
+Development output lives in `.next-dev/`; production output lives in `.next/`.
+This keeps a running local preview independent of production builds.
+
 ## Integrations
 
 - `GITHUB_USERNAME`: GitHub account; defaults to `janudawithanage`.
