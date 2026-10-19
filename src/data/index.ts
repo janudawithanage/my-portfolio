@@ -29,6 +29,7 @@ export const featuredProjects: Project[] = [
   {
     id: "distributed-joke-system",
     title: "Distributed Joke System",
+    image: "/images/projects/distributed-joke-system.png",
     description:
       "Node.js microservices route submissions through RabbitMQ to an Auth0-protected moderation UI. Approved jokes are stored in MySQL and served through Kong; the stack runs locally in Docker.",
     tech: ["Node.js", "RabbitMQ", "MySQL", "Kong", "Docker", "Auth0", "Azure"],
