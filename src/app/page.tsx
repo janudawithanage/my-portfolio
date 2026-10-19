@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Hero } from "@/components/sections/Hero";
+import { MarqueeStrip } from "@/components/sections/MarqueeStrip";
 import { About } from "@/components/sections/About";
 import { Skills } from "@/components/sections/Skills";
 import { Experience } from "@/components/sections/Experience";
@@ -13,6 +14,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <MarqueeStrip />
       <Projects />
       <About />
       <Skills />

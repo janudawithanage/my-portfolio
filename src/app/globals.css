@@ -93,6 +93,18 @@ h1, h2, h3 { text-wrap: balance; }
 .hero-capabilities > span { display: flex; align-items: center; gap: .5rem; }
 .hero-capabilities > span::before { content: "+"; color: var(--color-accent); }
 
+/* Equal-width copies include their trailing gap so both rows loop seamlessly. */
+.marquee-section { overflow: hidden; padding-block: 2rem 1rem; border-top: 1px solid var(--color-border); background: var(--color-bg-secondary); }
+.marquee-content { display: grid; gap: 1rem; mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent); }
+.marquee-row { overflow: hidden; }
+.marquee-track { display: flex; width: max-content; animation: skills-marquee 42s linear infinite; }
+.marquee-track-reverse { animation-direction: reverse; }
+.marquee-group { display: flex; flex-shrink: 0; justify-content: space-around; gap: 1.5rem; min-width: 100vw; margin: 0; padding: 0 1.5rem 0 0; list-style: none; }
+.marquee-chip { white-space: nowrap; }
+.marquee-controls { display: flex; justify-content: flex-end; margin-top: .5rem; }
+.marquee-content:hover .marquee-track, .marquee-section[data-paused="true"] .marquee-track { animation-play-state: paused; }
+@keyframes skills-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
 /* Project illustrations represent the stack, rather than pretending to be screenshots. */
 .project-card { display: flex; flex-direction: column; overflow: hidden; transition: border-color var(--duration-normal); }
 .project-card:hover { border-color: var(--color-border-strong); }
@@ -159,5 +171,11 @@ h1, h2, h3 { text-wrap: balance; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .marquee-section { padding-block: 2rem; }
+  .marquee-content { width: min(100% - 2rem, 75rem); margin-inline: auto; mask-image: none; }
+  .marquee-row[aria-hidden="true"], .marquee-group[aria-hidden="true"], .marquee-controls { display: none; }
+  .marquee-track { width: auto; animation: none; transform: none; }
+  .marquee-group { width: 100%; flex-wrap: wrap; justify-content: center; gap: .75rem; min-width: 0; padding: 0; }
+  .marquee-chip { max-width: 100%; white-space: normal; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
