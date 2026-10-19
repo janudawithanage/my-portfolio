@@ -51,6 +51,7 @@ export const featuredProjects: Project[] = [
   {
     id: "rentigo",
     title: "Rentigo",
+    image: "/images/projects/rentigo.png",
     description:
       "A team-built rental property management system using PHP and MySQL. I contributed tenant-facing property search, booking and lease workflows, rent payment tracking, and maintenance issue views.",
     tech: ["PHP", "MySQL", "JavaScript", "HTML", "CSS", "MVC"],
@@ -62,6 +63,7 @@ export const featuredProjects: Project[] = [
   {
     id: "becute-dreams-luxe",
     title: "Becute Dreams Luxe",
+    image: "/images/projects/becute-dreams-luxe.png",
     description:
       "A frontend storefront demo for a sticker boutique, with product browsing, filters, detail pages, and a cart saved in local storage. Checkout and account pages demonstrate the interface without payment or authentication backends.",
     tech: ["React", "TypeScript", "React Router", "Tailwind CSS", "Zustand", "Framer Motion"],

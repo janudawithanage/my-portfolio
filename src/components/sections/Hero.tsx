@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowDown, ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Download, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { featuredProjects, socialLinks } from "@/data";
@@ -17,6 +17,7 @@ export function Hero() {
             <div className="hero-actions">
               <Button asChild size="lg"><a href="#projects">Explore my work<ArrowDown size={17} aria-hidden="true" /></a></Button>
               <Button asChild variant="secondary" size="lg"><a href="#contact">Let&apos;s talk<ArrowUpRight size={17} aria-hidden="true" /></a></Button>
+              <Button asChild variant="secondary" size="lg"><a href="/Januda-Withanage-CV.pdf" download="Januda-Withanage-CV.pdf">Download CV<Download size={17} aria-hidden="true" /></a></Button>
             </div>
             <div className="hero-facts">
               <span><strong>3+</strong> years coding</span>

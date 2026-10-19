@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ArrowRight, ArrowUpRight, Building2, Database, FileCheck2, Globe, House, KeyRound, Network, ShoppingBag, ShoppingCart, Smartphone, Sticker, Wifi } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
@@ -16,18 +17,24 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const visual = visuals[project.id as keyof typeof visuals] ?? visuals["distributed-joke-system"];
   return (
     <article className="card project-card">
-      <div className="project-art" aria-hidden="true">
-        <div className="project-art-meta"><span>{String(index + 1).padStart(2, "0")} / {visual.label}</span><span>{project.year}</span></div>
-        <div className="project-art-nodes">
-          {visual.icons.map((Icon, i) => (
-            <div key={i} className="flex items-center gap-2.5">
-              {i > 0 && <ArrowRight size={14} className="text-text-muted" />}
-              <span className={i === 1 ? "project-art-node project-art-node-main" : "project-art-node"}><Icon size={i === 1 ? 32 : 24} strokeWidth={1.4} /></span>
-            </div>
-          ))}
+      {project.image ? (
+        <div className="relative overflow-hidden border-b border-border bg-bg-secondary" style={{ aspectRatio: "16 / 10" }}>
+          <Image src={project.image} alt={`${project.title} application preview`} fill sizes="(min-width: 1280px) 588px, (min-width: 768px) calc((100vw - 4rem) / 2), calc(100vw - 2rem)" className="object-contain" />
         </div>
-        <p className="project-art-label">{visual.caption}</p>
-      </div>
+      ) : (
+        <div className="project-art" aria-hidden="true">
+          <div className="project-art-meta"><span>{String(index + 1).padStart(2, "0")} / {visual.label}</span><span>{project.year}</span></div>
+          <div className="project-art-nodes">
+            {visual.icons.map((Icon, i) => (
+              <div key={i} className="flex items-center gap-2.5">
+                {i > 0 && <ArrowRight size={14} className="text-text-muted" />}
+                <span className={i === 1 ? "project-art-node project-art-node-main" : "project-art-node"}><Icon size={i === 1 ? 32 : 24} strokeWidth={1.4} /></span>
+              </div>
+            ))}
+          </div>
+          <p className="project-art-label">{visual.caption}</p>
+        </div>
+      )}
       <div className="project-content">
         <div><Badge variant={project.status === "completed" ? "success" : "accent"}>{project.status === "completed" ? "Completed" : project.status === "in-progress" ? "In progress" : "Planned"}</Badge></div>
         <h3 className="project-title">{project.title}</h3>
