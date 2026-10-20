@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="editor-token" content="__EDITOR_TOKEN__">
-  <title>Project sections · Portfolio editor</title>
+  <title>Portfolio content editor</title>
   <link rel="stylesheet" href="/editor.css">
   <script src="/editor.js" type="module"></script>
 </head>
@@ -17,7 +17,16 @@
     <form id="projects-form">
       <div class="section-controls">
         <label for="section-picker">Portfolio section</label>
-        <select id="section-picker" disabled><option value="selected-work">01 / Selected Work</option><option value="experiments">06 / Open source &amp; experiments</option></select>
+        <select id="section-picker" disabled>
+          <option value="hero">Hero</option>
+          <option value="about">01 / A little about me</option>
+          <option value="education">02 / Education</option>
+          <option value="skills">03 / The toolkit</option>
+          <optgroup label="04 / Selected Work"><option value="selected-work" selected>Projects &amp; images</option><option value="projects">Section heading</option></optgroup>
+          <option value="experience">05 / Experience</option>
+          <option value="recognition">06 / Recognition</option>
+          <option value="contact">Get in touch</option>
+        </select>
         <p class="muted" id="draft-status" role="status"></p>
       </div>
       <div class="toolbar">
@@ -27,7 +36,9 @@
       <p class="publish-note">Saved changes stay local. Commit and push your project files to publish them with Vercel.</p>
       <p id="notice" class="notice" role="alert" hidden></p>
       <fieldset id="editor-fields" disabled>
-        <legend class="sr-only">Project section editor</legend>
+        <legend class="sr-only">Portfolio section editor</legend>
+        <p id="content-help" class="publish-note" hidden>Edit this section below. Save changes applies only to the selected section. To preview saved changes, refresh your running portfolio.</p>
+        <div id="content-fields" class="content-fields" hidden></div>
         <div id="feed-settings" class="feed-settings panel" hidden>
           <label for="feed-mode">Repositories to display</label>
           <select id="feed-mode"><option value="automatic">Automatic GitHub feed</option><option value="manual">My selected repositories</option></select>

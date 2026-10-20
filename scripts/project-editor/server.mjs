@@ -1,10 +1,11 @@
 import http from "node:http";
 import { randomBytes, randomUUID, createHash } from "node:crypto";
-import { readFile, writeFile, rename, mkdir, lstat, rm } from "node:fs/promises";
+import { readFile, writeFile, rename, mkdir, lstat, rm, realpath } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { z } from "zod";
+import { createContentStore, contentSchemas } from "./content-store.mjs";
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const imagePrefix = "/images/projects/";
@@ -101,6 +102,7 @@ export function createProjectEditor({ root, username = "janudawithanage", github
   function clearStaged(section) {
     for (const [key, upload] of staged) if (upload.section === section) staged.delete(key);
   }
+  const contentStore = createContentStore({ root, staged, clearStaged, EditorError });
 
   async function github(endpoint) {
     let response;
@@ -203,12 +205,25 @@ export function createProjectEditor({ root, username = "janudawithanage", github
       if (url.pathname.startsWith("/api/")) {
         if (req.headers["x-editor-token"] !== token) throw new EditorError(403, "Editor session is invalid. Reload the editor.");
         const section = url.searchParams.get("section") ?? "selected-work";
-        if (!Object.hasOwn(sectionPaths, section)) throw new EditorError(400, "Unknown portfolio section.");
+        const contentSection = Object.hasOwn(contentSchemas, section);
+        if (!Object.hasOwn(sectionPaths, section) && !contentSection) throw new EditorError(400, "Unknown portfolio section.");
+        if (url.pathname === "/api/content") {
+          if (!contentSection) throw new EditorError(400, "Choose a content section.");
+          if (method === "GET") return send(200, await contentStore.state(section));
+          if (method === "PUT") {
+            const body = await readJson(req);
+            if (saving) throw new EditorError(409, "Another save is in progress. Try again.");
+            saving = true;
+            try { return send(200, await contentStore.save(body, section)); }
+            finally { saving = false; }
+          }
+        }
+        if (contentSection && ["/api/projects", "/api/repos", "/api/repo"].includes(url.pathname)) throw new EditorError(400, "Use the content editor for this section.");
         if (method === "GET" && url.pathname === "/api/projects") return send(200, await state(section));
         if (method === "PUT" && url.pathname === "/api/projects") return send(200, await save(await readJson(req), section));
         if (method === "POST" && url.pathname === "/api/discard") {
           if (saving) throw new EditorError(409, "Please wait for the save to finish.");
-          const current = await state(section);
+          const current = contentSection ? await contentStore.state(section) : await state(section);
           clearStaged(section);
           return send(200, current);
         }
@@ -251,17 +266,20 @@ export function createProjectEditor({ root, username = "janudawithanage", github
         const html = (await readFile(path.join(directory, "index.html"), "utf8")).replace("__EDITOR_TOKEN__", token);
         return send(200, html, "text/html; charset=utf-8");
       }
-      if (["/editor.js", "/editor.css"].includes(url.pathname)) {
+      if (["/editor.js", "/editor.css", "/content-fields.js", "/content-editor.js"].includes(url.pathname)) {
         return send(200, await readFile(path.join(directory, url.pathname.slice(1))), url.pathname.endsWith(".js") ? "text/javascript; charset=utf-8" : "text/css; charset=utf-8");
       }
       if (staged.has(url.pathname)) {
         const upload = staged.get(url.pathname);
         return send(200, upload.bytes, `image/${upload.extension === "jpg" ? "jpeg" : upload.extension}`);
       }
-      if (url.pathname.startsWith(imagePrefix)) {
-        const name = url.pathname.slice(imagePrefix.length);
-        if (!imageName.test(name)) throw new EditorError(404, "Image not found.");
-        const filename = path.join(imagesPath, name);
+      if (url.pathname.startsWith("/images/")) {
+        if (!/^\/images\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9][a-zA-Z0-9._-]*\.(png|jpe?g|webp)$/i.test(url.pathname)) throw new EditorError(404, "Image not found.");
+        const filename = path.join(root, "public", url.pathname.slice(1));
+        const name = path.basename(filename);
+        const canonicalRoot = await realpath(path.join(root, "public"));
+        const canonicalFile = await realpath(filename).catch(() => "");
+        if (!canonicalFile.startsWith(canonicalRoot + path.sep)) throw new EditorError(404, "Image not found.");
         const info = await lstat(filename).catch(() => null);
         if (!info?.isFile() || info.isSymbolicLink()) throw new EditorError(404, "Image not found.");
         return send(200, await readFile(filename), `image/${/\.jpe?g$/i.test(name) ? "jpeg" : name.split(".").pop().toLowerCase()}`);
@@ -289,5 +307,5 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.error(error.code === "EADDRINUSE" ? `Port ${port} is busy. Set PROJECT_EDITOR_PORT to another port.` : error.message);
     process.exitCode = 1;
   });
-  server.listen(port, "127.0.0.1", () => console.log(`Portfolio project editor: http://127.0.0.1:${port}\nManage Selected Work and Open source & experiments. Save locally, then commit and push to publish. Stop with Ctrl+C.`));
+  server.listen(port, "127.0.0.1", () => console.log(`Portfolio editor: http://127.0.0.1:${port}\nManage all portfolio sections, projects, and Recognition. Save locally, then commit and push to publish. Stop with Ctrl+C.`));
 }

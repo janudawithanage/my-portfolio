@@ -1,5 +1,5 @@
 import { Cloud, Monitor, Server, Shield } from "lucide-react";
-import { skillCategories } from "@/data";
+import { content, skillCategories } from "@/data";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
 
@@ -9,7 +9,7 @@ export function Skills() {
   return (
     <SectionWrapper id="skills" className="section-border">
       <div className="container-section">
-        <SectionHeader eyebrow="03 / The toolkit" title="The tools behind the work." description="Technologies I use and study across the stack. Always adding to the toolkit, always learning by building." />
+        <SectionHeader eyebrow="03 / The toolkit" title={content.skills.title} description={content.skills.description} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {skillCategories.map(category => {
             const Icon = icons[category.icon as keyof typeof icons] ?? Monitor;

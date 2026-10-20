@@ -3,6 +3,7 @@ import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { content, fullName } from "@/data";
 import { MotionProvider } from "@/components/ui/MotionProvider";
 
 const inter = Inter({
@@ -19,18 +20,17 @@ const syne = Syne({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-const siteDescription =
-  "Januda Withanage's portfolio of full-stack applications, cloud and IoT projects, and Computer Science work at UCSC. Explore selected projects, skills, and GitHub activity.";
+const siteDescription = content.hero.bio;
 
 export const metadata: Metadata = {
   ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
   title: {
-    default: "Januda Withanage | Software Engineer",
-    template: "%s | Januda Withanage",
+    default: fullName + " | Portfolio",
+    template: "%s | " + fullName,
   },
   description: siteDescription,
   keywords: [
-    "Januda Withanage",
+    fullName,
     "portfolio",
     "full-stack developer",
     "cloud engineer",
@@ -39,19 +39,19 @@ export const metadata: Metadata = {
     "Next.js",
     "TypeScript",
   ],
-  authors: [{ name: "Januda Withanage", url: "https://github.com/janudawithanage" }],
-  creator: "Januda Withanage",
+  authors: [{ name: fullName, url: content.hero.githubUrl }],
+  creator: fullName,
   openGraph: {
     type: "website",
     locale: "en_US",
     ...(siteUrl ? { url: siteUrl } : {}),
-    title: "Januda Withanage | Software Engineer",
+    title: fullName + " | Portfolio",
     description: siteDescription,
-    siteName: "Januda Withanage",
+    siteName: fullName,
   },
   twitter: {
     card: "summary",
-    title: "Januda Withanage | Software Engineer",
+    title: fullName + " | Portfolio",
     description: siteDescription,
   },
   icons: {

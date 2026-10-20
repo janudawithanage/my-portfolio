@@ -12,6 +12,12 @@ for (const entry of ["src", "public", "package.json", "package-lock.json", "tsco
 }
 // Keep the automatic-feed regressions independent of the owner's live selections.
 await writeFile(path.join(directory, "src/data/experiments.json"), JSON.stringify({ mode: "automatic", projects: [] }));
+// Populate only the disposable app to exercise Recognition and navigation end to end.
+const fixtureContent = JSON.parse(await (await import("node:fs/promises")).readFile(path.join(directory, "src/data/content.json"), "utf8"));
+fixtureContent.recognition.awards = [{ id: "award-fixture", title: "Test award", organisation: "Test society", date: "2026", description: "Test fixture only." }];
+fixtureContent.recognition.certifications = Array.from({ length: 8 }, (_, index) => ({ id: "cert-" + index, title: "Test certificate " + (index + 1), organisation: "Test issuer", date: "October 2026", url: "https://example.com/credential/" + index, ...(index === 0 ? { image: "/images/photo2.png" } : {}) }));
+fixtureContent.recognition.volunteering = [{ id: "role-fixture", title: "Test volunteer role", organisation: "Test community", date: "2025 — Present", description: "Test fixture only.", image: "/images/photo2.png" }];
+await writeFile(path.join(directory, "src/data/content.json"), JSON.stringify(fixtureContent));
 await symlink(path.join(root, "node_modules"), path.join(directory, "node_modules"), "dir");
 const repositories = Array.from({ length: 8 }, (_, index) => ({
   id: index + 1,
@@ -37,6 +43,7 @@ globalThis.fetch = (input, options) => {
 const fixtureDirectory = path.join(directory, "src/app/ui-fixtures/[state]");
 await mkdir(fixtureDirectory, { recursive: true });
 await writeFile(path.join(fixtureDirectory, "page.tsx"), `import { notFound } from "next/navigation";
+import { Recognition } from "@/components/sections/Recognition";
 import { GithubProjectsGrid } from "@/components/sections/GithubProjectsGrid";
 import { GithubProjectsSkeleton } from "@/components/sections/GithubProjectsSkeleton";
 import type { GitHubFetchResult, GitHubRepo } from "@/types";
@@ -47,6 +54,7 @@ const repos: GitHubRepo[] = ${JSON.stringify(repositories)};
 export default async function Fixture({params}: {params: Promise<{state:string}>}) {
   const {state} = await params;
   if (state === "loading") return <GithubProjectsSkeleton />;
+  if (state === "recognition-empty") return <Recognition data={{title:"Recognition",description:"",awards:[],certifications:[],volunteering:[]}} />;
   if (state === "curated" || state === "curated-empty") {
     const projects: Project[] = state === "curated-empty" ? [] : Array.from({length: 8}, (_, index) => ({
       ...savedProjects[index % savedProjects.length], id: "curated-" + index,

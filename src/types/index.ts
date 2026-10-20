@@ -4,6 +4,24 @@ export interface NavItem {
   href: string;
 }
 
+export interface RecognitionEntry {
+  id: string;
+  title: string;
+  organisation: string;
+  date: string;
+  description?: string;
+  url?: string;
+  image?: string;
+}
+
+export interface RecognitionContent {
+  title: string;
+  description: string;
+  awards: RecognitionEntry[];
+  certifications: RecognitionEntry[];
+  volunteering: RecognitionEntry[];
+}
+
 // ─── Projects ─────────────────────────────────────────────────────────────────
 export interface Project {
   id: string;

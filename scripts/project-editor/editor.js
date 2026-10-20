@@ -1,4 +1,6 @@
 /* The editor is served only by the standalone loopback server. */
+import { contentFields } from "./content-fields.js";
+import { renderContent } from "./content-editor.js";
 const $ = selector => document.querySelector(selector);
 const token = $('meta[name="editor-token"]').content;
 let projects = [];
@@ -6,6 +8,7 @@ let revision = "";
 let saved = "";
 let section = "selected-work";
 let mode = "manual";
+let content = null;
 let ready = false;
 let busy = false;
 let repos = [];
@@ -14,16 +17,18 @@ let hasMore = true;
 let loadingRepos = false;
 let opened = new Set();
 const drafts = new Map();
-const sectionNames = { "selected-work": "Selected Work", experiments: "Open source & experiments" };
+const sectionNames = { "selected-work": "Selected Work", experiments: "Open source & experiments", ...Object.fromEntries(Object.entries(contentFields).map(([key, value]) => [key, value.label])) };
+const isContent = (target = section) => Object.hasOwn(contentFields, target);
+const dataEndpoint = (target = section) => isContent(target) ? "/api/content" : "/api/projects";
 const sectionUrl = (url, target = section) => `${url}?section=${encodeURIComponent(target)}`;
-const snapshot = () => JSON.stringify({ projects, mode });
+const snapshot = () => JSON.stringify({ projects, mode, content });
 
 function rememberDraft() {
-  if (ready) drafts.set(section, { projects, revision, saved, mode, opened });
+  if (ready) drafts.set(section, { projects, revision, saved, mode, opened, content });
 }
 
 function hasUnsavedDrafts() {
-  return [...drafts.values()].some(draft => JSON.stringify({ projects: draft.projects, mode: draft.mode }) !== draft.saved);
+  return [...drafts.values()].some(draft => JSON.stringify({ projects: draft.projects, mode: draft.mode, content: draft.content }) !== draft.saved);
 }
 
 async function api(url, { method = "GET", body, raw = false } = {}) {
@@ -46,24 +51,30 @@ function dirty() { return ready && snapshot() !== saved; }
 
 function updateToolbar(message) {
   rememberDraft();
-  $("#selection-count").textContent = `${projects.length} selected ${projects.length === 1 ? "project" : "projects"}`;
+  $("#selection-count").textContent = isContent() ? sectionNames[section] : `${projects.length} selected ${projects.length === 1 ? "project" : "projects"}`;
   $("#save-state").textContent = message ?? (dirty() ? "Unsaved changes" : "All changes saved locally");
   $("#save").disabled = !ready || busy || !dirty();
   $("#discard").disabled = !ready || busy || !dirty();
   $("#editor-fields").disabled = !ready || busy;
   $("#section-picker").disabled = !ready || busy;
   $("#section-picker").value = section;
-  $("h1").textContent = section === "experiments" ? "Your open source & experiments." : "Your selected work.";
+  $("h1").textContent = isContent() ? `${sectionNames[section]}.` : "Your selected work.";
+  $(".intro").textContent = isContent() ? "Your portfolio, in your own words. Update your details and save when you’re ready." : "Choose the projects you want people to see. Give each one its best first impression.";
+  $(".workspace").hidden = isContent();
+  $("#content-fields").hidden = !isContent();
+  $("#content-help").hidden = !isContent();
+  $("#content-help").textContent = section === "recognition" ? "Add your own awards, certifications, and volunteering below. Empty categories stay hidden on your portfolio until you save their first entry." : "Edit this section below. Save changes applies only to this section. Refresh your running portfolio to preview saved changes.";
   $("#selection-title").textContent = sectionNames[section];
   $("#feed-settings").hidden = section !== "experiments";
   $("#feed-mode").value = mode;
   $("#feed-help").textContent = mode === "automatic" ? "The automatic GitHub feed is active. Add a repository below to start your own selection, or switch to My selected repositories." : "This section uses text-only cards. Your selected repositories, details, and display order will appear after saving and deploying.";
-  const otherDrafts = [...drafts.entries()].filter(([key, draft]) => key !== section && JSON.stringify({ projects: draft.projects, mode: draft.mode }) !== draft.saved);
+  const otherDrafts = [...drafts.entries()].filter(([key, draft]) => key !== section && JSON.stringify({ projects: draft.projects, mode: draft.mode, content: draft.content }) !== draft.saved);
   $("#draft-status").textContent = otherDrafts.length ? `Unsaved changes in ${otherDrafts.map(([key]) => sectionNames[key]).join(", ")}. Switch back to save them.` : "Each section has its own selection. Save changes applies to the section shown below.";
 }
 
 function applyState(state) {
-  projects = state.projects;
+  projects = state.projects ?? [];
+  content = state.content ?? null;
   revision = state.revision;
   mode = state.mode ?? "manual";
   saved = snapshot();
@@ -177,6 +188,23 @@ function field(labelText, project, name, options = {}) {
 }
 
 function renderProjects() {
+  const contentContainer = $("#content-fields");
+  contentContainer.replaceChildren();
+  if (isContent()) {
+    $("#projects").replaceChildren();
+    renderContent(contentContainer, contentFields[section].fields, content, {
+      element, button, opened,
+      changed: () => { notice(); updateToolbar(); },
+      upload: async (file, apply) => {
+        if (file.size > 10 * 1024 * 1024) { notice("Choose an image smaller than 10 MB."); return; }
+        busy = true; updateToolbar("Checking and staging image…"); notice();
+        try { apply(await api(sectionUrl("/api/uploads"), { method: "POST", body: file, raw: true })); }
+        catch (error) { notice(error.message); }
+        finally { busy = false; updateToolbar(); }
+      },
+    });
+    return;
+  }
   const sectionOpened = opened;
   const list = $("#projects");
   list.replaceChildren();
@@ -265,11 +293,11 @@ $("#projects-form").addEventListener("invalid", event => {
 $("#projects-form").addEventListener("submit", async event => {
   event.preventDefault();
   if (busy || !ready || !dirty()) return;
-  busy = true; updateToolbar(section === "selected-work" ? "Saving projects and images…" : "Saving repositories…"); notice();
+  busy = true; updateToolbar("Saving section and images…"); notice();
   try {
-    const state = await api(sectionUrl("/api/projects"), { method: "PUT", body: { projects, revision, ...(section === "experiments" ? { mode } : {}) } });
+    const state = await api(sectionUrl(dataEndpoint()), { method: "PUT", body: isContent() ? { content, revision } : { projects, revision, ...(section === "experiments" ? { mode } : {}) } });
     applyState(state);
-    notice(`Saved locally. Preview your portfolio, then commit and push ${section === "selected-work" ? "the JSON and new images" : "the updated project data"} to publish.`, true);
+    notice("Saved locally. Preview your portfolio, then commit and push the updated JSON and any new images to publish.", true);
   } catch (error) { notice(error.message); }
   finally { busy = false; updateToolbar(); }
 });
@@ -309,10 +337,10 @@ $("#section-picker").addEventListener("change", async event => {
   busy = true; updateToolbar("Loading section…"); notice();
   try {
     const cached = drafts.get(nextSection);
-    const state = cached ? null : await api(sectionUrl("/api/projects", nextSection));
+    const state = cached ? null : await api(sectionUrl(dataEndpoint(nextSection), nextSection));
     section = nextSection;
     if (cached) {
-      ({ projects, revision, saved, mode, opened } = cached);
+      ({ projects, revision, saved, mode, opened, content } = cached);
       renderProjects(); renderRepos();
     } else {
       opened = new Set();

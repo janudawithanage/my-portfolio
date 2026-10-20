@@ -14,13 +14,13 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. Portfolio facts live in `src/data/index.ts`, selected
+Open http://localhost:3000. Editable section content lives in `src/data/content.json`, selected
 projects in `src/data/projects.json`, and shared visual tokens in `src/app/globals.css`.
 
 Development output lives in `.next-dev/`; production output lives in `.next/`.
 This keeps a running local preview independent of production builds.
 
-## Edit project sections
+## Edit every portfolio section
 
 Run the private editor on your computer:
 
@@ -29,49 +29,66 @@ npm run edit:projects
 ```
 
 Open **http://127.0.0.1:3033** (use this exact address). The editor is a separate
-loopback-only server; its pages and editing APIs are not part of the Vercel app.
-No login or database is required. Stop it with Ctrl+C. If the port is busy, run
-`PROJECT_EDITOR_PORT=3034 npm run edit:projects` and use the address printed in
-the terminal. Use Node.js 20.9 or later, as required by Next.js.
+loopback-only server; its pages and editing APIs are not part of the deployed app.
+No login or database is required. Stop it with Ctrl+C. If the port is busy, use
+`PROJECT_EDITOR_PORT=3034 npm run edit:projects`. Use Node.js 20.9 or later.
 
-- Choose **01 / Selected Work** or **06 / Open source & experiments** from
-  **Portfolio section**. Each section has its own projects and order.
-  Switching sections keeps unsaved drafts and staged images; save each section
-  separately. The editor shows a reminder if the other section has unsaved edits.
-- Open source & experiments uses the existing **Automatic GitHub feed** until
-  you add a repository or choose **My selected repositories**. Your own selection
-  displays editable text-only project cards, works without GitHub requests,
-  and supports Show all / Show fewer. You can switch back to the automatic feed
-  without deleting your saved selection.
-- Search your public GitHub repositories and choose **Add**. Use **Load more
-  repositories** to reach projects beyond the first 100, or paste a public
-  repository URL to add a team project from another account.
-- Expand a selected project to edit its title, description, technologies,
-  status, year, source code URL, and optional live demo URL. GitHub metadata
-  prefills new projects; refreshing repositories never overwrites curated text.
-- In **Selected Work**, upload a still PNG, JPEG, or WebP screenshot (up to 10 MB and 40 megapixels).
-  Images are validated and staged in memory until you save. Removing an image
-  restores the portfolio's default artwork. Move cards up/down to set their order.
-  **Open source & experiments** has no images, artwork, or image upload controls.
-- Choose **Save changes** to update the current section's data:
-  `src/data/projects.json` for Selected Work or `src/data/experiments.json` for
-  Open source & experiments. New images go in `public/images/projects/`.
-  **Discard changes** reloads only the current section and clears its staged
-  uploads. Unsaved changes/uploads are lost on editor restart.
-- Run `npm run dev` in another terminal to preview your saved changes. Commit and
-  push the project JSON and any new images; your normal Vercel deployment then
-  publishes them. The editor never commits, pushes, or deploys for you.
+The public page follows this order: **Hero → A little about me → Education →
+The toolkit → Selected Work → Experience → Recognition → Get in touch**.
+The hero photo keeps its square frame. Open source & experiments is no longer
+displayed; its existing data remains on disk.
 
-Existing projects and images are preserved. Removing a selection does not delete
-its repository or image files. If files changed on disk since you loaded them,
-Save reports a conflict: copy any edits you need, then Discard to reload.
-Keep one editor tab open while working; saving or discarding clears the current
-section's staged uploads on that editor server.
+Choose a section from **Portfolio section**:
 
-The editor reads `GITHUB_USERNAME` and optional server-only `GITHUB_TOKEN` from
-the normal local environment files. A read-only token improves GitHub rate limits;
-it is never sent to the browser. Public repositories only are supported. If GitHub
-is unavailable, you can still edit and save your existing selection.
+- **Hero:** edit your name, role, introduction, availability, location, photo and
+  alt text, button labels, CV PDF path/URL, GitHub/LinkedIn URLs, facts, and focus areas.
+- **A little about me:** edit the heading, introduction, paragraphs, photo and
+  alt text, study/location labels, and contact link label.
+- **Education:** edit the heading and add, edit, reorder, or remove qualifications,
+  institution logos, dates, results, GPA, descriptions, and highlights.
+- **The toolkit:** edit the heading and skill categories, icons, descriptions,
+  and skills. Enter one skill per line; proficiency meters are not displayed.
+- **Selected Work / Projects & images:** search your public GitHub repositories,
+  load more results, or add a public team repository by URL. Edit titles,
+  descriptions, technologies, status, year, source/demo links, screenshots, and
+  order. **Selected Work / Section heading** edits its title, introduction, and
+  GitHub link label. Repository refresh never overwrites your curated text.
+- **Experience:** edit the heading and add, edit, reorder, or remove roles with
+  organisations, dates, locations, type, descriptions, highlights, and technologies.
+- **Recognition:** edit its heading and manage **Awards & Achievements**,
+  **Certifications**, and **Volunteering & Leadership**. Entries support a title
+  or role, organisation/issuer, date range, optional description, credential or
+  supporting link, and optional image. No recognition claims are prefilled.
+- **Get in touch:** edit the heading, introduction, availability, email, location,
+  form heading, and footer text. Email and social links are shared with the footer;
+  the name and profile links are shared with the header. Formspree configuration
+  remains in the environment; the email field controls direct email/draft links.
+
+Each section retains its own unsaved draft when switching sections. Choose
+**Save changes** for the current section, or **Discard changes** to reload its
+saved values and clear its staged uploads. Unsaved drafts/uploads are lost when
+the editor restarts. Keep one editor tab open while working. Save reports a
+conflict when that section changed on disk; copy edits you need, then Discard.
+
+Images must be still PNG, JPEG, or WebP, up to 10 MB and 40 megapixels. Uploads are
+validated and staged in memory until Save. Project images go in
+`public/images/projects/`; other section images go in `public/images/content/`.
+Existing photos remain unchanged until you explicitly upload a replacement.
+Removing an entry or image never deletes its repository or existing image files.
+
+Empty Recognition categories stay hidden. Saving the first entry reveals its
+category automatically; if all categories are empty, Recognition and its
+navigation link are omitted. Each category previews six entries with accessible
+Show all / Show fewer controls. Contact numbering adjusts to visible sections.
+
+Saved section details go in `src/data/content.json`; selected projects remain in
+`src/data/projects.json`. Keep `npm run dev` running and refresh the portfolio to
+preview saved changes. Commit and push those JSON files and new images to publish
+through your normal Vercel workflow. The editor does not commit, push, or deploy.
+
+The GitHub picker reads `GITHUB_USERNAME` and optional server-only `GITHUB_TOKEN`
+from the usual environment files. Public repositories only are supported. You
+can edit and save every existing section while GitHub is unavailable.
 
 ## Integrations
 

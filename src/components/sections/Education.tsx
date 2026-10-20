@@ -2,13 +2,13 @@ import Image from "next/image";
 import { GraduationCap } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
-import { educationData } from "@/data";
+import { content, educationData } from "@/data";
 
 export function Education() {
   return (
     <SectionWrapper id="education" className="section-border">
       <div className="container-section">
-        <SectionHeader eyebrow="05 / Education" title="A foundation to build on." description="From Physical Science at Rahula College to Computer Science at the University of Colombo School of Computing." />
+        <SectionHeader eyebrow="02 / Education" title={content.education.title} description={content.education.description} />
         <div className="grid md:grid-cols-2 gap-5">
           {educationData.map(edu => (
             <article key={edu.id} className="card p-5 sm:p-7">

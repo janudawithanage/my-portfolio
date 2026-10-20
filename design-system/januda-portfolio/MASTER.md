@@ -31,12 +31,18 @@ Tailwind search verified wrapping chip collections. UX search verified unobscure
 
 ## Components and acceptance
 
-Hero → Projects → About → Skills → Experience → Education → GitHub → Contact → Footer.
-Hero actions precede the fluid portrait on mobile. Projects use one/two columns.
+Hero → About → Education → Skills → Projects → Experience → Recognition → Contact → Footer.
+Section content is editable through the loopback-only editor at port 3033 and stored
+in `src/data/content.json`; selected projects retain `src/data/projects.json`.
+Open source & experiments is not rendered on the home page.
+Hero actions precede the square portrait on mobile. Preserve photo1.png/photo2.png
+unless the user explicitly replaces them in the editor. Projects use one/two columns.
 Skills use one/two/four categorized cards without proficiency meters.
 Experience highlights use native details; all existing content remains reachable.
 Navigation uses a native modal dialog below 1024px, with focus restoration and Escape dismissal.
-GitHub previews six repositories with accessible expansion.
+Recognition uses awards/certificate cards and a volunteering timeline. Each category
+previews six entries with accessible expansion. Empty categories and the entirely
+empty section/navigation link are hidden; never invent recognition claims.
 Contact preserves Formspree and describes mailto accurately as a draft.
 Check 320–1920px, 200% zoom, landscape, keyboard focus, reduced motion, contact and GitHub states.
 Use Playwright MCP for visual review and Chromium/WebKit browser regressions.

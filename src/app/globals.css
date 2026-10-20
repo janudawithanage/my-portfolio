@@ -86,7 +86,7 @@ h1, h2, h3 { text-wrap: balance; }
 .hero-facts { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--color-border); font-size: .75rem; color: var(--color-text-muted); }
 .hero-facts strong { color: var(--color-text-primary); font-weight: 500; }
 .hero-portrait-shell { width: min(100%, 26rem); margin-inline: auto; position: relative; padding: .75rem; border: 1px solid var(--color-border-subtle); border-radius: 1.25rem; background: var(--color-surface); }
-.hero-portrait { position: relative; aspect-ratio: 1 / 1.05; overflow: hidden; border-radius: .75rem; }
+.hero-portrait { position: relative; aspect-ratio: 1 / 1; overflow: hidden; border-radius: .75rem; }
 .hero-portrait img { object-position: 50% 30%; }
 .portrait-caption { display: flex; gap: 1rem; align-items: center; justify-content: space-between; padding: 1rem .25rem .25rem; color: var(--color-text-secondary); font-size: .75rem; }
 .hero-capabilities { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: .625rem 1.25rem; color: var(--color-text-muted); font-size: .75rem; }
@@ -160,7 +160,6 @@ h1, h2, h3 { text-wrap: balance; }
   .hero-layout { grid-template-columns: 1.3fr .85fr; gap: 4rem; min-height: 32rem; }
   .hero-bio { font-size: 1.0625rem; }
   .hero-role { font-size: 1rem; }
-  .hero-portrait { aspect-ratio: 4 / 4.65; }
   .hero-capabilities { margin-top: 3rem; }
 }
 @media (max-width: 359px) {
@@ -178,4 +177,31 @@ h1, h2, h3 { text-wrap: balance; }
   .marquee-group { width: 100%; flex-wrap: wrap; justify-content: center; gap: .75rem; min-width: 0; padding: 0; }
   .marquee-chip { max-width: 100%; white-space: normal; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Recognition uses the existing navy/cyan palette. Empty categories are omitted. */
+.recognition-categories { display: grid; gap: 3.5rem; }
+.recognition-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-top: 1.5rem; margin-bottom: 1.5rem; border-top: 1px solid var(--color-border); }
+.recognition-heading h3 { display: flex; gap: .75rem; align-items: center; }
+.recognition-heading > span, .recognition-date { color: var(--color-accent); font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; }
+.recognition-grid { display: grid; gap: 1.25rem; }
+.recognition-entry { min-width: 0; border: 1px solid var(--color-border); border-radius: 1rem; overflow: hidden; background: var(--color-surface); }
+.recognition-entry[hidden] { display: none; }
+.recognition-content { display: grid; gap: .75rem; padding: 1.5rem; }
+.recognition-content h4 { font-family: var(--font-syne), sans-serif; font-size: 1.25rem; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+.recognition-content p { overflow-wrap: anywhere; }
+.recognition-image { background: var(--color-bg-secondary); border-bottom: 1px solid var(--color-border); }
+.recognition-image img { width: 100%; height: 15rem; object-fit: contain; }
+.recognition-timeline { display: grid; gap: 1.25rem; border-left: 1px solid var(--color-border-strong); margin-left: .375rem; padding-left: 1.5rem; }
+.recognition-timeline .recognition-entry { position: relative; overflow: visible; }
+.recognition-timeline .recognition-entry::before { content: ""; position: absolute; left: -1.875rem; top: 2rem; width: .625rem; height: .625rem; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 5px var(--color-bg); }
+.recognition-timeline .recognition-image { border-radius: 1rem 1rem 0 0; overflow: hidden; }
+@media (min-width: 768px) {
+  .recognition-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .recognition-timeline .recognition-entry:has(.recognition-image) { display: grid; grid-template-columns: 15rem 1fr; }
+  .recognition-timeline .recognition-image { border: 0; border-right: 1px solid var(--color-border); border-radius: 1rem 0 0 1rem; display: grid; align-items: center; }
+}
+@media (min-width: 1024px) {
+  .recognition-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .nav-link { padding-inline: .5rem; font-size: .75rem; }
 }

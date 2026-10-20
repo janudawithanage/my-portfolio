@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { navItems } from "@/data";
+import { content, fullName, navItems } from "@/data";
 import { Button } from "@/components/ui/Button";
 
 export function Navbar() {
@@ -63,9 +63,9 @@ export function Navbar() {
     <>
       <header className="site-header">
         <nav className="container-section site-nav" aria-label="Main navigation">
-          <Link href="/" className="inline-flex min-h-11 items-center gap-3" aria-label="Januda Withanage — home">
-            <span className="brand-mark" aria-hidden="true">JW<span className="text-text-muted">.</span></span>
-            <span className="text-sm font-medium hidden sm:inline">Januda Withanage</span>
+          <Link href="/" className="inline-flex min-h-11 items-center gap-3" aria-label={fullName + " — home"}>
+            <span className="brand-mark" aria-hidden="true">{content.hero.firstName[0]}{content.hero.lastName[0]}<span className="text-text-muted">.</span></span>
+            <span className="text-sm font-medium hidden sm:inline">{fullName}</span>
           </Link>
           <ul className="hidden lg:flex items-center">
             {navItems.filter(item => item.href !== "#contact").map(item => (
@@ -73,7 +73,7 @@ export function Navbar() {
             ))}
           </ul>
           <div className="flex items-center gap-3">
-            <Button asChild size="sm" className="hidden lg:inline-flex"><a href="#contact">Let&apos;s talk<ArrowUpRight size={15} aria-hidden="true" /></a></Button>
+            <Button asChild size="sm" className="hidden lg:inline-flex"><a href="#contact">{content.hero.secondaryLabel}<ArrowUpRight size={15} aria-hidden="true" /></a></Button>
             <div className="lg:hidden"><button ref={triggerRef} type="button" className="icon-link" onClick={() => setMobileOpen(true)} aria-label="Open navigation menu" aria-haspopup="dialog" aria-expanded={mobileOpen} aria-controls="mobile-navigation"><Menu size={21} aria-hidden="true" /></button></div>
           </div>
         </nav>
@@ -107,7 +107,7 @@ export function Navbar() {
         <nav aria-label="Mobile navigation">
           <ul>{navItems.map(item => <li key={item.href}><a href={item.href} className="mobile-nav-link" aria-current={activeSection === item.href.slice(1) ? "location" : undefined} onClick={() => navigate(item.href)}>{item.label}<ArrowUpRight size={16} aria-hidden="true" /></a></li>)}</ul>
         </nav>
-        <p className="mt-6 text-sm text-text-muted">Based in Colombo. Open to opportunities.</p>
+        <p className="mt-6 text-sm text-text-muted">{content.hero.location}. {content.hero.availability}.</p>
       </dialog>
     </>
   );

@@ -68,8 +68,9 @@ try {
         if ([320,390,768,1440,1920].includes(width) && height>800) {
           await page.screenshot({animations:"disabled",path:"artifacts/ui-review/${browser}-hero-"+width+".png"});
           if (width===390||width===1440) {
-            for (const id of ["projects","about","skills","experience","education","github","contact"]) {
+            for (const id of ["about","education","skills","projects","experience","recognition","contact"]) {
               const section=page.locator("#"+id);
+              if (!await section.count()) continue;
               const images=section.locator("img");
               for (let i=0;i<await images.count();i++) {
                 const image=images.nth(i);

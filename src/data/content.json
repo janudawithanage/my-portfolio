@@ -1,0 +1,341 @@
+{
+  "hero": {
+    "firstName": "Januda",
+    "lastName": "Withanage",
+    "role": "Software engineer. Full-stack builder.",
+    "bio": "I build thoughtful web applications and cloud-backed services. Bringing together code, systems, and a growing focus on security.",
+    "availability": "Open to opportunities & collaboration",
+    "location": "Colombo, Sri Lanka",
+    "image": "/images/photo1.png",
+    "imageAlt": "Januda Withanage",
+    "cvUrl": "/Januda-Withanage-CV.pdf",
+    "primaryLabel": "Explore my work",
+    "secondaryLabel": "Let's talk",
+    "cvLabel": "Download CV",
+    "facts": [
+      {
+        "value": "3+",
+        "label": "years coding"
+      },
+      {
+        "value": "UCSC",
+        "label": "Computer Science"
+      }
+    ],
+    "capabilities": [
+      "Full-stack development",
+      "Cloud & distributed systems",
+      "Connected devices",
+      "Application security"
+    ],
+    "marquee": [
+      "Full-Stack Development",
+      "Cloud Engineering",
+      "Cybersecurity",
+      "React / Next.js",
+      "Microsoft Azure",
+      "API Design",
+      "DevOps & CI/CD",
+      "Security Research",
+      "TypeScript",
+      "System Design"
+    ],
+    "githubUrl": "https://github.com/janudawithanage",
+    "linkedinUrl": "https://linkedin.com/in/janudawithanage"
+  },
+  "about": {
+    "title": "Curious by nature. Builder by choice.",
+    "description": "I enjoy connecting the dots between a good interface, a dependable backend, and the systems behind it.",
+    "lead": "I'm Januda, a Computer Science student at the University of Colombo School of Computing.",
+    "paragraphs": [
+      "My studies inform my work across frontend, backend, and cloud. Recent projects include a Node.js microservices system with RabbitMQ and Kong, a TypeScript sports betting platform, and an ESP32 monitoring dashboard.",
+      "Alongside development, I study web application security, work through CTF challenges, and explore system design and open-source tools. I also work with Azure and container-based deployment workflows."
+    ],
+    "image": "/images/photo2.png",
+    "imageAlt": "Januda Withanage outdoors",
+    "study": "UCSC · Computer Science",
+    "location": "Colombo, Sri Lanka",
+    "linkLabel": "Have something in mind? Let's connect"
+  },
+  "education": {
+    "title": "A foundation to build on.",
+    "description": "From Physical Science at Rahula College to Computer Science at the University of Colombo School of Computing.",
+    "entries": [
+      {
+        "id": "ucsc",
+        "institution": "University of Colombo School of Computing (UCSC)",
+        "degree": "Bachelor of Science",
+        "field": "Computer Science",
+        "startDate": "May 2024",
+        "endDate": "Present",
+        "location": "Colombo, Sri Lanka",
+        "description": "Computer Science studies at UCSC, covering algorithms, networks, operating systems, distributed systems, software engineering, and databases.",
+        "highlights": [],
+        "logo": "/images/education/ucsc.jpg"
+      },
+      {
+        "id": "rahula-college",
+        "institution": "Rahula College, Matara",
+        "degree": "G.C.E. A/L",
+        "field": "Physical Science",
+        "startDate": "2009",
+        "endDate": "2022",
+        "location": "Matara, Sri Lanka",
+        "description": "Secondary education and Advanced Level studies in the Physical Science stream.",
+        "result": "AAB",
+        "highlights": [],
+        "logo": "/images/education/rahula-college.png"
+      }
+    ]
+  },
+  "skills": {
+    "title": "The tools behind the work.",
+    "description": "Technologies I use and study across the stack. Always adding to the toolkit, always learning by building.",
+    "entries": [
+      {
+        "id": "frontend",
+        "title": "Frontend",
+        "icon": "monitor",
+        "description": "Building responsive, accessible web interfaces",
+        "skills": [
+          {
+            "name": "React / Next.js",
+            "level": 85
+          },
+          {
+            "name": "TypeScript",
+            "level": 80
+          },
+          {
+            "name": "Tailwind CSS",
+            "level": 88
+          },
+          {
+            "name": "HTML & CSS",
+            "level": 92
+          },
+          {
+            "name": "Framer Motion",
+            "level": 72
+          },
+          {
+            "name": "Figma / UI Design",
+            "level": 65
+          }
+        ]
+      },
+      {
+        "id": "backend",
+        "title": "Backend",
+        "icon": "server",
+        "description": "Designing APIs, services, and data models",
+        "skills": [
+          {
+            "name": "Node.js / Express",
+            "level": 82
+          },
+          {
+            "name": "Python",
+            "level": 80
+          },
+          {
+            "name": "Java",
+            "level": 75
+          },
+          {
+            "name": "REST APIs",
+            "level": 85
+          },
+          {
+            "name": "PostgreSQL / MySQL",
+            "level": 78
+          },
+          {
+            "name": "MongoDB",
+            "level": 72
+          }
+        ]
+      },
+      {
+        "id": "cloud",
+        "title": "Cloud & DevOps",
+        "icon": "cloud",
+        "description": "Working with Azure, containers, and CI/CD workflows",
+        "skills": [
+          {
+            "name": "Microsoft Azure",
+            "level": 75
+          },
+          {
+            "name": "Docker & Containers",
+            "level": 80
+          },
+          {
+            "name": "GitHub Actions CI/CD",
+            "level": 78
+          },
+          {
+            "name": "Kong API Gateway",
+            "level": 70
+          },
+          {
+            "name": "Linux / Bash",
+            "level": 78
+          },
+          {
+            "name": "Networking Fundamentals",
+            "level": 72
+          }
+        ]
+      },
+      {
+        "id": "security",
+        "title": "Cybersecurity",
+        "icon": "shield",
+        "description": "Studying web and network security through coursework and practice",
+        "skills": [
+          {
+            "name": "Network Security",
+            "level": 65
+          },
+          {
+            "name": "OWASP Top 10",
+            "level": 68
+          },
+          {
+            "name": "Web App Security",
+            "level": 62
+          },
+          {
+            "name": "Cryptography Basics",
+            "level": 60
+          },
+          {
+            "name": "Wireshark",
+            "level": 58
+          },
+          {
+            "name": "CTF Challenges",
+            "level": 55
+          }
+        ]
+      }
+    ]
+  },
+  "projects": {
+    "title": "Ideas, turned into software.",
+    "description": "A selection of things I’ve built — from distributed services to connected homes and everyday web experiences.",
+    "linkLabel": "More on GitHub"
+  },
+  "experience": {
+    "title": "Learning through real problems.",
+    "description": "Hands-on project experience across distributed systems, web applications, and connected devices.",
+    "entries": [
+      {
+        "id": "distributed-joke-system",
+        "company": "Personal Project",
+        "role": "Cloud & Backend Developer",
+        "startDate": "Mar 2026",
+        "endDate": "Apr 2026",
+        "location": "Colombo, Sri Lanka",
+        "type": "personal",
+        "description": "Designed a microservices-based joke submission and moderation system to explore message-driven workflows, API routing, and container deployment.",
+        "highlights": [
+          "Designed multi-service architecture with Node.js microservices and RabbitMQ message queuing",
+          "Configured Kong API Gateway for routing, rate limiting, and authentication",
+          "Containerised all services with Docker; Azure-ready deployment workflows",
+          "Built a moderation pipeline and MySQL persistence layer"
+        ],
+        "tech": [
+          "Node.js",
+          "RabbitMQ",
+          "MySQL",
+          "Kong",
+          "Docker",
+          "Azure",
+          "JavaScript"
+        ]
+      },
+      {
+        "id": "betting-system",
+        "company": "Personal Project",
+        "role": "Full-Stack Developer",
+        "startDate": "Mar 2026",
+        "endDate": "Apr 2026",
+        "location": "Colombo, Sri Lanka",
+        "type": "personal",
+        "description": "Built a full-stack sportsbook in TypeScript with event, market, odds, bet, and account flows.",
+        "highlights": [
+          "Built end-to-end in TypeScript with a focus on type safety and clean architecture",
+          "Implemented complex domain logic for odds calculation and bet management",
+          "Designed a data model for events, markets, and user accounts"
+        ],
+        "tech": [
+          "TypeScript",
+          "Node.js",
+          "React"
+        ]
+      },
+      {
+        "id": "esp32-sensovault",
+        "company": "Personal Project",
+        "role": "IoT & Web Developer",
+        "startDate": "Mar 2026",
+        "endDate": "Mar 2026",
+        "location": "Colombo, Sri Lanka",
+        "type": "personal",
+        "description": "Built an IoT monitoring prototype that sends ESP32 sensor readings over MQTT to a web dashboard.",
+        "highlights": [
+          "Programmed ESP32 to read temperature, humidity, and light sensors",
+          "Streamed sensor data in real-time over MQTT to a web dashboard",
+          "Built a live dashboard displaying real-time charts and alerts"
+        ],
+        "tech": [
+          "ESP32",
+          "MQTT",
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "C++"
+        ]
+      },
+      {
+        "id": "movie-app",
+        "company": "Personal Project",
+        "role": "Frontend Developer",
+        "startDate": "Feb 2026",
+        "endDate": "Mar 2026",
+        "location": "Colombo, Sri Lanka",
+        "type": "personal",
+        "description": "Built a responsive movie browser with a public REST API, asynchronous data fetching, search, and filtering.",
+        "highlights": [
+          "Integrated with a public movie API for live search and browsing",
+          "Built a responsive UI with dynamic rendering and filtering"
+        ],
+        "tech": [
+          "JavaScript",
+          "HTML",
+          "CSS",
+          "REST API"
+        ]
+      }
+    ]
+  },
+  "recognition": {
+    "title": "Recognition & contributions.",
+    "description": "Awards, continued learning, and the communities I contribute to.",
+    "awards": [],
+    "certifications": [],
+    "volunteering": []
+  },
+  "contact": {
+    "title": "Let’s build what’s next.",
+    "description": "An engineering opportunity, a project idea, or a technical question? I’d love to hear from you.",
+    "availability": "Open to opportunities & collaboration",
+    "intro": "I'm interested in full-stack development, cloud platforms, and application security. Tell me what you're working on.",
+    "email": "withanagejanuda@gmail.com",
+    "location": "Colombo, Sri Lanka",
+    "formTitle": "Send a note",
+    "footerText": "Computer Science at UCSC.\nBuilding across code, cloud, and security."
+  }
+}
