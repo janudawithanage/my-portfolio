@@ -1,3 +1,4 @@
+import projectsData from "./projects.json";
 import type {
   NavItem,
   Project,
@@ -25,56 +26,7 @@ export const socialLinks: SocialLink[] = [
 ];
 
 // ─── Featured Projects ────────────────────────────────────────────────────────
-export const featuredProjects: Project[] = [
-  {
-    id: "distributed-joke-system",
-    title: "Distributed Joke System",
-    image: "/images/projects/distributed-joke-system.png",
-    description:
-      "Node.js microservices route submissions through RabbitMQ to an Auth0-protected moderation UI. Approved jokes are stored in MySQL and served through Kong; the stack runs locally in Docker.",
-    tech: ["Node.js", "RabbitMQ", "MySQL", "Kong", "Docker", "Auth0", "Azure"],
-    githubUrl: "https://github.com/janudawithanage/distributed-joke-system",
-    featured: true,
-    status: "completed",
-    year: "2026",
-  },
-  {
-    id: "smart-home-monitoring-control",
-    title: "Smart Home Monitoring & Control",
-    description:
-      "An Expo and React Native app for device control, energy tracking, schedules, and security views. Supabase syncs device state with a companion web-based hardware simulator.",
-    tech: ["Expo", "React Native", "TypeScript", "Supabase", "Docker"],
-    githubUrl: "https://github.com/janudawithanage/smart-home-monitoring-control",
-    featured: true,
-    status: "completed",
-    year: "2026",
-  },
-  {
-    id: "rentigo",
-    title: "Rentigo",
-    image: "/images/projects/rentigo.png",
-    description:
-      "A team-built rental property management system using PHP and MySQL. I contributed tenant-facing property search, booking and lease workflows, rent payment tracking, and maintenance issue views.",
-    tech: ["PHP", "MySQL", "JavaScript", "HTML", "CSS", "MVC"],
-    githubUrl: "https://github.com/Jeyaneedhan21/Rentigo",
-    featured: true,
-    status: "completed",
-    year: "2026",
-  },
-  {
-    id: "becute-dreams-luxe",
-    title: "Becute Dreams Luxe",
-    image: "/images/projects/becute-dreams-luxe.png",
-    description:
-      "A frontend storefront demo for a sticker boutique, with product browsing, filters, detail pages, and a cart saved in local storage. Checkout and account pages demonstrate the interface without payment or authentication backends.",
-    tech: ["React", "TypeScript", "React Router", "Tailwind CSS", "Zustand", "Framer Motion"],
-    githubUrl: "https://github.com/janudawithanage/becute-dreams-luxe",
-    liveUrl: "https://becute-dreams-luxe.vercel.app",
-    featured: true,
-    status: "completed",
-    year: "2026",
-  },
-];
+export const featuredProjects: Project[] = projectsData as Project[];
 
 // ─── Skills ───────────────────────────────────────────────────────────────────
 export const skillCategories: SkillCategory[] = [

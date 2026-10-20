@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="editor-token" content="__EDITOR_TOKEN__">
+  <title>Project sections · Portfolio editor</title>
+  <link rel="stylesheet" href="/editor.css">
+  <script src="/editor.js" type="module"></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <div><p class="eyebrow">PORTFOLIO / LOCAL EDITOR</p><h1>Your selected work.</h1><p class="intro">Choose the projects you want people to see. Give each one its best first impression.</p></div>
+      <span class="local-badge"><span></span> On this computer</span>
+    </header>
+    <form id="projects-form">
+      <div class="section-controls">
+        <label for="section-picker">Portfolio section</label>
+        <select id="section-picker" disabled><option value="selected-work">01 / Selected Work</option><option value="experiments">06 / Open source &amp; experiments</option></select>
+        <p class="muted" id="draft-status" role="status"></p>
+      </div>
+      <div class="toolbar">
+        <div><strong id="selection-count">Loading projects…</strong><span id="save-state" role="status">Reading your saved selection</span></div>
+        <div class="actions"><button type="button" id="discard" disabled>Discard changes</button><button type="submit" class="primary" id="save" disabled>Save changes</button></div>
+      </div>
+      <p class="publish-note">Saved changes stay local. Commit and push your project files to publish them with Vercel.</p>
+      <p id="notice" class="notice" role="alert" hidden></p>
+      <fieldset id="editor-fields" disabled>
+        <legend class="sr-only">Project section editor</legend>
+        <div id="feed-settings" class="feed-settings panel" hidden>
+          <label for="feed-mode">Repositories to display</label>
+          <select id="feed-mode"><option value="automatic">Automatic GitHub feed</option><option value="manual">My selected repositories</option></select>
+          <p class="muted" id="feed-help">The automatic GitHub feed stays active until you add a repository or choose your own selection.</p>
+        </div>
+        <div class="workspace">
+          <aside class="picker panel" aria-labelledby="picker-title">
+            <p class="eyebrow">ADD TO YOUR SELECTION</p><h2 id="picker-title">From GitHub</h2>
+            <label>Search repositories<input type="search" id="repo-search" placeholder="Find a project…"></label>
+            <div class="repo-heading"><span id="repo-count">Loading…</span><button type="button" id="refresh-repos" class="small">Refresh</button></div>
+            <p id="repo-status" role="status" class="muted"></p>
+            <div id="repo-list" class="repo-list"></div>
+            <button type="button" id="load-more" class="wide" hidden>Load more repositories</button>
+            <div class="url-picker">
+              <h3>Working with a team?</h3><p class="muted">Add a public repository from any GitHub account.</p>
+              <label>Repository URL<input type="text" inputmode="url" id="repo-url" placeholder="https://github.com/owner/project"></label>
+              <button type="button" id="add-url" class="wide">Add repository by URL</button>
+            </div>
+          </aside>
+          <section aria-labelledby="selection-title"><div class="section-heading"><h2 id="selection-title">Selected projects</h2><span class="muted">Top to bottom = display order</span></div><div id="projects"></div></section>
+        </div>
+      </fieldset>
+    </form>
+  </main>
+</body>
+</html>

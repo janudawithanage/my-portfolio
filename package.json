@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test:ui": "playwright test",
-    "review:ui": "node scripts/review-ui-mcp.mjs"
+    "review:ui": "node scripts/review-ui-mcp.mjs",
+    "edit:projects": "node scripts/project-editor/server.mjs",
+    "test:editor": "node --test scripts/project-editor/*.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -24,6 +26,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.72.1",
+    "sharp": "0.34.5",
     "tailwind-merge": "^3.5.0",
     "three": "^0.184.0",
     "zod": "^4.3.6"

@@ -10,6 +10,8 @@ const directory = await mkdtemp(path.join(tmpdir(), "januda-portfolio-ui-"));
 for (const entry of ["src", "public", "package.json", "package-lock.json", "tsconfig.json", "next.config.ts", "postcss.config.mjs"]) {
   await cp(path.join(root, entry), path.join(directory, entry), { recursive: true });
 }
+// Keep the automatic-feed regressions independent of the owner's live selections.
+await writeFile(path.join(directory, "src/data/experiments.json"), JSON.stringify({ mode: "automatic", projects: [] }));
 await symlink(path.join(root, "node_modules"), path.join(directory, "node_modules"), "dir");
 const repositories = Array.from({ length: 8 }, (_, index) => ({
   id: index + 1,
@@ -38,10 +40,22 @@ await writeFile(path.join(fixtureDirectory, "page.tsx"), `import { notFound } fr
 import { GithubProjectsGrid } from "@/components/sections/GithubProjectsGrid";
 import { GithubProjectsSkeleton } from "@/components/sections/GithubProjectsSkeleton";
 import type { GitHubFetchResult, GitHubRepo } from "@/types";
+import { CuratedGithubProjects } from "@/components/sections/CuratedGithubProjects";
+import savedProjects from "@/data/projects.json";
+import type { Project } from "@/types";
 const repos: GitHubRepo[] = ${JSON.stringify(repositories)};
 export default async function Fixture({params}: {params: Promise<{state:string}>}) {
   const {state} = await params;
   if (state === "loading") return <GithubProjectsSkeleton />;
+  if (state === "curated" || state === "curated-empty") {
+    const projects: Project[] = state === "curated-empty" ? [] : Array.from({length: 8}, (_, index) => ({
+      ...savedProjects[index % savedProjects.length], id: "curated-" + index,
+      title: "Curated experiment " + (index + 1), status: "in-progress",
+      description: "A curated description saved independently of GitHub.",
+      githubUrl: "https://github.com/example/curated-" + index,
+    }));
+    return <section className="container-section section-padding"><h1 className="text-headline mb-6">Open source &amp; experiments</h1><CuratedGithubProjects projects={projects} profileUrl="https://github.com/example" /></section>;
+  }
   const result: GitHubFetchResult = state === "error" ? {status:"error",message:"Fixture failure"}
     : state === "empty" ? {status:"empty"}
     : state === "success" ? {status:"success",repos,syncedAt:"2026-10-01T12:00:00Z"} : notFound();

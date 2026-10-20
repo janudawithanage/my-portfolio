@@ -1,8 +1,51 @@
 import { test, expect, type Page } from "@playwright/test";
+import selectedProjects from "../src/data/projects.json";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#github-repositories")).toBeVisible();
+});
+
+test("Selected Work uses saved project data and the public app exposes no editor endpoints", async ({ page, request }) => {
+  await expect(page.locator("#projects .project-title")).toHaveText(selectedProjects.map(project => project.title));
+  await expect(page.locator("#hero .hero-facts")).toContainText(`${selectedProjects.length} selected projects`);
+  const cards = page.locator("#projects article");
+  for (const [index, project] of selectedProjects.entries()) {
+    await expect(cards.nth(index)).toContainText(project.description);
+    if (project.image) {
+      const image = cards.nth(index).getByRole("img", { name: `${project.title} application preview` });
+      await image.scrollIntoViewIfNeeded();
+      await expect(image).toHaveAttribute("src", new RegExp(encodeURIComponent(project.image)));
+      await expect.poll(() => image.evaluate(img => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    }
+  }
+  for (const endpoint of ["/api/projects", "/api/uploads", "/editor"]) {
+    expect((await request.get(endpoint)).status()).toBe(404);
+  }
+});
+
+test("curated experiments remain text-only, preserve details and order, expand, and handle an empty selection", async ({ page }) => {
+  await page.goto("/ui-fixtures/curated");
+  await expect(page.locator("#github-repositories .project-title")).toHaveText(Array.from({ length: 6 }, (_, index) => "Curated experiment " + (index + 1)));
+  await expect(page.getByText("Showing 6 of 8 selected repositories", { exact: true })).toBeVisible();
+  const first = page.locator("#github-repositories article").first();
+  await expect(first).toContainText("A curated description saved independently of GitHub.");
+  await expect(page.locator("#github-repositories img, #github-repositories .project-art")).toHaveCount(0);
+  await expect(first.getByRole("link", { name: "Source code for Curated experiment 1" })).toHaveAttribute("href", "https://github.com/example/curated-0");
+  await page.getByRole("button", { name: "Show all 8 repositories" }).click();
+  await expect(page.locator("#github-repositories article")).toHaveCount(8);
+  await expect(page.locator("#github-repositories .project-title").last()).toHaveText("Curated experiment 8");
+  await expect(page.locator("#github-repositories img, #github-repositories .project-art")).toHaveCount(0);
+  for (const width of [320, 390, 768, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  }
+  await page.getByRole("button", { name: "Show fewer" }).click();
+  await expect(page.locator("#github-repositories article")).toHaveCount(6);
+  await page.goto("/ui-fixtures/curated-empty");
+  await expect(page.getByRole("heading", { name: "No experiments selected yet." })).toBeVisible();
+  await expect(page.locator("#github-repositories article")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "View GitHub profile" })).toHaveAttribute("href", "https://github.com/example");
 });
 
 test("page order, responsive text, and touch targets across phones, tablets, and desktop", async ({ page }) => {

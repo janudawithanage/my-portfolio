@@ -1,0 +1,78 @@
+{
+  "mode": "manual",
+  "projects": [
+    {
+      "id": "senirudevidu--swiftlogistics",
+      "title": "SwiftLogistics",
+      "description": "A microservices-based logistics and delivery management system built with FastAPI, React (Vite), RabbitMQ, PostgreSQL, and Docker. Designed for the SCS2314 Middleware Architecture course to demonstrate real-world middleware integration patterns.",
+      "tech": [
+        "JavaScript"
+      ],
+      "githubUrl": "https://github.com/senirudevidu/SwiftLogistics",
+      "featured": true,
+      "status": "completed",
+      "year": "2025"
+    },
+    {
+      "id": "janudawithanage--esp32-sensovault",
+      "title": "esp32 sensovault",
+      "description": "Real-time temperature, humidity, and light monitoring system using an ESP32, MQTT, and a web dashboard.",
+      "tech": [
+        "HTML"
+      ],
+      "githubUrl": "https://github.com/janudawithanage/esp32-sensovault",
+      "featured": true,
+      "status": "completed",
+      "year": "2026"
+    },
+    {
+      "id": "janudawithanage--maze-to-savor-game-c",
+      "title": "maze to savor game c",
+      "description": "Maze Runner Game Simulation with stairs, poles, walls and dice mechanics.",
+      "tech": [
+        "C"
+      ],
+      "githubUrl": "https://github.com/janudawithanage/maze-to-savor-game-c",
+      "featured": true,
+      "status": "completed",
+      "year": "2025"
+    },
+    {
+      "id": "dinna21--flood-risk-app",
+      "title": "Flood Risk App",
+      "description": "Machine learning flood risk prediction platform for Sri Lanka, built with CatBoost, FastAPI, Next.js, and Supabase. Features interactive risk maps, monitoring dashboards, high-risk alerts, prediction logging, and drift detection.",
+      "tech": [
+        "TypeScript"
+      ],
+      "githubUrl": "https://github.com/dinna21/Flood-Risk-App",
+      "liveUrl": "https://flood-risk-app-two.vercel.app/",
+      "featured": true,
+      "status": "completed",
+      "year": "2026"
+    },
+    {
+      "id": "janudawithanage--compiler-construction",
+      "title": "compiler construction",
+      "description": "A tiny recursive-descent parser/interpreter in C for a minimal language with int declarations and print() statements.",
+      "tech": [
+        "C"
+      ],
+      "githubUrl": "https://github.com/janudawithanage/compiler-construction",
+      "featured": true,
+      "status": "completed",
+      "year": "2026"
+    },
+    {
+      "id": "janudawithanage--movie-app",
+      "title": "movie app",
+      "description": "A lightweight React + Vite app to browse and favorite movies using a simple movie API. Clean responsive UI with a Browse page, Favorites list, and reusable MovieCard and Navbar components.",
+      "tech": [
+        "JavaScript"
+      ],
+      "githubUrl": "https://github.com/janudawithanage/movie-app",
+      "featured": true,
+      "status": "completed",
+      "year": "2026"
+    }
+  ]
+}
