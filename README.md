@@ -1,7 +1,7 @@
 # Januda Withanage — Portfolio
 
 A project-first software engineering portfolio built with Next.js 16, React 19,
-TypeScript, Tailwind CSS 4, and Framer Motion.
+TypeScript, and Tailwind CSS 4. Motion is plain CSS and respects reduced-motion settings.
 
 The redesigned UI uses matte navy surfaces, cyan accents, Inter and Syne typography,
 responsive project cards, grouped skills, and accessible mobile navigation.
@@ -96,9 +96,26 @@ can edit and save every existing section while GitHub is unavailable.
 - `GITHUB_TOKEN`: optional server-side token for public repository reads.
 - `NEXT_PUBLIC_FORMSPREE_ID`: optional contact form ID. When absent, the form opens
   an email draft and accurately tells the visitor to send it in their mail app.
-- `NEXT_PUBLIC_SITE_URL`: optional canonical deployment origin for metadata.
+  A hidden honeypot field stops naive bots only; also enable spam filtering and
+  restrict submissions to your domain in the Formspree dashboard.
+- `NEXT_PUBLIC_SITE_URL`: the deployed origin, for example `https://example.com`.
+  It enables the canonical URL, the social preview image (`public/images/og.jpg`,
+  1200×630) and the `sitemap.xml` / `robots.txt` entries. Vercel's production
+  domain is detected automatically; without either, these are omitted.
 
-Keep environment values in an untracked `.env.local`.
+Copy `.env.example` to an untracked `.env.local` and keep real values there.
+
+## Assets and security
+
+- **CV:** the Download CV button appears only when the file at the Hero's CV path
+  exists, or when that path is an external URL. Put your PDF at
+  `public/Januda-Withanage-CV.pdf` (or change the path in the editor) and rebuild.
+- **Images:** the editor accepts up to 10 MB, but that is a ceiling. Resize photos to
+  about 1600px wide and use WebP or JPEG before uploading; large originals slow
+  the first image request and bloat the repository permanently.
+- **Headers:** `next.config.ts` sends a Content-Security-Policy and other security
+  headers in production. The policy allows only this origin plus Formspree, so adding
+  analytics, embeds or other third-party scripts means extending it there.
 
 ## Verification
 

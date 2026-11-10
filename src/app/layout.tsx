@@ -4,7 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { content, fullName } from "@/data";
-import { MotionProvider } from "@/components/ui/MotionProvider";
+import { siteUrl } from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -19,11 +19,12 @@ const syne = Syne({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 const siteDescription = content.hero.bio;
+// Social images need an absolute origin, so they are only advertised once the site URL is known.
+const socialImage = { url: "/images/og.jpg", width: 1200, height: 630, alt: fullName + " — " + content.hero.role };
 
 export const metadata: Metadata = {
-  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
+  ...(siteUrl ? { metadataBase: new URL(siteUrl), alternates: { canonical: "/" } } : {}),
   title: {
     default: fullName + " | Portfolio",
     template: "%s | " + fullName,
@@ -44,15 +45,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    ...(siteUrl ? { url: siteUrl } : {}),
+    ...(siteUrl ? { url: siteUrl, images: [socialImage] } : {}),
     title: fullName + " | Portfolio",
     description: siteDescription,
     siteName: fullName,
   },
   twitter: {
-    card: "summary",
+    card: siteUrl ? "summary_large_image" : "summary",
     title: fullName + " | Portfolio",
     description: siteDescription,
+    ...(siteUrl ? { images: [socialImage.url] } : {}),
   },
   icons: {
     icon: [
@@ -85,12 +87,10 @@ export default function RootLayout({
       className={`${inter.variable} ${syne.variable} scroll-smooth`}
     >
       <body className="min-h-screen flex flex-col bg-bg text-text-primary antialiased">
-        <MotionProvider>
-          <a className="skip-link" href="#main-content">Skip to content</a>
-          <Navbar />
-          <main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
-          <Footer />
-        </MotionProvider>
+        <a className="skip-link" href="#main-content">Skip to content</a>
+        <Navbar />
+        <main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );
