@@ -6,16 +6,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg text-sm font-semibold transition-colors duration-200 active:brightness-90 cursor-pointer disabled:pointer-events-none disabled:opacity-60",
+  "btn inline-flex min-h-11 items-center justify-center gap-2 rounded-full text-sm font-semibold transition-[color,background-color,border-color,box-shadow] duration-300 active:brightness-95 cursor-pointer disabled:pointer-events-none disabled:opacity-60",
   {
     variants: {
       variant: {
-        primary: "border border-accent bg-accent text-bg hover:bg-accent-light hover:border-accent-light",
-        secondary: "border border-border-subtle bg-surface text-text-primary hover:bg-surface-raised hover:border-border-strong",
-        ghost: "text-text-secondary hover:text-accent hover:bg-surface",
-        outline: "border border-border-strong text-text-primary hover:border-accent hover:text-accent",
-        gold: "border border-gold bg-gold text-bg hover:bg-gold-light",
-        link: "text-accent hover:text-accent-light underline-offset-4 hover:underline",
+        primary: "btn-primary border border-ink bg-ink text-white hover:border-accent",
+        secondary: "btn-secondary border border-border bg-white/60 text-ink hover:border-border-subtle",
+        ghost: "text-text-secondary hover:text-accent hover:bg-white/60",
+        outline: "border border-border-strong bg-white/40 text-ink hover:border-accent hover:text-accent",
+        gold: "border border-gold/50 bg-gold-light text-gold-deep hover:border-gold",
+        link: "text-accent underline-offset-4 hover:underline",
       },
       size: {
         sm: "px-4 py-2",
@@ -31,12 +31,14 @@ const buttonVariants = cva(
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  /** Gently follow the pointer (fine pointers only; off for reduced motion). */
+  magnetic?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, magnetic = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+    return <Comp ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...(magnetic ? { "data-magnetic": "" } : {})} {...props} />;
   }
 );
 Button.displayName = "Button";

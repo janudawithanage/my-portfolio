@@ -17,6 +17,21 @@ const fixtureContent = JSON.parse(await (await import("node:fs/promises")).readF
 fixtureContent.recognition.awards = [{ id: "award-fixture", title: "Test award", organisation: "Test society", date: "2026", description: "Test fixture only." }];
 fixtureContent.recognition.certifications = Array.from({ length: 8 }, (_, index) => ({ id: "cert-" + index, title: "Test certificate " + (index + 1), organisation: "Test issuer", date: "October 2026", url: "https://example.com/credential/" + index, ...(index === 0 ? { image: "/images/photo2.webp" } : {}) }));
 fixtureContent.recognition.volunteering = [{ id: "role-fixture", title: "Test volunteer role", organisation: "Test community", date: "2025 — Present", description: "Test fixture only.", image: "/images/photo2.webp" }];
+// New optional sections: Stats, Security and Writing render; Now has an item but is switched off
+// in the section order; Talks and Testimonials stay empty and must not render or reach navigation.
+fixtureContent.stats.items = [
+  { id: "stat-1", value: "15+", label: "Test projects shipped" },
+  { id: "stat-2", value: "8", label: "Test certifications" },
+  { id: "stat-3", value: "3.9", label: "Test GPA" },
+  { id: "stat-4", value: "40", label: "Test CTF challenges" },
+];
+fixtureContent.now.items = [{ id: "now-hidden", kind: "building", text: "Test fixture: switched off in the section order", emoji: "🛠️" }];
+fixtureContent.layout.sectionOrder = fixtureContent.layout.sectionOrder.map(entry => entry.id === "now" ? { ...entry, visible: false } : entry);
+fixtureContent.security.entries = [
+  { id: "ctf-1", title: "Test CTF 2026", result: "Top 5%", date: "October 2026", description: "Test fixture only.", url: "https://example.com/writeup/1", tags: ["web", "crypto"] },
+  { id: "ctf-2", title: "Test challenge platform", date: "2026", tags: [] },
+];
+fixtureContent.writing.posts = Array.from({ length: 8 }, (_, index) => ({ id: "post-" + index, title: "Test article " + (index + 1), platform: "Test blog", date: "2026", url: "https://example.com/post/" + index, ...(index === 0 ? { excerpt: "Test fixture only.", cover: "/images/photo2.webp" } : {}) }));
 await writeFile(path.join(directory, "src/data/content.json"), JSON.stringify(fixtureContent));
 await symlink(path.join(root, "node_modules"), path.join(directory, "node_modules"), "dir");
 const repositories = Array.from({ length: 8 }, (_, index) => ({
@@ -48,6 +63,9 @@ import { GithubProjectsGrid } from "@/components/sections/GithubProjectsGrid";
 import { GithubProjectsSkeleton } from "@/components/sections/GithubProjectsSkeleton";
 import type { GitHubFetchResult, GitHubRepo } from "@/types";
 import { CuratedGithubProjects } from "@/components/sections/CuratedGithubProjects";
+import { Now } from "@/components/sections/Now";
+import { Talks } from "@/components/sections/Talks";
+import { Testimonials } from "@/components/sections/Testimonials";
 import savedProjects from "@/data/projects.json";
 import type { Project } from "@/types";
 const repos: GitHubRepo[] = ${JSON.stringify(repositories)};
@@ -55,6 +73,23 @@ export default async function Fixture({params}: {params: Promise<{state:string}>
   const {state} = await params;
   if (state === "loading") return <GithubProjectsSkeleton />;
   if (state === "recognition-empty") return <Recognition data={{title:"Recognition",description:"",awards:[],certifications:[],volunteering:[]}} />;
+  if (state === "showcase") return <>
+    <Now data={{ title: "What I’m focused on now.", description: "Test fixture only.", updated: "November 2026", items: [
+      { id: "n1", kind: "building", text: "Test fixture: a building item" },
+      { id: "n2", kind: "learning", text: "Test fixture: a learning item", url: "https://example.com/learning" },
+      { id: "n3", kind: "reading", text: "Test fixture: a reading item", emoji: "📚" },
+    ] }} />
+    <Talks data={{ title: "Talks & publications.", description: "Test fixture only.", entries: [
+      { id: "t1", title: "Test talk", type: "talk", venue: "Test meetup", date: "2026", url: "https://example.com/talk" },
+      { id: "t2", title: "Test paper", type: "paper", venue: "Test conference", date: "2025", description: "Test fixture only." },
+      { id: "t3", title: "Test poster", type: "poster", venue: "Test symposium", date: "2025" },
+    ] }} />
+    <Testimonials data={{ title: "Kind words from collaborators.", description: "Test fixture only.", items: [
+      { id: "q1", quote: "Test fixture quote one. Thoughtful, calm and quick to unblock the team.", name: "Test Person One", role: "Engineering lead", company: "Test company", avatar: "/images/photo2.webp", url: "https://example.com/one" },
+      { id: "q2", quote: "Test fixture quote two.", name: "Test Person Two", role: "Designer" },
+      { id: "q3", quote: "Test fixture quote three.", name: "Test Person Three" },
+    ] }} />
+  </>;
   if (state === "curated" || state === "curated-empty") {
     const projects: Project[] = state === "curated-empty" ? [] : Array.from({length: 8}, (_, index) => ({
       ...savedProjects[index % savedProjects.length], id: "curated-" + index,

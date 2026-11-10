@@ -71,7 +71,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#080D19",
+  themeColor: "#F6F5F1",
   width: "device-width",
   initialScale: 1,
 };
@@ -82,12 +82,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${syne.variable} scroll-smooth`}
-    >
+    <html lang="en" className={`${inter.variable} ${syne.variable}`}>
       <body className="min-h-screen flex flex-col bg-bg text-text-primary antialiased">
         <a className="skip-link" href="#main-content">Skip to content</a>
+        <div className="ambient" aria-hidden="true"><span /><span /><span /></div>
         <Navbar />
         <main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
         <Footer />

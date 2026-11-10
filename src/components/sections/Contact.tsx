@@ -4,11 +4,12 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowUpRight, Check, Mail, MapPin, Send } from "lucide-react";
+import { ArrowUpRight, Check, Mail, MapPin, Phone, Send } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 import { SocialGlyph } from "@/components/ui/SocialGlyph";
 import { content, socialLinks } from "@/data";
+import { hasContent } from "@/lib/has-content";
 import { sectionEyebrow } from "@/lib/sections";
 
 // Zod's JIT probes `new Function`, which the production CSP blocks and reports. Four fields don't need it.
@@ -29,9 +30,19 @@ const labels: Record<VisibleField, string> = { name: "Name", email: "Email", sub
 function Field({ name, error, children }: { name: VisibleField; error?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-1"><label htmlFor={"contact-" + name} className="text-sm font-medium">{labels[name]}</label><span className="text-text-muted" aria-hidden="true">*</span></div>
+      <div className="flex items-center gap-1"><label htmlFor={"contact-" + name} className="text-sm font-semibold text-ink">{labels[name]}</label><span className="text-text-muted" aria-hidden="true">*</span></div>
       {children}
       {error && <p id={"contact-" + name + "-error"} className="text-error text-sm">{error}</p>}
+    </div>
+  );
+}
+
+function Detail({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
+  return (
+    <div className="contact-detail">
+      <span className="glass-icon" aria-hidden="true">{icon}</span>
+      <p className="text-meta">{label}</p>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }
@@ -45,6 +56,7 @@ export function Contact() {
   const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
   const { register, handleSubmit, formState: { errors }, reset } = useForm<ContactFormData>({ resolver: zodResolver(contactSchema), shouldFocusError: false });
   const errorFields = (Object.keys(labels) as VisibleField[]).filter(key => errors[key]);
+  const { phone } = content.contact;
   const fieldProps = (name: VisibleField) => ({
     id: "contact-" + name,
     className: "contact-input",
@@ -90,32 +102,41 @@ export function Contact() {
   };
 
   return (
-    <SectionWrapper id="contact" className="section-border">
+    <SectionWrapper id="contact" className="section-border" labelledBy="contact-title">
       <span id="cta" className="block" aria-hidden="true" />
       <div className="container-section">
-        <SectionHeader eyebrow={sectionEyebrow("contact")} title={content.contact.title} description={content.contact.description} />
-        <div className="grid lg:grid-cols-[.85fr_1.15fr] gap-8 lg:gap-16">
-          <div className="space-y-7">
-            <div className="flex items-center gap-2 text-sm text-success"><span className="status-dot" aria-hidden="true" />{content.contact.availability}</div>
-            <p className="text-text-secondary max-w-md">{content.contact.intro}</p>
-            <div className="space-y-4">
-              <div><p className="text-xs text-text-muted mb-1">EMAIL</p><a href={"mailto:" + content.contact.email} className="text-link [overflow-wrap:anywhere]"><Mail size={17} className="shrink-0 text-accent" aria-hidden="true" /><span className="min-w-0">{content.contact.email}</span><ArrowUpRight size={15} className="shrink-0" aria-hidden="true" /></a></div>
-              <div><p className="text-xs text-text-muted mb-2">BASED IN</p><p className="flex items-center gap-2 text-text-secondary"><MapPin size={17} className="text-accent" aria-hidden="true" />{content.contact.location}</p></div>
+        <SectionHeader eyebrow={sectionEyebrow("contact")} title={content.contact.title} titleId="contact-title" description={content.contact.description} />
+        <div className="grid lg:grid-cols-[.85fr_1.15fr] gap-10 lg:gap-16">
+          <div className="space-y-8" data-reveal="">
+            <p className="inline-flex items-center gap-2.5 text-sm font-medium text-success"><span className="status-dot" aria-hidden="true" />{content.contact.availability}</p>
+            <p className="text-text-secondary text-[1.0625rem] max-w-md">{content.contact.intro}</p>
+            <div className="space-y-5">
+              <Detail icon={<Mail size={18} />} label="Email">
+                <a href={"mailto:" + content.contact.email} className="text-link [overflow-wrap:anywhere]"><span className="min-w-0">{content.contact.email}</span><ArrowUpRight size={15} className="shrink-0" aria-hidden="true" /></a>
+              </Detail>
+              {hasContent(phone) && (
+                <Detail icon={<Phone size={18} />} label="Phone">
+                  <a href={"tel:" + phone!.replace(/[^+\d]/g, "")} className="text-link">{phone}<ArrowUpRight size={15} className="shrink-0" aria-hidden="true" /></a>
+                </Detail>
+              )}
+              <Detail icon={<MapPin size={18} />} label="Based in">
+                <p className="text-sm font-semibold text-ink">{content.contact.location}</p>
+              </Detail>
             </div>
-            <div className="flex flex-wrap gap-3">{socialLinks.filter(s => s.icon !== "mail").map(social => <a key={social.href} href={social.href} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label={social.label}><SocialGlyph icon={social.icon} /></a>)}</div>
+            <div className="flex flex-wrap gap-2.5">{socialLinks.filter(s => s.icon !== "mail").map(social => <a key={social.href} href={social.href} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label={social.label}><SocialGlyph icon={social.icon} /></a>)}</div>
           </div>
           {submitted ? (
-            <div className="card p-8 sm:p-10 flex flex-col items-start justify-center gap-5" role="status">
+            <div className="glass-strong card-elevated p-8 sm:p-10 flex flex-col items-start justify-center gap-5" role="status">
               <span className="size-12 rounded-full bg-success/10 text-success flex items-center justify-center"><Check size={24} aria-hidden="true" /></span>
               <h3 className="text-subheadline">Thanks for reaching out.</h3>
               <p className="text-text-secondary">Your message is on its way. I&apos;ll reply as soon as I can.</p>
               <Button type="button" variant="secondary" onClick={() => setSubmitted(false)}>Send another message</Button>
             </div>
           ) : (
-            <form onSubmit={event => handleSubmit(onSubmit, onInvalid)(event)} className="card p-5 sm:p-7 space-y-5" noValidate aria-labelledby="contact-form-heading">
+            <form onSubmit={event => handleSubmit(onSubmit, onInvalid)(event)} className="card-elevated p-5 sm:p-8 space-y-5" noValidate aria-labelledby="contact-form-heading" data-reveal="" style={{ "--i": 1 } as React.CSSProperties}>
               <div><h3 id="contact-form-heading" className="text-subheadline">{content.contact.formTitle}</h3><p className="text-sm text-text-muted mt-2">{formspreeId ? "All fields are required." : "This opens a draft in your mail app. All fields are required."}</p></div>
-              {errorFields.length > 0 && <div ref={summaryRef} tabIndex={-1} className="rounded-lg border border-error/50 bg-error/5 p-4 text-sm" role="alert" aria-labelledby="contact-errors-heading">
-                <p id="contact-errors-heading" className="text-error font-medium">Please check the following fields:</p>
+              {errorFields.length > 0 && <div ref={summaryRef} tabIndex={-1} className="rounded-2xl border border-error/40 bg-error/[.05] p-4 text-sm" role="alert" aria-labelledby="contact-errors-heading">
+                <p id="contact-errors-heading" className="text-error font-semibold">Please check the following fields:</p>
                 <ul className="mt-2 space-y-1">{errorFields.map(key => <li key={key}><a href={"#contact-" + key} className="inline-flex min-h-11 items-center text-error underline" onClick={() => document.getElementById("contact-" + key)?.focus()}>{labels[key]}: {errors[key]?.message}</a></li>)}</ul>
               </div>}
               <div className="grid sm:grid-cols-2 gap-5">

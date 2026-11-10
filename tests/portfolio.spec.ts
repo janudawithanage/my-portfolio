@@ -30,14 +30,16 @@ test("Recognition categories expand, link to credentials, and follow the request
   await expect(page.locator("#recognition").getByRole("heading", { name: "Awards & Achievements", exact: true })).toBeVisible();
   await expect(page.locator("#recognition").getByRole("heading", { name: "Certifications", exact: true })).toBeVisible();
   await expect(page.locator("#recognition").getByRole("heading", { name: "Volunteering & Leadership", exact: true })).toBeVisible();
-  const expected = ["#about", "#education", "#skills", "#projects", "#experience", "#recognition", "#contact"];
+  // The fixture fills Stats, Security and Writing, switches Now off, and leaves Talks and Testimonials empty.
+  const expected = ["#about", "#education", "#skills", "#projects", "#experience", "#security", "#recognition", "#writing", "#contact"];
   await expect.poll(() => page.locator('footer nav a').evaluateAll(links => links.map(link => link.getAttribute("href")))).toEqual(expected);
   await expect(page.locator("#about .text-eyebrow")).toHaveText("01 — A little about me");
   await expect(page.locator("#education .text-eyebrow")).toHaveText("02 — Education");
   await expect(page.locator("#projects .text-eyebrow")).toHaveText("04 — Selected work");
-  await expect(page.locator("#contact .text-eyebrow")).toHaveText("07 — Get in touch");
+  await expect(page.locator("#security .text-eyebrow")).toHaveText("06 — Security & CTF");
+  await expect(page.locator("#contact .text-eyebrow")).toHaveText("09 — Get in touch");
   await expect(page.locator("#recognition-certifications article:visible")).toHaveCount(6);
-  await page.locator("#recognition").getByRole("button", { name: "Show all 8 entries", exact: true }).click();
+  await page.locator("#recognition").getByRole("button", { name: "View 2 more", exact: true }).click();
   await expect(page.locator("#recognition-certifications article:visible")).toHaveCount(8);
   await expect(page.getByRole("link", { name: "View credential for Test certificate 8", exact: true })).toHaveAttribute("href", "https://example.com/credential/7");
   await page.locator("#recognition").getByRole("button", { name: "Show fewer", exact: true }).click();
@@ -67,6 +69,8 @@ test("curated experiments remain text-only, preserve details and order, expand, 
   await expect(page.locator("#github-repositories img, #github-repositories .project-art")).toHaveCount(0);
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
+    // Viewport-relative font sizes settle on the next frame after a resize.
+    await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   }
   await page.getByRole("button", { name: "Show fewer" }).click();
@@ -78,12 +82,12 @@ test("curated experiments remain text-only, preserve details and order, expand, 
 });
 
 test("page order, responsive text, and touch targets across phones, tablets, and desktop", async ({ page }) => {
-  expect(await page.locator("main section[id]").evaluateAll(sections => sections.map(section => section.id))).toEqual(["hero", "about", "education", "skills", "projects", "experience", "recognition", "contact"]);
+  expect(await page.locator("main section[id]").evaluateAll(sections => sections.map(section => section.id))).toEqual(["hero", "about", "stats", "education", "skills", "projects", "experience", "security", "recognition", "writing", "contact"]);
   for (const [width, height] of [[320,844],[375,844],[390,844],[430,932],[639,900],[640,900],[767,1024],[768,1024],[1023,900],[1024,900],[1440,1000],[1920,1080],[844,390],[1024,768]]) {
     await page.setViewportSize({ width, height });
     await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
     const result = await page.evaluate(() => {
-      const clipped = Array.from(document.querySelectorAll<HTMLElement>("main h1,main h2,main h3,main p,main a,main li > span")).filter(e => e.clientWidth > 0 && e.scrollWidth > e.clientWidth + 2 && !e.closest('[aria-hidden="true"]')).map(e => e.textContent);
+      const clipped = Array.from(document.querySelectorAll<HTMLElement>("main h1,main h2,main h3,main p,main a,main li > span")).filter(e => e.clientWidth > 0 && e.scrollWidth > e.clientWidth + 2 && !e.closest('[aria-hidden="true"], .sr-only')).map(e => e.textContent);
       const small = Array.from(document.querySelectorAll("a,button,input,summary")).filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.height < 43.5 && !e.classList.contains("skip-link"); }).map(e => e.textContent);
       return { pageWidth: document.documentElement.scrollWidth, width: innerWidth, clipped, small };
     });

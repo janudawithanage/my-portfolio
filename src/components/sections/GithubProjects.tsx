@@ -12,7 +12,7 @@ export async function GithubProjects() {
   const result = manual ? null : await fetchGitHubRepos();
   const profileUrl = "https://github.com/" + GITHUB_USERNAME;
   return (
-    <SectionWrapper id="github" className="section-border bg-bg-secondary">
+    <SectionWrapper id="github" className="section-border">
       <div className="container-section">
         <SectionHeader eyebrow="06 / Open source & experiments" title="There’s more in the repositories." description="Coursework, side projects, and experiments. A look at what I’m exploring and building beyond the selected work." />
         {result ? <GithubProjectsGrid result={result} profileUrl={profileUrl} renderedAt={new Date().toISOString()} /> : <CuratedGithubProjects projects={experimentsData.projects as Project[]} profileUrl={profileUrl} />}

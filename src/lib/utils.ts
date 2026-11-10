@@ -36,15 +36,15 @@ export function formatGitHubDate(dateString: string): string {
  */
 export function getLangColor(lang: string | null): string {
   const map: Record<string, string> = {
-    TypeScript:  "text-blue-400",
-    JavaScript:  "text-yellow-400",
-    Python:      "text-green-400",
-    Java:        "text-orange-400",
-    Shell:       "text-gray-400",
-    Go:          "text-cyan-400",
-    Rust:        "text-red-400",
-    CSS:         "text-purple-400",
-    HTML:        "text-orange-500",
+    TypeScript:  "text-blue-700",
+    JavaScript:  "text-amber-700",
+    Python:      "text-green-700",
+    Java:        "text-orange-700",
+    Shell:       "text-gray-600",
+    Go:          "text-cyan-700",
+    Rust:        "text-red-700",
+    CSS:         "text-purple-700",
+    HTML:        "text-orange-700",
   };
-  return lang ? (map[lang] ?? "text-slate-400") : "text-slate-500";
+  return lang ? (map[lang] ?? "text-slate-600") : "text-slate-600";
 }

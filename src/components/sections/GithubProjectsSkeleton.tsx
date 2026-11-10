@@ -5,7 +5,7 @@ interface GithubProjectsSkeletonProps { count?: number; className?: string; }
 
 export function GithubProjectsSkeleton({ count = 6, className }: GithubProjectsSkeletonProps) {
   return (
-    <SectionWrapper id="github" className={cn("section-border bg-bg-secondary", className)}>
+    <SectionWrapper id="github" className={cn("section-border", className)}>
       <div className="container-section" aria-busy="true" aria-label="Loading GitHub repositories">
         <SectionHeader eyebrow="06 / Open source & experiments" title="There’s more in the repositories." description="Coursework, side projects, and experiments. A look at what I’m exploring and building beyond the selected work." />
         <div className="h-5 w-48 max-w-full skeleton rounded mb-5" aria-hidden="true" />

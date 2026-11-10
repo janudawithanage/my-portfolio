@@ -9,14 +9,14 @@ interface BadgeProps {
 
 export function Badge({ children, variant = "default", size = "sm", className }: BadgeProps) {
   const variants = {
-    default: "border-border-subtle bg-surface-raised text-text-secondary",
-    accent: "border-accent-dim bg-accent-subtle text-accent",
-    gold: "border-gold/40 text-gold-light",
-    success: "border-success/40 text-success",
+    default: "border-border bg-white/65 text-text-secondary",
+    accent: "border-accent/25 bg-accent-subtle text-accent",
+    gold: "border-gold/40 bg-gold-light/70 text-gold-deep",
+    success: "border-success/25 bg-success/[.07] text-success",
     outline: "border-border-subtle text-text-secondary",
   };
   return (
-    <span className={cn("inline-flex max-w-full items-center gap-1 rounded-md border font-medium [overflow-wrap:anywhere]", variants[variant], size === "sm" ? "px-2.5 py-1 text-xs" : "px-3 py-1.5 text-sm", className)}>
+    <span className={cn("inline-flex max-w-full items-center gap-1.5 rounded-full border font-medium [overflow-wrap:anywhere]", variants[variant], size === "sm" ? "px-2.5 py-0.5 text-xs" : "px-3 py-1 text-sm", className)}>
       {children}
     </span>
   );
