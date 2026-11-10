@@ -1,10 +1,20 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import Image from "next/image";
 import { ArrowDown, ArrowUpRight, Download, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { content, fullName, featuredProjects, socialLinks } from "@/data";
 
+const heroHighlights = content.hero.marquee.join(" ✦ ").toUpperCase() + " ✦ ";
+
+/** A site-relative CV only gets a button once its PDF exists in public/, so the link never 404s. */
+function isCvAvailable(cvUrl: string) {
+  return /^https?:\/\//i.test(cvUrl) || existsSync(path.join(process.cwd(), "public", cvUrl));
+}
+
 export function Hero() {
+  const cvAvailable = isCvAvailable(content.hero.cvUrl);
   return (
     <section id="hero" className="hero-section" aria-labelledby="hero-name">
       <div className="container-section">
@@ -17,7 +27,7 @@ export function Hero() {
             <div className="hero-actions">
               <Button asChild size="lg"><a href="#projects">{content.hero.primaryLabel}<ArrowDown size={17} aria-hidden="true" /></a></Button>
               <Button asChild variant="secondary" size="lg"><a href="#contact">{content.hero.secondaryLabel}<ArrowUpRight size={17} aria-hidden="true" /></a></Button>
-              <Button asChild variant="secondary" size="lg"><a href={content.hero.cvUrl} download>{content.hero.cvLabel}<Download size={17} aria-hidden="true" /></a></Button>
+              {cvAvailable && <Button asChild variant="secondary" size="lg"><a href={content.hero.cvUrl} download>{content.hero.cvLabel}<Download size={17} aria-hidden="true" /></a></Button>}
             </div>
             <div className="hero-facts">
               {content.hero.facts.slice(0, 1).map(fact => <span key={fact.label}><strong>{fact.value}</strong> {fact.label}</span>)}
@@ -40,6 +50,12 @@ export function Hero() {
         </div>
         <div className="hero-capabilities" aria-label="Areas of focus">
           {content.hero.capabilities.map(item => <span key={item}>{item}</span>)}
+        </div>
+      </div>
+      <div className="hero-tech-strip" role="region" aria-label="Skills and areas of focus" tabIndex={0}>
+        <div className="hero-tech-track">
+          <span>{heroHighlights}</span>
+          <span aria-hidden="true">{heroHighlights}</span>
         </div>
       </div>
     </section>

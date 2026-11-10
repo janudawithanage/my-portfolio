@@ -46,6 +46,9 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 export const FEATURED_TOPICS = ["featured", "portfolio"] as const;
 export type FeaturedTopic = (typeof FEATURED_TOPICS)[number];
 
+/** Warn about a missing token once per server process, not on every fetch. */
+let warnedAboutMissingToken = false;
+
 /** Maximum repos shown in the GitHub section. */
 const MAX_DISPLAY = 12;
 
@@ -122,7 +125,8 @@ export async function fetchGitHubRepos(): Promise<GitHubFetchResult> {
 
     if (GITHUB_TOKEN) {
       headers.Authorization = `Bearer ${GITHUB_TOKEN}`;
-    } else {
+    } else if (!warnedAboutMissingToken) {
+      warnedAboutMissingToken = true;
       console.warn(
         "[GitHub API] No GITHUB_TOKEN found. " +
           "Unauthenticated requests are rate-limited to 60/hr. " +
@@ -164,107 +168,6 @@ export async function fetchGitHubRepos(): Promise<GitHubFetchResult> {
         "Check your connection or try again shortly.",
     };
   }
-}
-
-// ─── Skill bonus computation ──────────────────────────────────────────────────
-
-/**
- * Maps a GitHub primary language to the skill names it signals.
- * Language is a strong signal (weight 3) — it means you wrote real code in it.
- */
-const LANG_TO_SKILLS: Record<string, string[]> = {
-  TypeScript:  ["TypeScript", "React / Next.js"],
-  JavaScript:  ["Node.js / Express", "React / Next.js"],
-  Python:      ["Python"],
-  Java:        ["Java"],
-  Shell:       ["Linux / Bash"],
-  Bash:        ["Linux / Bash"],
-  CSS:         ["Tailwind CSS", "HTML & CSS"],
-  SCSS:        ["Tailwind CSS", "HTML & CSS"],
-  HTML:        ["HTML & CSS"],
-};
-
-/**
- * Maps GitHub repo topics to the skill names they signal.
- * Topics are a weaker signal (weight 1) but more granular — they cover
- * frameworks, tools, and concepts that don't show up as a language.
- */
-const TOPIC_TO_SKILLS: Record<string, string[]> = {
-  react:            ["React / Next.js"],
-  nextjs:           ["React / Next.js"],
-  "next.js":        ["React / Next.js"],
-  typescript:       ["TypeScript"],
-  nodejs:           ["Node.js / Express"],
-  node:             ["Node.js / Express"],
-  express:          ["Node.js / Express"],
-  python:           ["Python"],
-  java:             ["Java"],
-  mongodb:          ["MongoDB"],
-  postgresql:       ["PostgreSQL / MySQL"],
-  mysql:            ["PostgreSQL / MySQL"],
-  docker:           ["Docker & Containers"],
-  containers:       ["Docker & Containers"],
-  azure:            ["Microsoft Azure"],
-  cloud:            ["Microsoft Azure"],
-  tailwindcss:      ["Tailwind CSS"],
-  tailwind:         ["Tailwind CSS"],
-  "github-actions": ["GitHub Actions CI/CD"],
-  cicd:             ["GitHub Actions CI/CD"],
-  "ci-cd":          ["GitHub Actions CI/CD"],
-  kong:             ["Kong API Gateway"],
-  linux:            ["Linux / Bash"],
-  bash:             ["Linux / Bash"],
-  security:         ["Network Security", "Web App Security"],
-  cybersecurity:    ["Network Security", "Web App Security"],
-  ctf:              ["CTF Challenges"],
-  owasp:            ["OWASP Top 10"],
-  "web-security":   ["Web App Security"],
-  rest:             ["REST APIs"],
-  api:              ["REST APIs"],
-  restapi:          ["REST APIs"],
-  microservices:    ["Node.js / Express", "REST APIs"],
-  fullstack:        ["React / Next.js", "Node.js / Express"],
-};
-
-/** Maximum bonus points a skill can gain from GitHub data. */
-const MAX_BONUS = 7;
-
-/**
- * Analyses public repos and returns a map of `{ skillName → bonusPoints }`.
- *
- * Algorithm:
- *   1. For each repo, language match → +3 pts per matched skill (strong signal)
- *   2. For each repo topic, topic match → +1 pt per matched skill (weak signal)
- *   3. Normalise all raw scores relative to the single highest-scoring skill
- *      so the most-used skill gets the full MAX_BONUS, others get proportional.
- *
- * In the Skills component, callers do: `clamp(baseLevel + bonus, 40, 97)`
- * so base levels are preserved and bonus only nudges them upward by real usage.
- */
-export function computeGitHubSkillBonus(
-  repos: GitHubRepo[]
-): Record<string, number> {
-  const raw: Record<string, number> = {};
-
-  const add = (skill: string, pts: number) => {
-    raw[skill] = (raw[skill] ?? 0) + pts;
-  };
-
-  for (const repo of repos) {
-    if (repo.language) {
-      LANG_TO_SKILLS[repo.language]?.forEach((s) => add(s, 3));
-    }
-    for (const topic of repo.topics) {
-      TOPIC_TO_SKILLS[topic.toLowerCase()]?.forEach((s) => add(s, 1));
-    }
-  }
-
-  const maxScore = Math.max(1, ...Object.values(raw));
-  const bonus: Record<string, number> = {};
-  for (const [skill, score] of Object.entries(raw)) {
-    bonus[skill] = Math.round((score / maxScore) * MAX_BONUS);
-  }
-  return bonus;
 }
 
 // ─── Internal helpers ─────────────────────────────────────────────────────────

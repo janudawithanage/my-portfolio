@@ -4,23 +4,28 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { motion } from "framer-motion";
 import { ArrowUpRight, Check, Mail, MapPin, Send } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { content, hasRecognition, socialLinks } from "@/data";
 
+// Zod's JIT probes `new Function`, which the production CSP blocks and reports. Four fields don't need it.
+z.config({ jitless: true });
+
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Enter a name with at least 2 characters."),
   email: z.string().trim().email("Enter a valid email address."),
   subject: z.string().trim().min(5, "Add a subject with at least 5 characters."),
   message: z.string().trim().min(20, "Tell me a little more — at least 20 characters."),
+  // Honeypot: hidden from people, but naive bots fill every input they find.
+  _gotcha: z.string().optional(),
 });
 type ContactFormData = z.infer<typeof contactSchema>;
-const labels: Record<keyof ContactFormData, string> = { name: "Name", email: "Email", subject: "Subject", message: "Message" };
+type VisibleField = Exclude<keyof ContactFormData, "_gotcha">;
+const labels: Record<VisibleField, string> = { name: "Name", email: "Email", subject: "Subject", message: "Message" };
 
-function Field({ name, error, children }: { name: keyof ContactFormData; error?: string; children: React.ReactNode }) {
+function Field({ name, error, children }: { name: VisibleField; error?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1"><label htmlFor={"contact-" + name} className="text-sm font-medium">{labels[name]}</label><span className="text-text-muted" aria-hidden="true">*</span></div>
@@ -38,8 +43,8 @@ export function Contact() {
   const summaryRef = useRef<HTMLDivElement>(null);
   const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
   const { register, handleSubmit, formState: { errors }, reset } = useForm<ContactFormData>({ resolver: zodResolver(contactSchema), shouldFocusError: false });
-  const errorFields = (Object.keys(labels) as (keyof ContactFormData)[]).filter(key => errors[key]);
-  const fieldProps = (name: keyof ContactFormData) => ({
+  const errorFields = (Object.keys(labels) as VisibleField[]).filter(key => errors[key]);
+  const fieldProps = (name: VisibleField) => ({
     id: "contact-" + name,
     className: "contact-input",
     required: true,
@@ -47,7 +52,17 @@ export function Contact() {
     "aria-describedby": errors[name] ? "contact-" + name + "-error" : undefined,
   });
 
+  const onInvalid = () => {
+    requestAnimationFrame(() => summaryRef.current?.focus());
+  };
+
   const onSubmit = async (data: ContactFormData) => {
+    if (data._gotcha) {
+      // A bot filled the honeypot: show the usual confirmation but send nothing.
+      setSubmitted(true);
+      reset();
+      return;
+    }
     setSubmitting(true);
     setSubmitError(null);
     setSubmitNotice(null);
@@ -56,15 +71,15 @@ export function Contact() {
         const response = await fetch("https://formspree.io/f/" + formspreeId, {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify({ name: data.name, email: data.email, subject: data.subject, message: data.message }),
         });
         if (!response.ok) throw new Error("Submission failed");
         setSubmitted(true);
         reset();
       } else {
         const body = "Name: " + data.name + "\nEmail: " + data.email + "\n\n" + data.message;
-        window.location.href = "mailto:" + content.contact.email + "?subject=" + encodeURIComponent(data.subject) + "&body=" + encodeURIComponent(body);
-        setSubmitNotice("An email draft should open in your mail app. Send it there to complete your message.");
+        window.location.assign("mailto:" + content.contact.email + "?subject=" + encodeURIComponent(data.subject) + "&body=" + encodeURIComponent(body));
+        setSubmitNotice("An email draft should open in your mail app. Send it there to complete your message. If nothing opens, email " + content.contact.email + " directly.");
       }
     } catch {
       setSubmitError("Your message couldn’t be sent. Please try again, or email me directly.");
@@ -89,14 +104,14 @@ export function Contact() {
             <div className="flex gap-3">{socialLinks.filter(s => s.icon !== "mail").map(social => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label={social.label}>{social.icon === "github" ? <GithubIcon size={18} /> : <LinkedinIcon size={18} />}</a>)}</div>
           </div>
           {submitted ? (
-            <motion.div initial={false} animate={{ opacity: 1 }} className="card p-8 sm:p-10 flex flex-col items-start justify-center gap-5" role="status">
+            <div className="card p-8 sm:p-10 flex flex-col items-start justify-center gap-5" role="status">
               <span className="size-12 rounded-full bg-success/10 text-success flex items-center justify-center"><Check size={24} aria-hidden="true" /></span>
               <h3 className="text-subheadline">Thanks for reaching out.</h3>
               <p className="text-text-secondary">Your message is on its way. I&apos;ll reply as soon as I can.</p>
               <Button type="button" variant="secondary" onClick={() => setSubmitted(false)}>Send another message</Button>
-            </motion.div>
+            </div>
           ) : (
-            <form onSubmit={handleSubmit(onSubmit, () => requestAnimationFrame(() => summaryRef.current?.focus()))} className="card p-5 sm:p-7 space-y-5" noValidate aria-labelledby="contact-form-heading">
+            <form onSubmit={event => handleSubmit(onSubmit, onInvalid)(event)} className="card p-5 sm:p-7 space-y-5" noValidate aria-labelledby="contact-form-heading">
               <div><h3 id="contact-form-heading" className="text-subheadline">{content.contact.formTitle}</h3><p className="text-sm text-text-muted mt-2">{formspreeId ? "All fields are required." : "This opens a draft in your mail app. All fields are required."}</p></div>
               {errorFields.length > 0 && <div ref={summaryRef} tabIndex={-1} className="rounded-lg border border-error/50 bg-error/5 p-4 text-sm" role="alert" aria-labelledby="contact-errors-heading">
                 <p id="contact-errors-heading" className="text-error font-medium">Please check the following fields:</p>
@@ -108,6 +123,7 @@ export function Contact() {
               </div>
               <Field name="subject" error={errors.subject?.message}><input {...register("subject")} {...fieldProps("subject")} type="text" placeholder="What’s on your mind?" /></Field>
               <Field name="message" error={errors.message?.message}><textarea {...register("message")} {...fieldProps("message")} rows={5} placeholder="Tell me about your project, opportunity, or question…" /></Field>
+              <input {...register("_gotcha")} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
               {submitError && <p role="alert" className="text-error text-sm">{submitError} <a className="underline inline-flex min-h-11 items-center" href={"mailto:" + content.contact.email}>Email {content.hero.firstName}</a></p>}
               {submitNotice && <p role="status" className="text-text-secondary text-sm">{submitNotice}</p>}
               <Button type="submit" size="lg" className="w-full" disabled={submitting}>{submitting ? <><span className="spinner" aria-hidden="true" />Sending…</> : <>{formspreeId ? "Send message" : "Open email draft"}<Send size={16} aria-hidden="true" /></>}</Button>
