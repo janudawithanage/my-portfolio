@@ -13,7 +13,7 @@ export function Writing({ data = content.writing }: { data?: WritingContent }) {
     <SectionWrapper id="writing" className="section-border" labelledBy="writing-title">
       <div className="container-section">
         <SectionHeader eyebrow={sectionEyebrow("writing")} title={data.title} titleId="writing-title" description={data.description} />
-        <Expandable id="writing-list" className="list-grid list-grid-2 list-grid-3" items={data.posts.map(post => (
+        <Expandable id="writing-list" noun="articles" className="list-grid list-grid-2 list-grid-3" items={data.posts.map(post => (
           <article key={post.id} className="glass post-card" data-tilt="">
             {hasContent(post.cover) && <div className="post-cover"><Image src={post.cover!} alt="" fill sizes="(min-width: 1024px) 380px, (min-width: 768px) 45vw, calc(100vw - 3rem)" className="object-cover" /></div>}
             <div className="post-body">

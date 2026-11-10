@@ -44,7 +44,7 @@ export function Hero() {
           <div className="hero-visual">
             <figure className="hero-portrait-shell">
               <div className="hero-portrait">
-                <Image src={hero.image} alt={hero.imageAlt} fill sizes="(min-width: 1280px) 408px, (min-width: 1024px) 34vw, (min-width: 640px) 408px, calc(100vw - 58px)" className="object-cover" priority />
+                <Image src={hero.image} alt={hero.imageAlt} fill sizes="(min-width: 1280px) 408px, (min-width: 1024px) 34vw, (min-width: 640px) 408px, calc(100vw - 58px)" className="object-cover" preload fetchPriority="high" />
               </div>
               <figcaption className="portrait-caption">
                 <span className="flex items-center gap-1.5"><MapPin size={14} className="text-accent" aria-hidden="true" />{hero.location}</span>

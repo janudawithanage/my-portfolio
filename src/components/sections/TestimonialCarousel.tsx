@@ -44,7 +44,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
 
   return (
     <div
-      className="glass"
+      className="glass overflow-hidden"
       role="region"
       aria-roledescription="carousel"
       aria-label="Testimonials"

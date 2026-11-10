@@ -8,9 +8,9 @@ import { sectionEyebrow } from "@/lib/sections";
 import type { RecognitionContent, RecognitionEntry } from "@/types";
 
 const categories = [
-  { key: "awards", title: "Awards & Achievements", icon: Award },
-  { key: "certifications", title: "Certifications", icon: BadgeCheck },
-  { key: "volunteering", title: "Volunteering & Leadership", icon: HeartHandshake },
+  { key: "awards", title: "Awards & Achievements", icon: Award, noun: "awards" },
+  { key: "certifications", title: "Certifications", icon: BadgeCheck, noun: "certifications" },
+  { key: "volunteering", title: "Volunteering & Leadership", icon: HeartHandshake, noun: "roles" },
 ] as const;
 
 type CategoryKey = (typeof categories)[number]["key"];
@@ -41,7 +41,7 @@ export function Recognition({ data }: { data: RecognitionContent }) {
       <div className="container-section">
         <SectionHeader eyebrow={sectionEyebrow("recognition")} title={data.title} titleId="recognition-title" description={data.description} />
         <div className="recognition-categories">
-          {visible.map(({ key, title, icon: Icon }) => {
+          {visible.map(({ key, title, icon: Icon, noun }) => {
             const entries = data[key];
             return (
               <div className="recognition-category" key={key}>
@@ -50,14 +50,14 @@ export function Recognition({ data }: { data: RecognitionContent }) {
                   <Badge variant="gold">{String(entries.length).padStart(2, "0")} {entries.length === 1 ? "entry" : "entries"}</Badge>
                 </div>
                 {key === "volunteering" ? (
-                  <Expandable id={`recognition-${key}`} className="timeline recognition-timeline" items={entries.map(entry => (
+                  <Expandable id={`recognition-${key}`} noun={noun} className="timeline recognition-timeline" items={entries.map(entry => (
                     <div className="timeline-item" key={entry.id}>
                       <div className="timeline-node" aria-hidden="true"><span className="timeline-dot" /></div>
                       <RecognitionCard entry={entry} kind={key} />
                     </div>
                   ))} />
                 ) : (
-                  <Expandable id={`recognition-${key}`} className="recognition-grid" items={entries.map(entry => <RecognitionCard key={entry.id} entry={entry} kind={key} />)} />
+                  <Expandable id={`recognition-${key}`} noun={noun} className="recognition-grid" items={entries.map(entry => <RecognitionCard key={entry.id} entry={entry} kind={key} />)} />
                 )}
               </div>
             );

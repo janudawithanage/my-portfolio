@@ -12,7 +12,7 @@ export function Security({ data = content.security }: { data?: SecurityContent }
     <SectionWrapper id="security" className="section-border" labelledBy="security-title">
       <div className="container-section">
         <SectionHeader eyebrow={sectionEyebrow("security")} title={data.title} titleId="security-title" description={data.description} />
-        <Expandable id="security-list" className="list-grid" items={data.entries.map(entry => (
+        <Expandable id="security-list" noun="events" className="list-grid" items={data.entries.map(entry => (
           <article key={entry.id} className="glass row-card" data-tilt="">
             <div className="min-w-0 space-y-2.5">
               <p className="text-meta">{entry.date}</p>

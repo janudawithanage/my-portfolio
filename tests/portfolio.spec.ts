@@ -39,10 +39,10 @@ test("Recognition categories expand, link to credentials, and follow the request
   await expect(page.locator("#security .text-eyebrow")).toHaveText("06 — Security & CTF");
   await expect(page.locator("#contact .text-eyebrow")).toHaveText("09 — Get in touch");
   await expect(page.locator("#recognition-certifications article:visible")).toHaveCount(6);
-  await page.locator("#recognition").getByRole("button", { name: "View 2 more", exact: true }).click();
+  await page.locator("#recognition").getByRole("button", { name: "View 2 more certifications", exact: true }).click();
   await expect(page.locator("#recognition-certifications article:visible")).toHaveCount(8);
   await expect(page.getByRole("link", { name: "View credential for Test certificate 8", exact: true })).toHaveAttribute("href", "https://example.com/credential/7");
-  await page.locator("#recognition").getByRole("button", { name: "Show fewer", exact: true }).click();
+  await page.locator("#recognition").getByRole("button", { name: "Show fewer certifications", exact: true }).click();
   await expect(page.locator("#recognition-certifications article:visible")).toHaveCount(6);
   for (const width of [320, 390, 768, 1024, 1920]) {
     await page.setViewportSize({ width, height: 900 });
@@ -208,4 +208,119 @@ test("reduced motion, browser zoom reflow, and enlarged text retain content", as
   await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await expect(page.getByRole("link", { name: "Explore my work" })).toBeVisible();
+});
+
+test("empty or switched-off sections never render, never reach navigation, and do not use up a number", async ({ page }) => {
+  // Fixture: Talks and Testimonials are empty; Now has an entry but is switched off in the section order.
+  for (const id of ["talks", "testimonials", "now"]) {
+    await expect(page.locator(`main #${id}`), `#${id} is not rendered`).toHaveCount(0);
+    await expect(page.locator(`a[href="#${id}"]`), `#${id} is not linked`).toHaveCount(0);
+  }
+  for (const id of ["stats", "security", "writing"]) await expect(page.locator(`main #${id}`)).toHaveCount(1);
+  const desktop = await page.locator("header nav a.nav-link").evaluateAll(links => links.map(link => link.getAttribute("href")));
+  expect(desktop).toEqual(["#about", "#education", "#skills", "#projects", "#experience", "#security", "#recognition", "#writing"]);
+  const numbers = await page.locator("main .text-eyebrow .eyebrow-number").allTextContents();
+  expect(numbers).toEqual(["01", "02", "03", "04", "05", "06", "07", "08", "09"]);
+  await expect(page.locator("#stats .text-eyebrow"), "the stats band has no heading number").toHaveCount(0);
+  await expect(page.locator("#stats")).toHaveAttribute("aria-labelledby", "stats-title");
+  await expect(page.locator("#stats li")).toHaveCount(4);
+  await expect(page.locator("#stats")).toContainText("15+");
+  await expect(page.locator("#stats")).toContainText("3.9");
+});
+
+test("long lists show six entries, then reveal the rest with an inert, accessible expander", async ({ page }) => {
+  const list = page.locator("#writing-list");
+  await expect(list.locator("article:visible")).toHaveCount(6);
+  await expect(list.locator(".expander")).toHaveAttribute("inert", "");
+  const toggle = page.getByRole("button", { name: "View 2 more articles", exact: true });
+  await expect(toggle).toHaveAttribute("aria-controls", "writing-list");
+  await toggle.click();
+  await expect(list.locator("article:visible")).toHaveCount(8);
+  await expect(list.locator(".expander")).not.toHaveAttribute("inert", "");
+  await expect(page.getByRole("button", { name: "Show fewer articles", exact: true })).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByRole("link", { name: "Test article 8", exact: true })).toHaveAttribute("href", "https://example.com/post/7");
+  // Optional fields only render when they have content.
+  const second = page.locator("#security article").nth(1);
+  await expect(second.getByRole("link")).toHaveCount(0);
+  await expect(second.locator(".result-chip")).toHaveCount(0);
+  await expect(page.locator("#security article").first().getByRole("link", { name: "Read write-up for Test CTF 2026" })).toHaveAttribute("href", "https://example.com/writeup/1");
+});
+
+test("testimonial carousel is labelled, keyboard operable, and only exposes the current quote", async ({ page }) => {
+  await page.goto("/ui-fixtures/showcase");
+  const carousel = page.getByRole("region", { name: "Testimonials" });
+  await expect(carousel).toHaveAttribute("aria-roledescription", "carousel");
+  const slides = carousel.locator("figure");
+  await expect(slides).toHaveCount(3);
+  await expect(slides.nth(0)).toHaveAttribute("data-active", "");
+  await expect(slides.nth(1)).toHaveAttribute("inert", "");
+  // Reduced motion (the suite default): no auto-advance, so no pause control and a polite live region.
+  await expect(carousel.getByRole("button", { name: /^(Pause|Play) testimonials$/ })).toHaveCount(0);
+  await expect(carousel.locator(".testimonial-stage")).toHaveAttribute("aria-live", "polite");
+  await carousel.getByRole("button", { name: "Next testimonial" }).click();
+  await expect(slides.nth(1)).toHaveAttribute("data-active", "");
+  await expect(slides.nth(0)).toHaveAttribute("inert", "");
+  await carousel.getByRole("button", { name: "Show testimonial 3 of 3" }).click();
+  await expect(carousel.getByRole("button", { name: "Show testimonial 3 of 3" })).toHaveAttribute("aria-current", "true");
+  await carousel.getByRole("button", { name: "Show testimonial 3 of 3" }).press("ArrowRight");
+  await expect(slides.nth(0)).toHaveAttribute("data-active", "");
+  await expect(carousel.getByRole("link", { name: "Test Person One" })).toHaveAttribute("href", "https://example.com/one");
+  for (const button of await carousel.getByRole("button").all()) expect((await button.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), `showcase fits ${width}px`).toBeLessThanOrEqual(width);
+  }
+  // Now and Talks hide optional fields that are empty.
+  await expect(page.locator("#now li")).toHaveCount(3);
+  await expect(page.locator("#now")).toContainText("📚");
+  await expect(page.locator("#talks article").nth(2).getByRole("link")).toHaveCount(0);
+  await expect(page.locator("#talks article").first().getByRole("link", { name: "View talk — Test talk" })).toBeVisible();
+});
+
+test.describe("with motion", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("auto-advancing testimonials can be paused", async ({ page }) => {
+    await page.goto("/ui-fixtures/showcase");
+    const carousel = page.getByRole("region", { name: "Testimonials" });
+    const pause = carousel.getByRole("button", { name: "Pause testimonials" });
+    await expect(pause).toBeVisible();
+    await pause.click();
+    await expect(carousel.getByRole("button", { name: "Play testimonials" })).toBeVisible();
+    await expect(carousel.locator(".testimonial-stage")).toHaveAttribute("aria-live", "polite");
+  });
+
+  test("sections reveal once on scroll and counters finish on their real values", async ({ page }) => {
+    await expect(page.locator("html")).toHaveClass(/\bjs\b/);
+    const heading = page.locator("#skills .section-heading");
+    await expect(heading).not.toHaveAttribute("data-shown", "");
+    await heading.scrollIntoViewIfNeeded();
+    await expect(heading).toHaveAttribute("data-shown", "");
+    await expect(heading).toHaveCSS("opacity", "1");
+    await page.locator("#stats").scrollIntoViewIfNeeded();
+    await expect(page.locator("#stats")).toContainText("15+");
+    await expect(page.locator("#stats")).toContainText("3.9");
+    await expect(page.locator("#hero .hero-facts")).toContainText("3+ years coding");
+  });
+});
+
+test("content is fully visible without JavaScript", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, reducedMotion: "no-preference" });
+  const page = await context.newPage();
+  await page.goto("/");
+  await expect(page.locator("html")).not.toHaveClass(/\bjs\b/);
+  for (const selector of ["#about .section-heading", "#skills li", "#projects article", "#contact form"]) {
+    await expect(page.locator(selector).first()).toHaveCSS("opacity", "1");
+  }
+  await context.close();
+});
+
+test("the scrolled navigation pill keeps every control at least 44px tall", async ({ page, isMobile }) => {
+  await page.evaluate(() => window.scrollTo(0, 900));
+  await expect(page.locator("header.site-header")).toHaveAttribute("data-scrolled", "");
+  await page.waitForTimeout(800);
+  const heights = await page.locator("header a:visible, header button:visible").evaluateAll(nodes => nodes.map(node => ({ text: node.textContent?.trim() || node.getAttribute("aria-label"), height: node.getBoundingClientRect().height })));
+  expect(heights.length).toBeGreaterThan(isMobile ? 1 : 6);
+  for (const { text, height } of heights) expect(height, `${text} is ${height}px`).toBeGreaterThanOrEqual(44);
 });

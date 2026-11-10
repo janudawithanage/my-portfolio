@@ -100,9 +100,11 @@ export function Navbar() {
     <>
       <header ref={headerRef} className="site-header">
         <nav className="site-nav" aria-label="Main navigation">
-          <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-full pr-2" aria-label={fullName + " — home"}>
+          <Link href="/" className="inline-flex min-h-[2.875rem] items-center gap-3 rounded-full pr-2">
             <span className="brand-mark" aria-hidden="true">{content.hero.firstName[0]}{content.hero.lastName[0]}<span>.</span></span>
-            <span className="text-sm font-semibold text-ink hidden sm:inline lg:hidden xl:inline">{fullName}</span>
+            {/* The name stays in the accessible name when it is visually hidden on narrow and mid-width screens. */}
+            <span className="text-sm font-semibold text-ink sr-only sm:not-sr-only lg:sr-only xl:not-sr-only">{fullName}</span>
+            <span className="sr-only"> — home</span>
           </Link>
           <div ref={listRef} className="nav-links hidden lg:flex">
             <span ref={indicatorRef} className="nav-indicator" aria-hidden="true" style={{ opacity: 0, clipPath: "inset(0 50% 0 50% round 999px)" }} />
@@ -113,7 +115,7 @@ export function Navbar() {
             </ul>
           </div>
           <div className="flex items-center gap-2">
-            <Button asChild size="sm" magnetic className="hidden lg:inline-flex min-h-11"><a href="#contact">{content.hero.secondaryLabel}<ArrowUpRight size={15} aria-hidden="true" /></a></Button>
+            <Button asChild size="sm" magnetic className="hidden lg:inline-flex min-h-[2.875rem]"><a href="#contact">{content.hero.secondaryLabel}<ArrowUpRight size={15} aria-hidden="true" /></a></Button>
             <div className="lg:hidden"><button ref={triggerRef} type="button" className="icon-link" onClick={() => setMobileOpen(true)} aria-label="Open navigation menu" aria-haspopup="dialog" aria-expanded={mobileOpen} aria-controls="mobile-navigation"><Menu size={20} aria-hidden="true" /></button></div>
           </div>
         </nav>

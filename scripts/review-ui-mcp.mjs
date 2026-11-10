@@ -58,7 +58,7 @@ try {
         await page.evaluate(() => window.scrollTo({top:0,behavior:"instant"}));
         const metrics = await page.evaluate(() => {
           const elements = Array.from(document.querySelectorAll("main h1, main h2, main h3, main p, main a, main li > span"));
-          const clipped = elements.filter(e => e.clientWidth > 0 && e.scrollWidth > e.clientWidth + 2 && !e.closest('[aria-hidden="true"]')).map(e => ({tag:e.tagName,text:e.textContent.slice(0,90),width:e.clientWidth,scroll:e.scrollWidth}));
+          const clipped = elements.filter(e => e.clientWidth > 0 && e.scrollWidth > e.clientWidth + 2 && !e.closest('[aria-hidden="true"], .sr-only')).map(e => ({tag:e.tagName,text:e.textContent.slice(0,90),width:e.clientWidth,scroll:e.scrollWidth}));
           const targets = Array.from(document.querySelectorAll("a,button,input,summary")).filter(e => {const r=e.getBoundingClientRect();return r.height>0 && r.width>0 && !e.classList.contains("skip-link");});
           const smallTargets = targets.filter(e => e.getBoundingClientRect().height<43.5).map(e=>({text:e.textContent.slice(0,60),height:e.getBoundingClientRect().height}));
           const action = document.querySelector(".hero-actions a").getBoundingClientRect();
@@ -68,7 +68,7 @@ try {
         if ([320,390,768,1440,1920].includes(width) && height>800) {
           await page.screenshot({animations:"disabled",path:"artifacts/ui-review/${browser}-hero-"+width+".png"});
           if (width===390||width===1440) {
-            for (const id of ["about","education","skills","projects","experience","recognition","contact"]) {
+            for (const id of ["about","stats","now","education","skills","projects","experience","security","recognition","writing","talks","testimonials","contact"]) {
               const section=page.locator("#"+id);
               if (!await section.count()) continue;
               const images=section.locator("img");

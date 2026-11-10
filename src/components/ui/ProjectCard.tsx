@@ -64,7 +64,7 @@ export function ProjectCard({ project, index, showVisual = true }: { project: Pr
         {(project.githubUrl || live) && (
           <div className="project-links">
             {project.githubUrl && <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-link"><GithubIcon size={16} />Source code<span className="sr-only"> for {project.title}</span><ArrowUpRight size={15} aria-hidden="true" /></a>}
-            {live && <a href={live} target="_blank" rel="noopener noreferrer" className="text-link !text-accent">Go live<span className="sr-only">: {project.title}</span><ArrowUpRight size={15} aria-hidden="true" /></a>}
+            {live && <a href={live} target="_blank" rel="noopener noreferrer" className="text-link !text-accent">Go live<span className="sr-only"> — {project.title}</span><ArrowUpRight size={15} aria-hidden="true" /></a>}
           </div>
         )}
       </div>

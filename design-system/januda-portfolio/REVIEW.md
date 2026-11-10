@@ -1,5 +1,56 @@
 # UI review — improved-ui
 
+## Light liquid-glass redesign — 2026-11-10
+
+Dark navy theme replaced with the light glass system in `MASTER.md`; motion layer,
+section registry, six new optional sections, and their editor screens added.
+
+### Automated checks
+
+- `npm run lint`, `npx tsc --noEmit`, and a clean `npm run build` pass.
+- `npm run test:editor`: 10/10. New coverage: every new section saves independently,
+  invalid layout/phone/profile/URL/image inputs are rejected, avatar and cover images are
+  staged, and the browser run edits section order, a testimonial, phone, and a profile.
+- `npm run test:ui`: 34/34 (17 tests × Chrome and mobile WebKit). New coverage: empty or
+  switched-off sections never render, never reach navigation, and never use up a number;
+  "View N more" expansion with inert collapsed items; testimonial carousel labels,
+  keyboard, dots, pause control and inert slides; scroll reveals; count-up values;
+  content fully visible without JavaScript; showcase sections fit 320–390px; the
+  scrolled navbar keeps 44px targets.
+- Playwright MCP review (`npm run review:ui`) against the production build: Chrome and
+  WebKit, 14 viewports each from 320px to 1920px, zero overflow, clipped text or
+  undersized targets; dialog focus trap, Escape, focus restore, anchors and reduced
+  motion all pass.
+- Production console: zero errors and zero warnings in Chrome and WebKit.
+
+### Lighthouse 12.8 (production build, local server)
+
+| Run | Performance | Accessibility | Best practices | SEO | LCP | TBT | CLS |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Desktop | 100 | 100 | 100 | 100 | 0.7 s | 0 ms | 0 |
+| Mobile (3 runs) | 92–93 | 100 | 100 | 100 | 3.2–3.3 s | 0–10 ms | 0 |
+
+Mobile Performance is below the 95 target. The redesign did not cause the gap: the
+previous dark design scores 93 under the same conditions (LCP 3.2–3.3 s, 204 KB of
+JavaScript; now 207 KB). Lighthouse's simulated slow 4G shares bandwidth between the
+hero portrait (the LCP element) and the framework JavaScript. Changes made while
+measuring: the portrait no longer fades in (Chrome only reports LCP for an
+opacity-animated element when its fade ends, which had pushed observed LCP to 1.47 s;
+it is now ~0.1 s), the hero image is requested with `fetchPriority="high"`, and images are
+served as AVIF (portrait 41 KB → 25 KB). Measured options for the remaining points:
+dropping Zod from the client contact form saves 25 KB (39 KB gzipped chunk) but only
+reaches 94; reaching 95+ needs the first-screen LCP on phones to be text rather than
+the portrait, or fewer client components.
+
+### Notes
+
+- Turbopack's persistent cache served stale `globals.css` output to both the running dev
+  server and `next build` after in-place edits. Clearing `.next/cache/turbopack` (or
+  `.next-dev/dev/cache/turbopack` for the dev server) fixed it; see the README.
+- Screenshots: `artifacts/ui-review/redesign-*.png` (ignored by git).
+
+## Earlier reviews (dark theme)
+
 Reviewed the production build through Microsoft Playwright MCP in Chrome and WebKit.
 Preview: http://127.0.0.1:3035
 

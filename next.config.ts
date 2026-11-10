@@ -31,6 +31,8 @@ const nextConfig = (phase: string): NextConfig => {
     // Keep a running preview independent of production rebuilds.
     distDir: development ? ".next-dev" : ".next",
     poweredByHeader: false,
+    // AVIF first (the hero portrait drops from 41KB to 25KB), WebP for browsers without AVIF.
+    images: { formats: ["image/avif", "image/webp"] },
     async headers() {
       return [{
         source: "/:path*",

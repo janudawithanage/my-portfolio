@@ -2,47 +2,113 @@
 
 ## Direction
 
-Professional dark, project-first portfolio for technical recruiters and engineering teams.
-Matte navy panels, cyan highlights, deliberate typography, comfortable touch spacing.
-Keep existing facts, photos, project destinations, GitHub integration, and contact behavior.
+Light, premium "liquid glass" portfolio for technical recruiters and engineering teams.
+A warm ivory page with slowly drifting colour fields, frosted glass surfaces with a white
+inner highlight, deep ink type, one sapphire accent and a little champagne gold.
+Editorial Syne headlines, calm Inter body text, numbered sections, generous space.
+Keep existing facts, photos, project destinations, GitHub integration, and contact behaviour.
 
 ## Skill provenance
 
 UI/UX Pro Max: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
 Reference commit: `477bcb28c9812b385cb51a4605ddf30d7b2266e2`.
-Initial developer-portfolio query incorrectly selected documentation; the verified retry
-`portfolio professional dark` selected Minimalism & Swiss Style and Hero + Features + CTA.
-Dials: variance 4, motion 2, density 3.
-The approved navy/cyan palette and Inter/Syne fonts override the generated light palette
-and alternative fonts. Motion is CSS-only.
-Next.js search verified responsive Image fill, reserved aspect ratios, and root font loading.
-Tailwind search verified wrapping chip collections. UX search verified unobscured keyboard focus.
+The 2026-11 redesign replaced the earlier navy/cyan palette with the light glass system
+below. Inter/Syne fonts are unchanged. There is no animation library: motion is CSS
+plus one small client component (`MotionRoot`).
 
-## Foundations
+## Tokens (`src/app/globals.css`)
 
-- Background #080D19, secondary #0C1321, cards #111B2B, raised cards #18263A.
-- Text #F2F7FC, secondary #B0C1D3, muted #9AAABD, cyan #78CFFE with dark button labels.
-- Control borders #62768F, decorative borders #28364B, success #78DFAD, error #FF929C.
-- Inter body, Syne headings; 16px body/input, 12–14px labels, fluid headings.
-- 4/8px spacing rhythm, 16/24/32px gutters, 1200px content cap, 64/80/96px section spacing.
-- 16px card radius, 8px button radius, 44px control targets, 48px primary actions/inputs.
-- 160–240ms state transitions; no continuous decoration, typewriter, or 3D tilt.
-- Content remains visible in server HTML. Respect reduced motion and browser zoom.
+Token names are unchanged from the dark theme; only values changed.
 
-## Components and acceptance
+| Token | Value | Use |
+| --- | --- | --- |
+| `bg` | `#F6F5F1` | warm ivory page |
+| `bg-secondary` | `#EFEDE7` | deeper ivory band (footer) |
+| `surface` / `surface-raised` | white 72% / `#FFFFFF` | frosted and hover surfaces |
+| `border` / `border-subtle` | ink 10% / ink 14% | hairlines |
+| `border-strong` | `#7B8397` | form control boundaries |
+| `text-primary` (`ink`) | `#0E1424` | headings and body emphasis |
+| `text-secondary` | `#4A5568` | body text |
+| `text-muted` | `#566074` | meta labels |
+| `accent` | `#3651CF` | sapphire: links, active nav, numbers |
+| `accent-dim` / `accent-light` | `#8EA0EC` / `#DCE2FB` | tints |
+| `gold` / `gold-light` | `#B8955A` / `#F3E7CF` | champagne lines and fills, decorative only |
+| `gold-deep` | `#7A5B26` | champagne text (results, dates) |
+| `success` / `error` | `#1A6E49` / `#B42335` | status |
 
-Hero → About → Education → Skills → Projects → Experience → Recognition → Contact → Footer.
-Section content is editable through the loopback-only editor at port 3033 and stored
-in `src/data/content.json`; selected projects retain `src/data/projects.json`.
-Open source & experiments is not rendered on the home page.
-Hero actions precede the square portrait on mobile. Preserve photo1.webp/photo2.webp
-unless the user explicitly replaces them in the editor. Projects use one/two columns.
-Skills use one/two/four categorized cards without proficiency meters.
-Experience highlights use native details; all existing content remains reachable.
-Navigation uses a native modal dialog below 1024px, with focus restoration and Escape dismissal.
-Recognition uses awards/certificate cards and a volunteering timeline. Each category
-previews six entries with accessible expansion. Empty categories and the entirely
-empty section/navigation link are hidden; never invent recognition claims.
-Contact preserves Formspree and describes mailto accurately as a draft.
-Check 320–1920px, 200% zoom, landscape, keyboard focus, reduced motion, contact and GitHub states.
-Use Playwright MCP for visual review and Chromium/WebKit browser regressions.
+Contrast, worst case = text on the strongest background blob with no glass:
+primary 14.2:1, secondary 5.8:1, muted 4.9:1, accent 5.0:1, gold-deep 4.9:1,
+success 4.8:1, error 5.0:1. On glass every text token is at least 5.6:1.
+`border-strong` is at least 3.4:1 on glass, where form controls sit.
+White on `ink` buttons is 18.4:1, white on `accent` 6.5:1.
+Never use pure black text, pure white page backgrounds, neon glows, or extra accents.
+
+## Glass recipe
+
+- `.glass` / `.card`: white gradient 80% → 56%, `backdrop-filter: blur(20px) saturate(160%)`,
+  1px ink-10% hairline, `inset 0 1px 0` white highlight, a tight plus a wide faint shadow,
+  24px radius. `.glass-strong` / `.card-elevated` are more opaque (92% → 78%, blur 28px).
+- A pointer highlight (`::before`, under the content) follows `--mx/--my` on hover.
+- Background: `.ambient` holds three radial colour fields (indigo, sky, champagne,
+  ≤ 18% alpha) that drift and change shape using **transform only** (36–42s loops, on
+  the compositor), plus an SVG grain at 3.5% opacity.
+- Fallbacks: without `backdrop-filter`, glass is white at 92%; with
+  `prefers-reduced-transparency`, glass is solid white.
+
+## Typography and layout
+
+- Syne 600 headlines with tight tracking (`clamp(2.125rem, 4.6vw, 3.625rem)`); the hero
+  name is `clamp(3rem, 8.2vw, 6.75rem)`. Inter body at 16–17px with 1.7 line height.
+- Eyebrows: gold hairline, then the accent number and an uppercase label: "01 — Label".
+- 75rem content cap; 16px side gutter on phones; 72/96/120px section spacing.
+- 44px minimum touch targets everywhere (the Playwright suite enforces this).
+
+## Motion tokens and rules
+
+- Easing: `--ease-out-expo` `cubic-bezier(.16, 1, .3, 1)`, `--ease-out-quart`, `--ease-in-out`.
+- Durations: 160 / 320 / 640 / 900ms (`--duration-fast` … `--duration-slower`).
+- Only transform, translate, opacity, filter and clip-path animate. The one exception is the
+  "View N more" expander, which animates `grid-template-rows` from 0fr to 1fr.
+- Hero: name lines rise out of a mask; availability, role, bio, actions, facts, focus
+  areas and the skills strip follow at 80ms steps. The portrait never fades (it is the
+  first-screen LCP element): it settles in with transform only, then floats, with a
+  periodic sheen.
+- Sections: `[data-reveal]` elements and the children of `[data-stagger]` fade up 28px
+  from a 6px blur, once, as they enter the viewport (90ms stagger, capped at 6 steps).
+  An inline head script adds `html.js` before first paint and removes it after 4s if the
+  app never starts. Without JavaScript nothing is hidden.
+- Cards with `[data-tilt]` lean ≤ 4–5° toward the pointer and lift 4px; primary buttons
+  with `data-magnetic` follow the pointer ≤ 10px. Mouse and fine pointers only.
+- Buttons have a liquid fill rising on hover; arrow icons nudge toward their destination.
+- Timelines draw their rail with a scroll-driven animation where supported; dots pulse once.
+- Counters (hero facts, stats band) count up once; server HTML has the final value.
+- Scroll progress: a 2px sapphire-to-champagne bar on a CSS scroll timeline, with a
+  passive-listener fallback.
+- Reduced motion: no blobs, marquee, sheen, float, tilt, magnetic or count-up; reveals
+  become a 400ms opacity fade and animation delays are removed.
+
+## Sections and acceptance
+
+Hero → (editor-ordered sections) → Contact → Footer. The order and visibility live in
+`content.json` → `layout.sectionOrder`, editable at **Section order & visibility**.
+Defaults: About, Stats band, Now, Education, Skills, Projects, Experience, Security & CTF,
+Recognition, Writing, Talks & publications, Testimonials.
+
+- `src/lib/has-content.ts` is the only empty-state rule; `src/lib/sections.ts` builds the
+  visible order, the numbers, and the navbar and footer links from it. Sections render only
+  with a real entry; optional fields render only with a value. Never show placeholders.
+- The stats band has no visible heading, so it takes no number and no navigation link.
+  Now and Testimonials are reachable by scrolling only, to keep the navbar to ≤ 9 links.
+- Navbar: floating glass pill that becomes more opaque and slightly smaller on scroll,
+  with a sliding active-section indicator (clip-path). Below 1024px a full-height glass
+  sheet (native modal dialog with focus trap, Escape and backdrop dismissal).
+- Education, Experience and Volunteering are timelines. Projects show index, date,
+  status, chips, Source code and Go live. Lists show six entries, then "View N more"
+  (collapsed entries are `inert` and visibility-hidden).
+- Testimonials: one quote at a time; prev/next, dots and pause controls; arrow keys;
+  inactive slides are `inert`; auto-advance pauses on hover, focus and hidden tabs and
+  never runs with reduced motion.
+- Content is editable through the loopback-only editor at port 3033 and stored in
+  `src/data/content.json`; selected projects stay in `src/data/projects.json`.
+- Check 320–1920px, 200% zoom, landscape, keyboard focus, reduced motion, no JavaScript,
+  contact and GitHub states. Use the Playwright suite and MCP review for visual checks.

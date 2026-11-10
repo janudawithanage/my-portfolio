@@ -162,9 +162,11 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .site-header[data-scrolled] .site-nav { transform: translateY(-.25rem) scale(.975); background: linear-gradient(155deg, rgb(255 255 255 / .92), rgb(255 255 255 / .8)); box-shadow: var(--glass-highlight), 0 16px 40px -18px rgb(14 20 36 / .36); }
 .brand-mark { display: inline-flex; width: 2.75rem; height: 2.75rem; align-items: center; justify-content: center; border-radius: 50%; background: var(--color-ink); color: var(--color-base); font-family: var(--font-syne), sans-serif; font-weight: 700; font-size: .875rem; letter-spacing: -.02em; box-shadow: inset 0 1px 0 rgb(255 255 255 / .2), 0 6px 14px -6px rgb(14 20 36 / .5); }
 .brand-mark span { color: var(--color-gold); }
+.site-nav .icon-link { width: 2.875rem; height: 2.875rem; }
 .nav-links { position: relative; align-items: center; }
 .nav-indicator { position: absolute; inset: 0; border-radius: 999px; background: rgb(54 81 207 / .1); pointer-events: none; transition: clip-path var(--duration-slow) var(--ease-out-expo), opacity var(--duration-normal); }
-.nav-link { position: relative; display: flex; align-items: center; min-height: 2.75rem; padding: .5rem .875rem; border-radius: 999px; color: var(--color-text-secondary); font-size: .8125rem; font-weight: 500; transition: color var(--duration-fast); }
+/* Controls in the pill are 46px so they stay above 44px when the scrolled pill scales to 97.5%. */
+.nav-link { position: relative; display: flex; align-items: center; min-height: 2.875rem; padding: .5rem .875rem; border-radius: 999px; color: var(--color-text-secondary); font-size: .8125rem; font-weight: 500; transition: color var(--duration-fast); }
 .nav-link:hover, .nav-link[aria-current="location"] { color: var(--color-accent); }
 .mobile-menu {
   width: calc(100% - 1.5rem); max-width: none; height: calc(100dvh - 1.5rem); max-height: none; margin: .75rem; padding: 1.25rem 1.25rem 1.5rem;
@@ -196,10 +198,10 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .hero-facts { display: flex; flex-wrap: wrap; gap: .625rem; margin-top: 2.25rem; }
 .hero-facts > span { display: inline-flex; align-items: baseline; gap: .5rem; min-height: 2.5rem; padding: .4375rem 1rem; border: 1px solid var(--color-border); border-radius: 999px; background: rgb(255 255 255 / .55); box-shadow: inset 0 1px 0 rgb(255 255 255 / .9); color: var(--color-text-secondary); font-size: .8125rem; }
 .hero-facts strong { color: var(--color-ink); font-family: var(--font-syne), sans-serif; font-size: 1rem; font-weight: 600; font-variant-numeric: tabular-nums; }
-.hero-enter { animation: rise-in var(--duration-slower) var(--ease-out-expo) backwards; animation-delay: calc(260ms + var(--i, 0) * 100ms); }
+.hero-enter { animation: rise-in var(--duration-slower) var(--ease-out-expo) backwards; animation-delay: calc(120ms + var(--i, 0) * 80ms); }
 .hero-visual { position: relative; width: min(100%, 27rem); margin-inline: auto; }
 .hero-visual::before { content: ""; position: absolute; inset: 6% 0 -4% 4%; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, rgb(54 81 207 / .18), rgb(201 166 107 / .1) 60%, transparent); filter: blur(10px); }
-.hero-portrait-shell { position: relative; padding: .75rem; border: 1px solid var(--color-border); border-radius: 2rem; background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); box-shadow: var(--glass-highlight), var(--shadow-lift); animation: rise-in 1.2s var(--ease-out-expo) 200ms backwards, float 9s var(--ease-in-out) 1.4s infinite; }
+.hero-portrait-shell { position: relative; padding: .75rem; border: 1px solid var(--color-border); border-radius: 2rem; background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); box-shadow: var(--glass-highlight), var(--shadow-lift); animation: settle-in 1.2s var(--ease-out-expo) backwards, float 9s var(--ease-in-out) 1.2s infinite; }
 .hero-portrait { position: relative; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 1.375rem; background: var(--color-bg-secondary); }
 .hero-portrait img { object-position: 50% 30%; }
 .hero-portrait::after { content: ""; position: absolute; inset: -20% auto -20% 0; width: 45%; background: linear-gradient(100deg, transparent, rgb(255 255 255 / .38) 50%, transparent); transform: translateX(-160%) skewX(-12deg); animation: sheen 7s var(--ease-in-out) 1.6s infinite; pointer-events: none; }
@@ -215,6 +217,8 @@ h1, h2, h3, h4 { text-wrap: balance; }
 @keyframes skills-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes line-up { from { transform: translateY(105%); } to { transform: translateY(0); } }
 @keyframes rise-in { from { opacity: 0; translate: 0 22px; filter: blur(6px); } to { opacity: 1; translate: 0 0; filter: blur(0); } }
+/* The portrait is the largest first-screen element, so it never fades: it only settles into place. */
+@keyframes settle-in { from { translate: 0 22px; scale: .965; } to { translate: 0 0; scale: 1; } }
 @keyframes float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 @keyframes sheen { 0%, 62% { transform: translateX(-160%) skewX(-12deg); } 100% { transform: translateX(360%) skewX(-12deg); } }
 

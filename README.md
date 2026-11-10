@@ -1,11 +1,13 @@
 # Januda Withanage — Portfolio
 
 A project-first software engineering portfolio built with Next.js 16, React 19,
-TypeScript, and Tailwind CSS 4. Motion is plain CSS and respects reduced-motion settings.
+TypeScript, and Tailwind CSS 4. Motion is CSS plus one small client component; there is no
+animation library, and reduced-motion settings are respected.
 
-The redesigned UI uses matte navy surfaces, cyan accents, Inter and Syne typography,
-responsive project cards, grouped skills, and accessible mobile navigation.
-Design guidance and tokens are documented in [the design system](design-system/januda-portfolio/MASTER.md).
+The UI is a light "liquid glass" design: a warm ivory page with slowly drifting colour
+fields, frosted glass cards, sapphire and champagne accents, Inter and Syne typography,
+scroll reveals, pointer tilt, and an accessible floating navigation pill.
+Design guidance, tokens, and motion rules are documented in [the design system](design-system/januda-portfolio/MASTER.md).
 
 ## Development
 
@@ -33,36 +35,64 @@ loopback-only server; its pages and editing APIs are not part of the deployed ap
 No login or database is required. Stop it with Ctrl+C. If the port is busy, use
 `PROJECT_EDITOR_PORT=3034 npm run edit:projects`. Use Node.js 20.9 or later.
 
-The public page follows this order: **Hero → A little about me → Education →
-The toolkit → Selected Work → Experience → Recognition → Get in touch**.
-The hero photo keeps its square frame. Open source & experiments is no longer
-displayed; its existing data remains on disk.
+Hero always comes first and **Get in touch** always comes last. In between, the default
+order is **A little about me → Stats band → Now → Education → The toolkit → Selected
+Work → Experience → Security & CTF → Recognition → Writing → Talks & publications →
+Testimonials**. Change it under **Section order & visibility**. The hero photo keeps its
+square frame. Open source & experiments is no longer displayed; its data remains on disk.
+
+**Empty sections never appear.** A section renders only when it has at least one real
+entry, and an optional field renders only when it has a value: no placeholders, no
+"coming soon". The navigation, footer links, and section numbers ("01 — About") are
+built from the sections that are actually shown, so hidden sections do not use up a
+number. New lists start empty; add your own details when you are ready.
 
 Choose a section from **Portfolio section**:
 
+- **Section order & visibility:** move sections up or down and switch any of them off.
+  Sections without content stay hidden even when switched on.
 - **Hero:** edit your name, role, introduction, availability, location, photo and
-  alt text, button labels, CV PDF path/URL, GitHub/LinkedIn URLs, facts, and focus areas.
+  alt text, button labels, CV PDF path/URL, GitHub/LinkedIn URLs, facts, focus areas,
+  and the moving skills strip.
 - **A little about me:** edit the heading, introduction, paragraphs, photo and
   alt text, study/location labels, and contact link label.
+- **Stats band:** headline numbers with labels (for example "15+ projects shipped").
+  Numbers count up when they scroll into view.
+- **Now:** what you are building, learning, reading, or exploring, with an optional
+  emoji (replaces the icon), optional link, and an optional "last updated" note.
 - **Education:** edit the heading and add, edit, reorder, or remove qualifications,
   institution logos, dates, results, GPA, descriptions, and highlights.
 - **The toolkit:** edit the heading and skill categories, icons, descriptions,
   and skills. Enter one skill per line; proficiency meters are not displayed.
 - **Selected Work / Projects & images:** search your public GitHub repositories,
   load more results, or add a public team repository by URL. Edit titles,
-  descriptions, technologies, status, year, source/demo links, screenshots, and
-  order. **Selected Work / Section heading** edits its title, introduction, and
-  GitHub link label. Repository refresh never overwrites your curated text.
+  descriptions, technologies, status (including **Design only**), year, an optional
+  card date such as "Aug–Oct 2025", source/live links (a live URL shows **Go live**),
+  screenshots, and order. Cards are numbered by their order; the first six show,
+  then **View N more**. **Selected Work / Section heading** edits its title,
+  introduction, and GitHub link label. Repository refresh never overwrites your
+  curated text.
 - **Experience:** edit the heading and add, edit, reorder, or remove roles with
   organisations, dates, locations, type, descriptions, highlights, and technologies.
+- **Security & CTF:** events and platforms with an optional rank or result, date,
+  description, write-up link, and tags.
 - **Recognition:** edit its heading and manage **Awards & Achievements**,
   **Certifications**, and **Volunteering & Leadership**. Entries support a title
   or role, organisation/issuer, date range, optional description, credential or
-  supporting link, and optional image. No recognition claims are prefilled.
-- **Get in touch:** edit the heading, introduction, availability, email, location,
-  form heading, and footer text. Email and social links are shared with the footer;
-  the name and profile links are shared with the header. Formspree configuration
-  remains in the environment; the email field controls direct email/draft links.
+  supporting link, optional organisation logo, and optional image. No recognition
+  claims are prefilled.
+- **Writing:** articles with a title, optional platform, date, optional excerpt,
+  link, and optional cover image.
+- **Talks & publications:** talks, papers, posters, and workshops with venue, date,
+  optional description, and optional link.
+- **Testimonials:** quotes with a name and optional role, company, photo, and link.
+  Add only words people have agreed to share. More than one quote becomes a carousel
+  that can be paused and moved with the arrow keys.
+- **Get in touch:** edit the heading, introduction, availability, email, optional
+  phone, location, form heading, footer text, and **More profiles** (X, Medium,
+  Dev.to, YouTube, Instagram, Facebook, Dribbble, or any website), which appear with
+  GitHub and LinkedIn in Contact and the footer. Formspree configuration remains in
+  the environment; the email field controls direct email/draft links.
 
 Each section retains its own unsaved draft when switching sections. Choose
 **Save changes** for the current section, or **Discard changes** to reload its
@@ -78,8 +108,12 @@ Removing an entry or image never deletes its repository or existing image files.
 
 Empty Recognition categories stay hidden. Saving the first entry reveals its
 category automatically; if all categories are empty, Recognition and its
-navigation link are omitted. Each category previews six entries with accessible
-Show all / Show fewer controls. Contact numbering adjusts to visible sections.
+navigation link are omitted. Long lists (projects, recognition categories, security
+events, articles, talks) preview six entries with an accessible **View N more** /
+**Show fewer** control.
+
+If the editor was already running before you pulled these changes, restart
+`npm run edit:projects`: it loads its validation rules when it starts.
 
 Saved section details go in `src/data/content.json`; selected projects remain in
 `src/data/projects.json`. Keep `npm run dev` running and refresh the portfolio to
@@ -140,7 +174,19 @@ production app. Reports are written to the ignored `playwright-report/` director
 Coverage includes 320–1920px layouts, phone/tablet landscape, navigation breakpoint
 boundaries, mobile dialog keyboard focus and dismissal, project highlights,
 repository expansion, contact validation/loading/error/success, GitHub states,
-reduced motion, zoom reflow, and enlarged text.
+reduced motion, zoom reflow, and enlarged text. The disposable copy fills Stats,
+Security and Writing with test data, switches Now off, and leaves Talks and
+Testimonials empty, so the suite proves that empty or switched-off sections never
+render, never reach navigation, and never use up a section number. A test-only
+`/ui-fixtures/showcase` route renders Now, Talks and the testimonial carousel.
+Further tests cover "View N more" expansion, the carousel's keyboard and pause
+controls, scroll reveals, count-up values, and that all content is visible without
+JavaScript.
+
+If a production build or the Turbopack dev server keeps serving old styles after
+an edit to `src/app/globals.css`, stop it, delete its Turbopack cache
+(`.next/cache/turbopack` for builds, `.next-dev/dev/cache/turbopack` for the dev server),
+and rebuild or restart. Both folders are disposable.
 
 ## Visual review through Playwright MCP
 
