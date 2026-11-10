@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import Image from "next/image";
 import { ArrowDown, ArrowUpRight, Download, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { CountUp } from "@/components/motion/CountUp";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { content, fullName, featuredProjects } from "@/data";
 import { hasContent } from "@/lib/has-content";
@@ -36,7 +37,7 @@ export function Hero() {
             </div>
             {facts.length > 0 && (
               <div className="hero-facts hero-enter" style={enter(4)}>
-                {facts.map(fact => <span key={fact.label}><strong>{fact.value}</strong> {fact.label}</span>)}
+                {facts.map(fact => <span key={fact.label}><strong><CountUp value={fact.value} delay={650} /></strong> {fact.label}</span>)}
               </div>
             )}
           </div>

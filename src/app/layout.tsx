@@ -3,6 +3,7 @@ import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { MotionRoot, motionBootstrap } from "@/components/motion/MotionRoot";
 import { content, fullName } from "@/data";
 import { siteUrl } from "@/lib/site";
 
@@ -82,10 +83,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${syne.variable}`}>
+    // The inline script adds a "js" class to <html> before hydration, hence suppressHydrationWarning.
+    <html lang="en" className={`${inter.variable} ${syne.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: motionBootstrap }} />
+      </head>
       <body className="min-h-screen flex flex-col bg-bg text-text-primary antialiased">
         <a className="skip-link" href="#main-content">Skip to content</a>
         <div className="ambient" aria-hidden="true"><span /><span /><span /></div>
+        <div className="scroll-progress" aria-hidden="true" />
+        <MotionRoot />
         <Navbar />
         <main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
         <Footer />

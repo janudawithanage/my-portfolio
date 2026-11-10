@@ -418,8 +418,8 @@ h1, h2, h3, h4 { text-wrap: balance; }
   .hero-tech-track > span { display: block; padding-inline: 1rem; }
   .hero-tech-track > span[aria-hidden="true"] { display: none; }
   .hero-tech-track i { padding-inline: .75rem; }
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
-  .ambient > span, .hero-portrait::after, .status-dot::after { animation: none !important; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
+  .ambient > span, .hero-portrait::after, .status-dot::after, .timeline::before { animation: none !important; }
   /* Reveals become a plain fade; tilt and magnetic pull are switched off. */
   .js [data-reveal]:not([data-shown]), .js [data-stagger]:not([data-shown]) > * { translate: none; filter: none; }
   [data-reveal], [data-stagger] > *, [data-tilt] { transition: opacity 400ms ease !important; }

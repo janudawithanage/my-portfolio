@@ -1,4 +1,5 @@
 import { content } from "@/data";
+import { CountUp } from "@/components/motion/CountUp";
 import { hasContent } from "@/lib/has-content";
 import type { StatsContent } from "@/types";
 
@@ -13,7 +14,7 @@ export function Stats({ data = content.stats }: { data?: StatsContent }) {
         <ul className="glass stats-band" data-stagger="">
           {items.map(item => (
             <li key={item.id} className="stat">
-              <span className="stat-value">{item.value}</span>
+              <span className="stat-value"><CountUp value={item.value} delay={250} /></span>
               <span className="stat-label">{item.label}</span>
             </li>
           ))}
