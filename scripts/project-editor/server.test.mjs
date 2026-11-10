@@ -71,6 +71,19 @@ test("local server rejects foreign hosts, origins, missing tokens, unsafe paths 
   assert.equal((await fetch(f.origin + "/images/projects/secret.png")).status, 404);
 });
 
+test("editor serves its own fonts, icon and texture, and brands the page with the hero's initials", async t => {
+  const f = await fixture(t);
+  for (const [asset, type] of [["/editor.css", "text/css"], ["/fonts/inter-latin.woff2", "font/woff2"], ["/fonts/syne-latin.woff2", "font/woff2"], ["/favicon.svg", "image/svg+xml"], ["/grain.svg", "image/svg+xml"]]) {
+    const response = await fetch(f.origin + asset);
+    assert.equal(response.status, 200, asset);
+    assert.ok(response.headers.get("content-type").startsWith(type), asset);
+  }
+  assert.equal((await fetch(f.origin + "/fonts/OFL.txt")).status, 404, "Only the listed editor files are served");
+  const { hero } = JSON.parse(await readFile(path.join(f.root, "src/data/content.json"), "utf8"));
+  assert.ok(f.html.includes(`<span class="brand-mark" aria-hidden="true">${(hero.firstName[0] + hero.lastName[0]).toUpperCase()}<span>.</span></span>`));
+  assert.ok(!f.html.includes("__EDITOR_"), "Every placeholder is filled");
+});
+
 test("GitHub picker loads beyond 100 including forks, supports collaborations, and keeps secrets server-side", async t => {
   const f = await fixture(t);
   const first = await (await f.request("/api/repos?page=1")).json();
@@ -231,8 +244,13 @@ test("browser editor imports, edits, uploads, reorders, saves, discards and surv
   page.setDefaultTimeout(10000);
   const errors = [];
   page.on("pageerror", error => errors.push(error.message));
+  // The page's own files (styles, scripts, fonts, texture) must all load.
+  page.on("response", response => {
+    if (response.status() >= 400 && (["document", "stylesheet", "script", "font"].includes(response.request().resourceType()) || response.url().endsWith(".svg"))) errors.push(`${response.status()} ${response.url()}`);
+  });
   await page.goto(f.origin);
   await page.getByText("4 selected projects", { exact: true }).waitFor();
+  assert.ok(await page.evaluate(async () => { await document.fonts.ready; return document.fonts.check("600 20px Syne") && document.fonts.check("16px Inter"); }), "The portfolio's fonts load in the editor");
   await page.getByRole("button", { name: "Load more repositories" }).click();
   await page.getByLabel("Search repositories").fill("project-101");
   await page.getByRole("button", { name: "Add janudawithanage/project-101", exact: true }).click();

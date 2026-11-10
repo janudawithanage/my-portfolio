@@ -112,3 +112,22 @@ Recognition, Writing, Talks & publications, Testimonials.
   `src/data/content.json`; selected projects stay in `src/data/projects.json`.
 - Check 320–1920px, 200% zoom, landscape, keyboard focus, reduced motion, no JavaScript,
   contact and GitHub states. Use the Playwright suite and MCP review for visual checks.
+
+## Content editor
+
+The loopback editor (`scripts/project-editor/`) uses this same system. `editor.css` copies
+the tokens, glass recipe, liquid buttons, contact-form fields and motion above; change both
+together. Its security policy allows local files only, so it serves its own copies of the
+Inter and Syne Latin subsets (`fonts/`, SIL OFL), the grain texture and the favicon.
+
+- Frame: a glass pill top bar with the ink "JW." mark (the hero's initials), then an
+  eyebrow, a Syne headline with a champagne full stop, and an intro.
+- Command bar: section picker, save state and Discard / Save. From 1024px wide it is a
+  pill pinned to the top, like the site's navbar; messages appear right under it. Unsaved
+  changes show a gold dot. Confirmations clear after 8 seconds, errors stay until the next edit.
+- Forms: one glass panel per section; short fields pair up in two columns when there is
+  room; long text, images, switches and titles take the full row. Yes/no fields are
+  switches that remain checkboxes. List entries are cards with a turning chevron disc.
+- Motion: headings rise; anything clickable only fades, so controls never move under the
+  pointer. Cards slide open where `::details-content` is supported. Reduced motion
+  removes it all.

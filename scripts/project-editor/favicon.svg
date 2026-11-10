@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- The portfolio's </> mark in the light theme's colours: ink, sapphire and champagne. -->
+  <rect width="32" height="32" rx="7" fill="#0E1424"/>
+  <path d="M7 16 12 10.5M7 16l5 5.5M25 16l-5-5.5M25 16l-5 5.5" stroke="#8EA0EC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M19 9.5 13 22.5" stroke="#D9B77A" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

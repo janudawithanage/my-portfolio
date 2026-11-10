@@ -35,6 +35,10 @@ loopback-only server; its pages and editing APIs are not part of the deployed ap
 No login or database is required. Stop it with Ctrl+C. If the port is busy, use
 `PROJECT_EDITOR_PORT=3034 npm run edit:projects`. Use Node.js 20.9 or later.
 
+The editor uses the portfolio's own light glass design: the same colours, Inter and Syne
+type, buttons and motion. On wide screens the bar with the section picker and **Save
+changes** stays at the top while you scroll, and messages appear right under it.
+
 Hero always comes first and **Get in touch** always comes last. In between, the default
 order is **A little about me → Stats band → Now → Education → The toolkit → Selected
 Work → Experience → Security & CTF → Recognition → Writing → Talks & publications →
@@ -112,8 +116,10 @@ navigation link are omitted. Long lists (projects, recognition categories, secur
 events, articles, talks) preview six entries with an accessible **View N more** /
 **Show fewer** control.
 
-If the editor was already running before you pulled these changes, restart
-`npm run edit:projects`: it loads its validation rules when it starts.
+Restart `npm run edit:projects` after the editor changes (for example after pulling):
+it loads its validation rules when it starts. An editor started before an update shows
+**Unknown portfolio section.** for sections it doesn't know yet, and rejects new fields
+when saving. Its look updates on a normal page refresh.
 
 Saved section details go in `src/data/content.json`; selected projects remain in
 `src/data/projects.json`. Keep `npm run dev` running and refresh the portfolio to

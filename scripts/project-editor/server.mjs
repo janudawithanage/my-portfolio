@@ -13,6 +13,14 @@ const stagedPrefix = "/staged/";
 const maxImageBytes = 10 * 1024 * 1024;
 const imageName = /^[a-zA-Z0-9][a-zA-Z0-9._-]*\.(png|jpe?g|webp)$/i;
 const revision = bytes => createHash("sha256").update(bytes).digest("hex");
+/** The editor's own files. Fixed paths only, so nothing else in the project is reachable. */
+const staticFiles = new Map([
+  ["/editor.js", "text/javascript; charset=utf-8"], ["/content-fields.js", "text/javascript; charset=utf-8"],
+  ["/content-editor.js", "text/javascript; charset=utf-8"], ["/editor.css", "text/css; charset=utf-8"],
+  ["/favicon.svg", "image/svg+xml"], ["/grain.svg", "image/svg+xml"],
+  ["/fonts/inter-latin.woff2", "font/woff2"], ["/fonts/syne-latin.woff2", "font/woff2"],
+]);
+const escapeHtml = value => value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 const text = max => z.string().trim().min(1).max(max);
 const httpUrl = z.string().max(2048).refine(value => {
   try {
@@ -264,12 +272,17 @@ export function createProjectEditor({ root, username = "janudawithanage", github
       }
       if (method !== "GET") throw new EditorError(405, "Method not allowed.");
       if (url.pathname === "/") {
-        const html = (await readFile(path.join(directory, "index.html"), "utf8")).replace("__EDITOR_TOKEN__", token);
+        // The brand mark shows the hero's initials, as on the portfolio's navbar.
+        const initials = await readFile(path.join(root, "src/data/content.json"), "utf8").then(json => {
+          const { hero } = JSON.parse(json);
+          return [hero?.firstName, hero?.lastName].map(name => Array.from(String(name ?? "").trim())[0] ?? "").join("").toUpperCase();
+        }).catch(() => "");
+        const html = (await readFile(path.join(directory, "index.html"), "utf8"))
+          .replace("__EDITOR_TOKEN__", token)
+          .replace("__EDITOR_INITIALS__", () => escapeHtml(initials || "P"));
         return send(200, html, "text/html; charset=utf-8");
       }
-      if (["/editor.js", "/editor.css", "/content-fields.js", "/content-editor.js"].includes(url.pathname)) {
-        return send(200, await readFile(path.join(directory, url.pathname.slice(1))), url.pathname.endsWith(".js") ? "text/javascript; charset=utf-8" : "text/css; charset=utf-8");
-      }
+      if (staticFiles.has(url.pathname)) return send(200, await readFile(path.join(directory, url.pathname.slice(1))), staticFiles.get(url.pathname));
       if (staged.has(url.pathname)) {
         const upload = staged.get(url.pathname);
         return send(200, upload.bytes, `image/${upload.extension === "jpg" ? "jpeg" : upload.extension}`);

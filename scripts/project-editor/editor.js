@@ -41,10 +41,24 @@ async function api(url, { method = "GET", body, raw = false } = {}) {
   return result;
 }
 
+let noticeTimer;
 function notice(message = "", success = false) {
+  clearTimeout(noticeTimer);
   $("#notice").textContent = message;
   $("#notice").hidden = !message;
   $("#notice").classList.toggle("success", success);
+  // Notices sit in the command bar, which stays on screen: confirmations clear themselves, errors stay until the next edit.
+  if (message && success) noticeTimer = setTimeout(notice, 8000);
+}
+
+/**
+ * Replays the stylesheet's section entrance (the heading rises, the form fades in place).
+ * Alternating between two identical animations restarts it; CSS animations also keep the
+ * editor's style-src 'self' policy intact in Safari, which treats element.animate() as inline style.
+ */
+function enter() {
+  const main = $("main");
+  main.dataset.enter = main.dataset.enter === "a" ? "b" : "a";
 }
 
 function dirty() { return ready && snapshot() !== saved; }
@@ -53,12 +67,14 @@ function updateToolbar(message) {
   rememberDraft();
   $("#selection-count").textContent = isContent() ? sectionNames[section] : `${projects.length} selected ${projects.length === 1 ? "project" : "projects"}`;
   $("#save-state").textContent = message ?? (dirty() ? "Unsaved changes" : "All changes saved locally");
+  $("#save-state").classList.toggle("is-dirty", message === undefined && dirty());
   $("#save").disabled = !ready || busy || !dirty();
   $("#discard").disabled = !ready || busy || !dirty();
   $("#editor-fields").disabled = !ready || busy;
   $("#section-picker").disabled = !ready || busy;
   $("#section-picker").value = section;
-  $("h1").textContent = isContent() ? `${sectionNames[section]}.` : "Your selected work.";
+  const heading = $("h1"), headingText = isContent() ? sectionNames[section] : "Your selected work";
+  if (heading.firstChild?.nodeValue !== headingText) heading.replaceChildren(headingText, element("span", "title-dot", "."));
   $(".intro").textContent = isContent() ? "Your portfolio, in your own words. Update your details and save when you’re ready." : "Choose the projects you want people to see. Give each one its best first impression.";
   $(".workspace").hidden = isContent();
   $("#content-fields").hidden = !isContent();
@@ -70,6 +86,7 @@ function updateToolbar(message) {
   $("#feed-help").textContent = mode === "automatic" ? "The automatic GitHub feed is active. Add a repository below to start your own selection, or switch to My selected repositories." : "This section uses text-only cards. Your selected repositories, details, and display order will appear after saving and deploying.";
   const otherDrafts = [...drafts.entries()].filter(([key, draft]) => key !== section && JSON.stringify({ projects: draft.projects, mode: draft.mode, content: draft.content }) !== draft.saved);
   $("#draft-status").textContent = otherDrafts.length ? `Unsaved changes in ${otherDrafts.map(([key]) => sectionNames[key]).join(", ")}. Switch back to save them.` : "Each section has its own selection. Save changes applies to the section shown below.";
+  $("#draft-status").classList.toggle("attention", otherDrafts.length > 0);
 }
 
 function applyState(state) {
@@ -139,7 +156,8 @@ function renderRepos() {
     const selected = isSelected(repo);
     const add = button(selected ? "Added" : "Add", () => addRepo(repo));
     add.disabled = selected;
-    add.setAttribute("aria-label", `${selected ? "Already selected" : "Add"} ${repo.fullName}`);
+    // The accessible name starts with the visible word, so voice control can use it ("Add …", "Added …").
+    add.setAttribute("aria-label", `${selected ? "Added" : "Add"} ${repo.fullName}`);
     row.append(info, add); list.append(row);
   }
   if (!visible.length && !loadingRepos) list.append(element("p", "muted", query ? "No matches in loaded repositories. Load more or add a repository by URL." : "No repositories loaded. Try Refresh or add one by URL."));
@@ -347,6 +365,7 @@ $("#section-picker").addEventListener("change", async event => {
       opened = new Set();
       applyState(state);
     }
+    enter();
   } catch (error) { notice(error.message); }
   finally { busy = false; updateToolbar(); }
 });
