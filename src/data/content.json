@@ -1,4 +1,56 @@
 {
+  "layout": {
+    "sectionOrder": [
+      {
+        "id": "about",
+        "visible": true
+      },
+      {
+        "id": "stats",
+        "visible": true
+      },
+      {
+        "id": "now",
+        "visible": true
+      },
+      {
+        "id": "education",
+        "visible": true
+      },
+      {
+        "id": "skills",
+        "visible": true
+      },
+      {
+        "id": "projects",
+        "visible": true
+      },
+      {
+        "id": "experience",
+        "visible": true
+      },
+      {
+        "id": "security",
+        "visible": true
+      },
+      {
+        "id": "recognition",
+        "visible": true
+      },
+      {
+        "id": "writing",
+        "visible": true
+      },
+      {
+        "id": "talks",
+        "visible": true
+      },
+      {
+        "id": "testimonials",
+        "visible": true
+      }
+    ]
+  },
   "hero": {
     "firstName": "Januda",
     "lastName": "Withanage",
@@ -56,6 +108,15 @@
     "study": "UCSC · Computer Science",
     "location": "Colombo, Sri Lanka",
     "linkLabel": "Have something in mind? Let's connect"
+  },
+  "stats": {
+    "title": "By the numbers",
+    "items": []
+  },
+  "now": {
+    "title": "What I’m focused on now.",
+    "description": "What I’m building, learning, and reading at the moment.",
+    "items": []
   },
   "education": {
     "title": "A foundation to build on.",
@@ -321,12 +382,32 @@
       }
     ]
   },
+  "security": {
+    "title": "Security, in practice.",
+    "description": "CTF events, challenge platforms, and write-ups from my security practice.",
+    "entries": []
+  },
   "recognition": {
     "title": "Recognition & contributions.",
     "description": "Awards, continued learning, and the communities I contribute to.",
     "awards": [],
     "certifications": [],
     "volunteering": []
+  },
+  "writing": {
+    "title": "Notes from the build.",
+    "description": "Articles and write-ups about what I’m building and learning.",
+    "posts": []
+  },
+  "talks": {
+    "title": "Talks & publications.",
+    "description": "Presentations, papers, and posters I’ve contributed to.",
+    "entries": []
+  },
+  "testimonials": {
+    "title": "Kind words from collaborators.",
+    "description": "What people I’ve worked with have to say.",
+    "items": []
   },
   "contact": {
     "title": "Let’s build what’s next.",
@@ -336,6 +417,7 @@
     "email": "withanagejanuda@gmail.com",
     "location": "Colombo, Sri Lanka",
     "formTitle": "Send a note",
-    "footerText": "Computer Science at UCSC.\nBuilding across code, cloud, and security."
+    "footerText": "Computer Science at UCSC.\nBuilding across code, cloud, and security.",
+    "socials": []
   }
 }

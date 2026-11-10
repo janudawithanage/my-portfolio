@@ -26,8 +26,9 @@ const projectSchema = z.object({
   tech: z.array(text(80)).max(40),
   githubUrl: httpUrl.optional(), liveUrl: httpUrl.optional(),
   image: z.string().max(240).optional(), featured: z.literal(true),
-  status: z.enum(["completed", "in-progress", "planned"]),
+  status: z.enum(["completed", "in-progress", "planned", "design-only"]),
   year: z.string().regex(/^\d{4}$/, "Enter a four-digit year."),
+  date: z.string().trim().min(1).max(80).optional(),
 }).strict();
 
 class EditorError extends Error {

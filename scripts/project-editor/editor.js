@@ -63,7 +63,7 @@ function updateToolbar(message) {
   $(".workspace").hidden = isContent();
   $("#content-fields").hidden = !isContent();
   $("#content-help").hidden = !isContent();
-  $("#content-help").textContent = section === "recognition" ? "Add your own awards, certifications, and volunteering below. Empty categories stay hidden on your portfolio until you save their first entry." : "Edit this section below. Save changes applies only to this section. Refresh your running portfolio to preview saved changes.";
+  $("#content-help").textContent = (isContent() && contentFields[section].help) || "Edit this section below. Save changes applies only to this section. Refresh your running portfolio to preview saved changes.";
   $("#selection-title").textContent = sectionNames[section];
   $("#feed-settings").hidden = section !== "experiments";
   $("#feed-mode").value = mode;
@@ -272,14 +272,15 @@ function renderProjects() {
     const statusLabel = element("label", "", "Status");
     const status = element("select");
     status.setAttribute("aria-label", "Status");
-    [["completed", "Completed"], ["in-progress", "In progress"], ["planned", "Planned"]].forEach(([value, label]) => {
+    [["completed", "Completed"], ["in-progress", "In progress"], ["planned", "Planned"], ["design-only", "Design only"]].forEach(([value, label]) => {
       const option = element("option", "", label); option.value = value; status.append(option);
     });
     status.value = project.status;
     status.addEventListener("change", () => { project.status = status.value; notice(); updateToolbar(); });
     statusLabel.append(status);
     statusYear.append(statusLabel, field("Year", project, "year", { required: true, pattern: "[0-9]{4}", max: 4 }));
-    fields.append(field("Project title", project, "title", { required: true, max: 160 }), field("Description", project, "description", { required: true, multiline: true, max: 5000 }), field("Technologies (separate with commas)", project, "tech"), statusYear, field("Source code URL", project, "githubUrl", { type: "url", max: 2048 }), field("Live demo URL (optional)", project, "liveUrl", { type: "url", max: 2048 }));
+    const date = field("Date shown on the card (optional, e.g. Aug–Oct 2025; the year is used when empty)", project, "date", { max: 80 });
+    fields.append(field("Project title", project, "title", { required: true, max: 160 }), field("Description", project, "description", { required: true, multiline: true, max: 5000 }), field("Technologies (separate with commas)", project, "tech"), statusYear, date, field("Source code URL", project, "githubUrl", { type: "url", max: 2048 }), field("Live demo URL (optional, shows a Go live button)", project, "liveUrl", { type: "url", max: 2048 }));
     body.append(tools, fields); card.append(summary, body); list.append(card);
   });
 }

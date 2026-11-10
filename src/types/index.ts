@@ -12,6 +12,7 @@ export interface RecognitionEntry {
   description?: string;
   url?: string;
   image?: string;
+  logo?: string;
 }
 
 export interface RecognitionContent {
@@ -32,8 +33,10 @@ export interface Project {
   liveUrl?: string;
   image?: string;
   featured: boolean;
-  status: "completed" | "in-progress" | "planned";
+  status: "completed" | "in-progress" | "planned" | "design-only";
   year: string;
+  /** Optional free-text date shown on the card, e.g. "Aug–Oct 2025". Falls back to `year`. */
+  date?: string;
 }
 
 export interface GitHubRepo {
@@ -112,6 +115,120 @@ export interface Experience {
 export interface SocialLink {
   label: string;
   href: string;
-  icon: string;
+  icon: SocialIcon;
 }
 
+
+// ─── Page structure ───────────────────────────────────────────────────────────
+/** Sections that can be reordered or hidden. Hero is always first and Contact always last. */
+export type SectionId =
+  | "about" | "stats" | "now" | "education" | "skills" | "projects"
+  | "experience" | "security" | "recognition" | "writing" | "talks" | "testimonials";
+
+export interface SectionOrderEntry {
+  id: SectionId;
+  visible: boolean;
+}
+
+export interface LayoutContent {
+  sectionOrder: SectionOrderEntry[];
+}
+
+interface SectionIntro {
+  title: string;
+  description: string;
+}
+
+// ─── Optional sections (each renders only when it has entries) ────────────────
+export interface StatItem {
+  id: string;
+  value: string;
+  label: string;
+}
+
+export interface StatsContent {
+  title: string;
+  items: StatItem[];
+}
+
+export type NowKind = "building" | "learning" | "reading" | "exploring";
+
+export interface NowItem {
+  id: string;
+  kind: NowKind;
+  text: string;
+  emoji?: string;
+  url?: string;
+}
+
+export interface NowContent extends SectionIntro {
+  updated?: string;
+  items: NowItem[];
+}
+
+export interface SecurityEntry {
+  id: string;
+  title: string;
+  result?: string;
+  date: string;
+  description?: string;
+  url?: string;
+  tags: string[];
+}
+
+export interface SecurityContent extends SectionIntro {
+  entries: SecurityEntry[];
+}
+
+export interface WritingPost {
+  id: string;
+  title: string;
+  platform?: string;
+  date: string;
+  excerpt?: string;
+  url: string;
+  cover?: string;
+}
+
+export interface WritingContent extends SectionIntro {
+  posts: WritingPost[];
+}
+
+export type TalkType = "talk" | "paper" | "poster" | "workshop";
+
+export interface TalkEntry {
+  id: string;
+  title: string;
+  type: TalkType;
+  venue: string;
+  date: string;
+  description?: string;
+  url?: string;
+}
+
+export interface TalksContent extends SectionIntro {
+  entries: TalkEntry[];
+}
+
+export interface Testimonial {
+  id: string;
+  quote: string;
+  name: string;
+  role?: string;
+  company?: string;
+  avatar?: string;
+  url?: string;
+}
+
+export interface TestimonialsContent extends SectionIntro {
+  items: Testimonial[];
+}
+
+export type SocialIcon = "github" | "linkedin" | "x" | "medium" | "devto" | "youtube" | "instagram" | "facebook" | "dribbble" | "website" | "mail";
+
+export interface SocialProfile {
+  id: string;
+  label: string;
+  url: string;
+  icon: Exclude<SocialIcon, "mail">;
+}

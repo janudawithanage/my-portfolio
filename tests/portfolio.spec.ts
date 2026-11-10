@@ -32,10 +32,10 @@ test("Recognition categories expand, link to credentials, and follow the request
   await expect(page.locator("#recognition").getByRole("heading", { name: "Volunteering & Leadership", exact: true })).toBeVisible();
   const expected = ["#about", "#education", "#skills", "#projects", "#experience", "#recognition", "#contact"];
   await expect.poll(() => page.locator('footer nav a').evaluateAll(links => links.map(link => link.getAttribute("href")))).toEqual(expected);
-  await expect(page.locator("#about .text-eyebrow")).toHaveText("01 / A little about me");
-  await expect(page.locator("#education .text-eyebrow")).toHaveText("02 / Education");
-  await expect(page.locator("#projects .text-eyebrow")).toHaveText("04 / Selected work");
-  await expect(page.locator("#contact .text-eyebrow")).toHaveText("07 / Get in touch");
+  await expect(page.locator("#about .text-eyebrow")).toHaveText("01 — A little about me");
+  await expect(page.locator("#education .text-eyebrow")).toHaveText("02 — Education");
+  await expect(page.locator("#projects .text-eyebrow")).toHaveText("04 — Selected work");
+  await expect(page.locator("#contact .text-eyebrow")).toHaveText("07 — Get in touch");
   await expect(page.locator("#recognition-certifications article:visible")).toHaveCount(6);
   await page.locator("#recognition").getByRole("button", { name: "Show all 8 entries", exact: true }).click();
   await expect(page.locator("#recognition-certifications article:visible")).toHaveCount(8);

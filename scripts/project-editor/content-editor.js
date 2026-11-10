@@ -1,4 +1,11 @@
 /* Schema-driven forms for local portfolio content. Never imported into the public app. */
+/** Collapsed-card title: a custom resolver, else the first meaningful text field. */
+function entryTitle(spec, entry) {
+  if (spec.itemTitle) return spec.itemTitle(entry);
+  const text = entry.title || entry.role || entry.institution || entry.label || entry.name || entry.quote || entry.text || entry.value;
+  return text ? (text.length > 80 ? text.slice(0, 77) + "…" : text) : `New ${spec.itemLabel}`;
+}
+
 export function renderContent(container, fields, value, { element, button, changed, upload, opened }) {
   container.replaceChildren();
   function render(specs, object, parent, prefix = "content") {
@@ -8,7 +15,9 @@ export function renderContent(container, fields, value, { element, button, chang
         const heading = element("div", "section-heading");
         const title = element("h2", "", spec.label);
         const items = object[spec.name];
-        heading.append(title, button(`Add ${spec.itemLabel}`, () => {
+        heading.append(title);
+        // Fixed lists (section order) can be reordered and edited, but not extended or shortened.
+        if (!spec.fixed) heading.append(button(`Add ${spec.itemLabel}`, () => {
           const entry = structuredClone(spec.initial);
           if (spec.name !== "facts") entry.id = crypto.randomUUID();
           items.push(entry);
@@ -18,7 +27,7 @@ export function renderContent(container, fields, value, { element, button, chang
           last[last.length - 1]?.querySelector("input,textarea,select")?.focus();
         }, "primary"));
         block.append(heading);
-        if (!items.length) block.append(element("p", "empty", "No entries yet. Add your own details when you’re ready."));
+        if (!items.length && !spec.fixed) block.append(element("p", "empty", "No entries yet. Add your own details when you’re ready."));
         const list = element("div");
         list.dataset.collection = spec.name;
         items.forEach((entry, index) => {
@@ -27,7 +36,7 @@ export function renderContent(container, fields, value, { element, button, chang
           card.id = key; card.open = opened.has(key);
           card.addEventListener("toggle", () => { if (card.open) opened.add(key); else opened.delete(key); });
           const summary = element("summary");
-          const label = element("strong", "project-title", entry.title || entry.role || entry.institution || entry.label || `New ${spec.itemLabel}`);
+          const label = element("strong", "project-title", entryTitle(spec, entry));
           summary.append(element("span", "project-number", String(index + 1).padStart(2, "0")), label);
           const body = element("div", "project-body");
           const tools = element("div", "project-actions");
@@ -40,14 +49,17 @@ export function renderContent(container, fields, value, { element, button, chang
             move.disabled = index + direction < 0 || index + direction >= items.length;
             moves.append(move);
           }
-          tools.append(moves, button(`Remove ${spec.itemLabel}`, () => {
+          tools.append(moves);
+          if (!spec.fixed) tools.append(button(`Remove ${spec.itemLabel}`, () => {
             if (!window.confirm(`Remove ${label.textContent}? Save changes to apply the removal.`)) return;
             items.splice(index, 1); opened.delete(key); rerender(); changed();
             container.querySelector(`[data-collection="${spec.name}"]`)?.parentElement.querySelector("button")?.focus();
           }, "danger"));
           const nested = element("div", "project-fields");
           render(spec.fields, entry, nested, key);
-          nested.addEventListener("input", () => { label.textContent = entry.title || entry.role || entry.institution || entry.label || `New ${spec.itemLabel}`; });
+          const relabel = () => { label.textContent = entryTitle(spec, entry); };
+          nested.addEventListener("input", relabel);
+          nested.addEventListener("change", relabel);
           body.append(tools, nested); card.append(summary, body); list.append(card);
         });
         block.append(list); parent.append(block);
@@ -73,6 +85,15 @@ export function renderContent(container, fields, value, { element, button, chang
         parent.append(block);
         continue;
       }
+      if (spec.type === "checkbox") {
+        const label = element("label", "checkbox-label");
+        const input = element("input");
+        input.type = "checkbox"; input.dataset.field = spec.name; input.checked = Boolean(object[spec.name]);
+        input.addEventListener("change", () => { object[spec.name] = input.checked; changed(); });
+        label.append(input, element("span", "", spec.label));
+        parent.append(label);
+        continue;
+      }
       const label = element("label", "", spec.label);
       const multiline = ["textarea", "lines", "skills"].includes(spec.type);
       const input = element(spec.type === "select" ? "select" : multiline ? "textarea" : "input");
@@ -80,7 +101,8 @@ export function renderContent(container, fields, value, { element, button, chang
       if (spec.type === "select") {
         for (const [key, name] of spec.options) { const option = element("option", "", name); option.value = key; input.append(option); }
       } else if (multiline) input.rows = spec.type === "textarea" ? 4 : 5;
-      else input.type = ["url", "email"].includes(spec.type) ? spec.type : "text";
+      else input.type = ["url", "email", "tel"].includes(spec.type) ? spec.type : "text";
+      if (spec.placeholder) input.placeholder = spec.placeholder;
       input.value = spec.type === "lines" ? object[spec.name].join("\n") : spec.type === "skills" ? object[spec.name].map(skill => skill.name).join("\n") : object[spec.name] ?? "";
       input.required = !spec.optional && !["lines", "skills"].includes(spec.type);
       if (spec.type !== "select") input.maxLength = multiline ? 60000 : 2048;

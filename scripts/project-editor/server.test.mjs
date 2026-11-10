@@ -101,7 +101,7 @@ test("save persists curated values and order, validates input and detects disk c
   const initial = await (await f.request("/api/projects")).json();
   assert.equal(initial.projects.length, 4);
   const projects = [...initial.projects].reverse();
-  projects[0] = { ...projects[0], title: "My curated title", tech: ["Custom technology"] };
+  projects[0] = { ...projects[0], title: "My curated title", tech: ["Custom technology"], date: "Aug–Oct 2025", status: "design-only" };
   const result = await f.request("/api/projects", { method: "PUT", body: { ...initial, projects } });
   assert.equal(result.status, 200);
   assert.deepEqual(JSON.parse(await readFile(path.join(f.root, "src/data/projects.json"), "utf8")), projects);
@@ -113,6 +113,8 @@ test("save persists curated values and order, validates input and detects disk c
     [{ ...projects[0], title: " " }],
     [{ ...projects[0], liveUrl: "javascript:alert(1)" }],
     [{ ...projects[0], year: "abc" }],
+    [{ ...projects[0], date: " " }],
+    [{ ...projects[0], status: "archived" }],
     [{ ...projects[0], image: "/images/projects/../secret.png" }],
     [{ ...projects[0], image: "/images/projects/missing.png" }],
     [{ ...projects[0], image: "/staged/missing" }],
@@ -302,13 +304,24 @@ test("all content sections save independently, preserve existing data, and rejec
   const about = await state("about");
   assert.equal(hero.content.image, "/images/photo1.webp");
   assert.equal(about.content.image, "/images/photo2.webp");
-  for (const section of ["hero", "about", "education", "skills", "projects", "experience", "recognition", "contact"]) {
+  const additions = {
+    stats: content => content.items.push({ id: "stat-1", value: "15+", label: "projects shipped" }),
+    now: content => content.items.push({ id: "now-1", kind: "learning", text: "Rust for systems tooling", emoji: "🦀" }),
+    security: content => content.entries.push({ id: "ctf-1", title: "Test CTF", result: "Top 10", date: "2026", url: "https://example.com/writeup", tags: ["web", "crypto"] }),
+    writing: content => content.posts.push({ id: "post-1", title: "Test post", platform: "Medium", date: "2026", url: "https://example.com/post" }),
+    talks: content => content.entries.push({ id: "talk-1", title: "Test talk", type: "talk", venue: "Test meetup", date: "2026" }),
+    testimonials: content => content.items.push({ id: "quote-1", quote: "A thoughtful teammate.", name: "Test person", role: "Lead" }),
+    contact: content => { content.phone = "+94 71 234 5678"; content.socials.push({ id: "profile-1", label: "Medium", url: "https://medium.com/@test", icon: "medium" }); },
+    recognition: content => content.awards.push({ id: "award-1", title: "Test award", organisation: "Test society", date: "2026", logo: "/images/photo2.webp" }),
+  };
+  for (const section of ["layout", "hero", "about", "stats", "now", "education", "skills", "projects", "experience", "security", "recognition", "writing", "talks", "testimonials", "contact"]) {
     const current = await state(section);
     const content = structuredClone(current.content);
     if (section === "hero") content.role = "Edited role";
+    else if (section === "layout") { content.sectionOrder.reverse(); content.sectionOrder[0].visible = false; }
     else content.title = `Edited ${section}`;
     if (section === "education" || section === "experience" || section === "skills") content.entries.reverse();
-    if (section === "recognition") content.awards.push({ id: "award-1", title: "Test award", organisation: "Test society", date: "2026" });
+    additions[section]?.(content);
     const response = await save(section, { ...current, content });
     assert.equal(response.status, 200, await response.text());
     assert.deepEqual((await state(section)).content, content);
@@ -324,6 +337,26 @@ test("all content sections save independently, preserve existing data, and rejec
     assert.equal((await save("hero", { ...latestHero, content: { ...latestHero.content, ...patch } })).status, 400);
   }
   assert.equal((await save("contact", { ...latestContact, content: { ...latestContact.content, email: "invalid" } })).status, 400);
+  for (const patch of [{ phone: "call me" }, { phone: "" }, { socials: [{ id: "p", label: "X", url: "javascript:alert(1)", icon: "x" }] }, { socials: [{ id: "p", label: "X", url: "https://x.com/test", icon: "myspace" }] }]) {
+    assert.equal((await save("contact", { ...latestContact, content: { ...latestContact.content, ...patch } })).status, 400, JSON.stringify(patch));
+  }
+  const layout = await state("layout");
+  const order = layout.content.sectionOrder;
+  for (const sectionOrder of [order.slice(1), [...order.slice(1), order[1]], order.map((entry, index) => index ? entry : { ...entry, id: "hero" }), order.map((entry, index) => index ? entry : { ...entry, visible: "yes" })]) {
+    assert.equal((await save("layout", { ...layout, content: { sectionOrder } })).status, 400, "Layout must list every section exactly once");
+  }
+  const invalidEntries = {
+    writing: ["posts", { id: "post-2", title: "No link", date: "2026" }],
+    talks: ["entries", { id: "talk-2", title: "Talk", type: "keynote", venue: "Venue", date: "2026" }],
+    now: ["entries", null],
+    testimonials: ["items", { id: "quote-2", quote: "Hi", name: "Person", avatar: "/images/../../secret.png" }],
+    security: ["entries", { id: "ctf-2", title: "CTF", date: "2026", tags: [], url: "ftp://example.com" }],
+  };
+  invalidEntries.now = ["items", { id: "now-2", kind: "sleeping", text: "Zzz" }];
+  for (const [section, [key, entry]] of Object.entries(invalidEntries)) {
+    const current = await state(section);
+    assert.equal((await save(section, { ...current, content: { ...current.content, [key]: [...current.content[key], entry] } })).status, 400, section + " rejects invalid entries");
+  }
   const certificates = await state("recognition");
   const entry = { id: "duplicate", title: "Test", organisation: "Issuer", date: "2026" };
   assert.equal((await save("recognition", { ...certificates, content: { ...certificates.content, certifications: [entry, entry] } })).status, 400);
@@ -358,6 +391,16 @@ test("content images are staged per section, validated, saved and discarded with
   await f.request("/api/discard?section=recognition", { method: "POST" });
   assert.equal((await fetch(f.origin + stagedRecognition.image)).status, 404);
   assert.deepEqual((await (await f.request("/api/content?section=recognition")).json()).content, recognition.content);
+  for (const [section, key, field] of [["testimonials", "items", "avatar"], ["writing", "posts", "cover"]]) {
+    const current = await (await f.request(`/api/content?section=${section}`)).json();
+    const staged = await upload(section);
+    const entry = section === "writing" ? { id: "post-image", title: "Post", date: "2026", url: "https://example.com/post", [field]: staged.image } : { id: "quote-image", quote: "Great work.", name: "Person", [field]: staged.image };
+    const response = await f.request(`/api/content?section=${section}`, { method: "PUT", body: { ...current, content: { ...current.content, [key]: [entry] } } });
+    assert.equal(response.status, 200, await response.clone().text());
+    const stored = (await response.json()).content[key][0][field];
+    assert.match(stored, /^\/images\/content\/content-.*\.png$/);
+    assert.equal((await fetch(f.origin + stored)).status, 200);
+  }
   await symlink(path.join(f.root, "src/data"), path.join(f.root, "public/images/escape"));
   const latest = await (await f.request("/api/content?section=hero")).json();
   assert.equal((await f.request("/api/content?section=hero", { method: "PUT", body: { ...latest, content: { ...latest.content, image: "/images/escape/fake.png" } } })).status, 400);
@@ -439,6 +482,29 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   await save();
   await choose("contact");
   await page.getByLabel("Contact email", { exact: true }).fill("new@example.com");
+  await page.getByLabel("Phone (optional)", { exact: true }).fill("+94 71 234 5678");
+  await page.getByRole("button", { name: "Add profile", exact: true }).click();
+  card = page.locator('[data-collection="socials"] details').last();
+  await card.getByLabel("Label", { exact: true }).fill("Medium");
+  await card.getByLabel("Profile URL", { exact: true }).fill("https://medium.com/@januda");
+  await card.locator(`select[data-field="icon"]`).selectOption("medium");
+  await save();
+  await choose("layout");
+  const sections = page.locator('[data-collection="sectionOrder"] details');
+  assert.equal(await sections.count(), 12);
+  assert.equal(await page.getByRole("button", { name: /^(Add|Remove) section$/ }).count(), 0, "The section list is fixed");
+  const nowSection = sections.nth(2);
+  assert.equal(await nowSection.locator(".project-title").textContent(), "Now");
+  await nowSection.locator("summary").click();
+  await nowSection.getByLabel("Show this section", { exact: true }).uncheck();
+  assert.equal(await nowSection.locator(".project-title").textContent(), "Now — switched off");
+  await nowSection.getByRole("button", { name: "Move up" }).click();
+  await save();
+  await choose("testimonials");
+  await page.getByRole("button", { name: "Add testimonial", exact: true }).click();
+  card = page.locator('[data-collection="items"] details').last();
+  await card.getByLabel("Quote", { exact: true }).fill("Calm under pressure and great to build with.");
+  await card.getByLabel("Name", { exact: true }).fill("A collaborator");
   await save();
   await choose("selected-work");
   assert.equal(await page.locator("details").count(), 4);
@@ -464,5 +530,9 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   assert.equal(disk.education.entries.at(-1).institution, "Test university");
   assert.equal(disk.skills.entries.at(-1).skills.length, 2);
   assert.equal(disk.experience.entries.at(-1).role, "Developer");
+  assert.deepEqual(disk.layout.sectionOrder.slice(0, 3), [{ id: "about", visible: true }, { id: "now", visible: false }, { id: "stats", visible: true }]);
+  assert.equal(disk.testimonials.items[0].name, "A collaborator");
+  assert.equal(disk.contact.phone, "+94 71 234 5678");
+  assert.deepEqual(disk.contact.socials.map(({ label, url, icon }) => ({ label, url, icon })), [{ label: "Medium", url: "https://medium.com/@januda", icon: "medium" }]);
   assert.deepEqual(errors, []);
 });

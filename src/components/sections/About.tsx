@@ -2,12 +2,13 @@ import { content } from "@/data";
 import Image from "next/image";
 import { ArrowUpRight, GraduationCap, MapPin } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
+import { sectionEyebrow } from "@/lib/sections";
 
 export function About() {
   return (
     <SectionWrapper id="about" className="section-border">
       <div className="container-section">
-        <SectionHeader eyebrow="01 / A little about me" title={content.about.title} description={content.about.description} />
+        <SectionHeader eyebrow={sectionEyebrow("about")} title={content.about.title} description={content.about.description} />
         <div className="grid md:grid-cols-[.75fr_1.25fr] gap-8 lg:gap-16 items-start">
           <div className="relative aspect-[4/3] md:aspect-[4/4.5] max-w-md w-full overflow-hidden rounded-2xl border border-border">
             <Image src={content.about.image} alt={content.about.imageAlt} fill sizes="(min-width: 1280px) 426px, (min-width: 768px) 35vw, calc(100vw - 32px)" className="object-cover object-center" />

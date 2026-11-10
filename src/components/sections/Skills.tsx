@@ -2,6 +2,7 @@ import { Cloud, Monitor, Server, Shield } from "lucide-react";
 import { content, skillCategories } from "@/data";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
+import { sectionEyebrow } from "@/lib/sections";
 
 const icons = { monitor: Monitor, server: Server, cloud: Cloud, shield: Shield };
 
@@ -9,7 +10,7 @@ export function Skills() {
   return (
     <SectionWrapper id="skills" className="section-border">
       <div className="container-section">
-        <SectionHeader eyebrow="03 / The toolkit" title={content.skills.title} description={content.skills.description} />
+        <SectionHeader eyebrow={sectionEyebrow("skills")} title={content.skills.title} description={content.skills.description} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {skillCategories.map(category => {
             const Icon = icons[category.icon as keyof typeof icons] ?? Monitor;

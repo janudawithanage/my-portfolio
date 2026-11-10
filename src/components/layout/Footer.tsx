@@ -1,5 +1,6 @@
 import { ArrowUp, ArrowUpRight } from "lucide-react";
-import { content, fullName, navItems, socialLinks } from "@/data";
+import { content, fullName, socialLinks } from "@/data";
+import { navItems } from "@/lib/sections";
 
 export function Footer() {
   return (

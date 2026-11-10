@@ -38,3 +38,38 @@ export function LinkedinIcon({ size = 16, className }: IconProps) {
     </svg>
   );
 }
+
+// Simple outline marks for the optional profiles in Contact. They follow lucide's 24px stroke style.
+const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
+function Svg({ size = 16, className, children, filled = false }: IconProps & { children: React.ReactNode; filled?: boolean }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className={className} {...(filled ? { fill: "currentColor" } : stroke)}>{children}</svg>;
+}
+
+export function XIcon(props: IconProps) {
+  return <Svg {...props} filled><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></Svg>;
+}
+
+export function MediumIcon(props: IconProps) {
+  return <Svg {...props} filled><ellipse cx="6.8" cy="12" rx="6.8" ry="6.8" /><ellipse cx="17.4" cy="12" rx="3.4" ry="6.4" /><ellipse cx="22.6" cy="12" rx="1.3" ry="5.8" /></Svg>;
+}
+
+export function DevtoIcon(props: IconProps) {
+  return <Svg {...props}><rect x="2" y="5" width="20" height="14" rx="3" /><path d="M6 9.5v5h1.2a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2Z M14 9.5h-2.4v5H14 M11.6 12H13.5 M15.6 9.5l1.4 5 1.4-5" /></Svg>;
+}
+
+export function YoutubeIcon(props: IconProps) {
+  return <Svg {...props}><rect x="1.75" y="4.75" width="20.5" height="14.5" rx="4.5" /><path d="m10 9.25 5 2.75-5 2.75Z" fill="currentColor" /></Svg>;
+}
+
+export function InstagramIcon(props: IconProps) {
+  return <Svg {...props}><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" /><circle cx="12" cy="12" r="4.25" /><circle cx="17.4" cy="6.6" r=".9" fill="currentColor" stroke="none" /></Svg>;
+}
+
+export function FacebookIcon(props: IconProps) {
+  return <Svg {...props}><path d="M15.5 3.5h-2a4 4 0 0 0-4 4v13 M6.5 10.5h8" /></Svg>;
+}
+
+export function DribbbleIcon(props: IconProps) {
+  return <Svg {...props}><circle cx="12" cy="12" r="9.75" /><path d="M8.56 2.75c4.37 6 6 9.42 8 17.72 M19.13 5.09C15.22 9.14 10 10.44 2.25 10.94 M21.75 12.84c-6.62-1.41-12.14 1-16.38 6.32" /></Svg>;
+}

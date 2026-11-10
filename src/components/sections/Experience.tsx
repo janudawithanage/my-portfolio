@@ -2,6 +2,7 @@ import { ChevronDown, MapPin } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
 import { content, experienceData } from "@/data";
+import { sectionEyebrow } from "@/lib/sections";
 
 const labels: Record<string, string> = { "full-time": "Full-time", "part-time": "Part-time", internship: "Internship", contract: "Contract", freelance: "Freelance", university: "University project", personal: "Personal project" };
 
@@ -9,7 +10,7 @@ export function Experience() {
   return (
     <SectionWrapper id="experience" className="section-border bg-bg-secondary">
       <div className="container-section">
-        <SectionHeader eyebrow="05 / Experience" title={content.experience.title} description={content.experience.description} />
+        <SectionHeader eyebrow={sectionEyebrow("experience")} title={content.experience.title} description={content.experience.description} />
         <div>
           {experienceData.map(exp => (
             <article key={exp.id} className="journey-item">

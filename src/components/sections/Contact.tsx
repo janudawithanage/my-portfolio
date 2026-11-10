@@ -7,8 +7,9 @@ import { z } from "zod";
 import { ArrowUpRight, Check, Mail, MapPin, Send } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
-import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
-import { content, hasRecognition, socialLinks } from "@/data";
+import { SocialGlyph } from "@/components/ui/SocialGlyph";
+import { content, socialLinks } from "@/data";
+import { sectionEyebrow } from "@/lib/sections";
 
 // Zod's JIT probes `new Function`, which the production CSP blocks and reports. Four fields don't need it.
 z.config({ jitless: true });
@@ -92,7 +93,7 @@ export function Contact() {
     <SectionWrapper id="contact" className="section-border">
       <span id="cta" className="block" aria-hidden="true" />
       <div className="container-section">
-        <SectionHeader eyebrow={(hasRecognition ? "07" : "06") + " / Get in touch"} title={content.contact.title} description={content.contact.description} />
+        <SectionHeader eyebrow={sectionEyebrow("contact")} title={content.contact.title} description={content.contact.description} />
         <div className="grid lg:grid-cols-[.85fr_1.15fr] gap-8 lg:gap-16">
           <div className="space-y-7">
             <div className="flex items-center gap-2 text-sm text-success"><span className="status-dot" aria-hidden="true" />{content.contact.availability}</div>
@@ -101,7 +102,7 @@ export function Contact() {
               <div><p className="text-xs text-text-muted mb-1">EMAIL</p><a href={"mailto:" + content.contact.email} className="text-link [overflow-wrap:anywhere]"><Mail size={17} className="shrink-0 text-accent" aria-hidden="true" /><span className="min-w-0">{content.contact.email}</span><ArrowUpRight size={15} className="shrink-0" aria-hidden="true" /></a></div>
               <div><p className="text-xs text-text-muted mb-2">BASED IN</p><p className="flex items-center gap-2 text-text-secondary"><MapPin size={17} className="text-accent" aria-hidden="true" />{content.contact.location}</p></div>
             </div>
-            <div className="flex gap-3">{socialLinks.filter(s => s.icon !== "mail").map(social => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label={social.label}>{social.icon === "github" ? <GithubIcon size={18} /> : <LinkedinIcon size={18} />}</a>)}</div>
+            <div className="flex flex-wrap gap-3">{socialLinks.filter(s => s.icon !== "mail").map(social => <a key={social.href} href={social.href} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label={social.label}><SocialGlyph icon={social.icon} /></a>)}</div>
           </div>
           {submitted ? (
             <div className="card p-8 sm:p-10 flex flex-col items-start justify-center gap-5" role="status">

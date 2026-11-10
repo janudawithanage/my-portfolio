@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { content, fullName, navItems } from "@/data";
+import { content, fullName } from "@/data";
+import { navItems } from "@/lib/sections";
 import { Button } from "@/components/ui/Button";
 
 export function Navbar() {

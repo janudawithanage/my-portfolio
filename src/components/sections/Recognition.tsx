@@ -6,6 +6,7 @@ import { ArrowUpRight, Award, BadgeCheck, HeartHandshake, ChevronDown } from "lu
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 import type { RecognitionContent } from "@/types";
+import { sectionEyebrow } from "@/lib/sections";
 
 const categories = [
   { key: "awards", title: "Awards & Achievements", icon: Award },
@@ -19,7 +20,7 @@ export function Recognition({ data }: { data: RecognitionContent }) {
   return (
     <SectionWrapper id="recognition" className="section-border">
       <div className="container-section">
-        <SectionHeader eyebrow="06 / Recognition" title={data.title} description={data.description} />
+        <SectionHeader eyebrow={sectionEyebrow("recognition")} title={data.title} description={data.description} />
         <div className="recognition-categories">
           {categories.filter(({ key }) => data[key].length).map(({ key, title, icon: Icon }) => (
             <div className="recognition-category" key={key}>

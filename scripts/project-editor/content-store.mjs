@@ -17,7 +17,15 @@ const entries = schema => z.array(schema).max(200).superRefine((items, ctx) => {
   const ids = new Set();
   for (const item of items) { if (ids.has(item.id)) ctx.addIssue({ code: "custom", message: "Each entry needs a unique ID." }); ids.add(item.id); }
 });
-const recognitionEntry = z.object({ id, title: text(160), organisation: text(200), date: text(120), description: optionalText(5000), url: url.optional(), image: image.optional() }).strict();
+const recognitionEntry = z.object({ id, title: text(160), organisation: text(200), date: text(120), description: optionalText(5000), url: url.optional(), image: image.optional(), logo: image.optional() }).strict();
+/** Reorderable sections between Hero and Contact. Keep in sync with SectionId in src/types. */
+export const sectionIds = ["about", "stats", "now", "education", "skills", "projects", "experience", "security", "recognition", "writing", "talks", "testimonials"];
+export const socialIcons = ["github", "linkedin", "x", "medium", "devto", "youtube", "instagram", "facebook", "dribbble", "website"];
+const sectionOrder = z.array(z.object({ id: z.enum(sectionIds), visible: z.boolean() }).strict()).superRefine((items, ctx) => {
+  const seen = new Set(items.map(item => item.id));
+  if (seen.size !== items.length || seen.size !== sectionIds.length) ctx.addIssue({ code: "custom", message: "List every section exactly once." });
+});
+const phone = z.string().trim().max(40).regex(/^\+?[0-9][0-9 ().-]{5,39}$/, "Enter a phone number using digits, spaces, +, (, ), . or -.").optional();
 export const contentSchemas = {
   hero: z.object({ firstName: text(100), lastName: text(100), role: text(200), bio: text(3000), availability: text(200), location: text(200), image, imageAlt: text(250), cvUrl: z.union([url, z.string().regex(/^\/[a-zA-Z0-9/_-]+\.pdf$/i)]), primaryLabel: text(80), secondaryLabel: text(80), cvLabel: text(80), facts: z.array(z.object({ value: text(80), label: text(120) }).strict()).max(10), capabilities: strings, marquee: strings, githubUrl: url, linkedinUrl: url }).strict(),
   about: z.object({ ...header, lead: text(3000), paragraphs: z.array(text(5000)).max(20), image, imageAlt: text(250), study: text(200), location: text(200), linkLabel: text(200) }).strict(),
@@ -26,12 +34,20 @@ export const contentSchemas = {
   projects: z.object({ ...header, linkLabel: text(120) }).strict(),
   experience: z.object({ ...header, entries: entries(z.object({ id, company: text(200), role: text(200), startDate: text(100), endDate: text(100), location: text(200), type: z.enum(["full-time", "part-time", "internship", "contract", "freelance", "university", "personal"]), description: z.string().trim().max(5000), highlights: strings, tech: strings }).strict()) }).strict(),
   recognition: z.object({ ...header, awards: entries(recognitionEntry), certifications: entries(recognitionEntry), volunteering: entries(recognitionEntry) }).strict(),
-  contact: z.object({ ...header, availability: text(200), intro: text(3000), email: z.string().trim().email().max(250), location: text(200), formTitle: text(200), footerText: text(1000) }).strict(),
+  contact: z.object({ ...header, availability: text(200), intro: text(3000), email: z.string().trim().email().max(250), phone, location: text(200), formTitle: text(200), footerText: text(1000), socials: entries(z.object({ id, label: text(60), url, icon: z.enum(socialIcons) }).strict()) }).strict(),
+  layout: z.object({ sectionOrder }).strict(),
+  stats: z.object({ title: text(200), items: entries(z.object({ id, value: text(40), label: text(120) }).strict()) }).strict(),
+  now: z.object({ ...header, updated: optionalText(100), items: entries(z.object({ id, kind: z.enum(["building", "learning", "reading", "exploring"]), text: text(500), emoji: optionalText(16), url: url.optional() }).strict()) }).strict(),
+  security: z.object({ ...header, entries: entries(z.object({ id, title: text(200), result: optionalText(120), date: text(120), description: optionalText(3000), url: url.optional(), tags: z.array(text(60)).max(20) }).strict()) }).strict(),
+  writing: z.object({ ...header, posts: entries(z.object({ id, title: text(250), platform: optionalText(80), date: text(120), excerpt: optionalText(1000), url, cover: image.optional() }).strict()) }).strict(),
+  talks: z.object({ ...header, entries: entries(z.object({ id, title: text(250), type: z.enum(["talk", "paper", "poster", "workshop"]), venue: text(250), date: text(120), description: optionalText(3000), url: url.optional() }).strict()) }).strict(),
+  testimonials: z.object({ ...header, items: entries(z.object({ id, quote: text(1500), name: text(150), role: optionalText(150), company: optionalText(150), avatar: image.optional(), url: url.optional() }).strict()) }).strict(),
 };
 
+const imageKeys = ["image", "logo", "avatar", "cover"];
 function imageReferences(value) {
   if (!value || typeof value !== "object") return [];
-  return Object.entries(value).flatMap(([key, child]) => ["image", "logo"].includes(key) && typeof child === "string" ? [{ object: value, key, value: child }] : imageReferences(child));
+  return Object.entries(value).flatMap(([key, child]) => imageKeys.includes(key) && typeof child === "string" ? [{ object: value, key, value: child }] : imageReferences(child));
 }
 
 export function createContentStore({ root, staged, clearStaged, EditorError }) {

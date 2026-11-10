@@ -7,17 +7,27 @@ import { Education } from "@/components/sections/Education";
 import { Contact } from "@/components/sections/Contact";
 import { Recognition } from "@/components/sections/Recognition";
 import { content } from "@/data";
+import { visibleSections } from "@/lib/sections";
+import type { SectionId } from "@/types";
 
+const sections: Partial<Record<SectionId, () => React.ReactNode>> = {
+  about: About,
+  education: Education,
+  skills: Skills,
+  projects: Projects,
+  experience: Experience,
+  recognition: () => <Recognition data={content.recognition} />,
+};
+
+/** Hero first, Contact last; everything between follows the editor's order and skips empty sections. */
 export default function Home() {
   return (
     <>
       <Hero />
-      <About />
-      <Education />
-      <Skills />
-      <Projects />
-      <Experience />
-      <Recognition data={content.recognition} />
+      {visibleSections.map(id => {
+        const Section = sections[id];
+        return Section ? <Section key={id} /> : null;
+      })}
       <Contact />
     </>
   );

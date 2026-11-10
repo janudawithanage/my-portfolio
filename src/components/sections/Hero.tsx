@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowDown, ArrowUpRight, Download, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
-import { content, fullName, featuredProjects, socialLinks } from "@/data";
+import { content, fullName, featuredProjects } from "@/data";
 
 const heroHighlights = content.hero.marquee.join(" ✦ ").toUpperCase() + " ✦ ";
 
@@ -42,8 +42,8 @@ export function Hero() {
             <figcaption className="portrait-caption">
               <span className="flex items-center gap-1.5"><MapPin size={13} aria-hidden="true" />{content.hero.location}</span>
               <div className="flex gap-2">
-                <a href={socialLinks[0].href} target="_blank" rel="noopener noreferrer" aria-label={fullName + " on GitHub"} className="icon-link"><GithubIcon size={17} /></a>
-                <a href={socialLinks[1].href} target="_blank" rel="noopener noreferrer" aria-label={fullName + " on LinkedIn"} className="icon-link"><LinkedinIcon size={17} /></a>
+                <a href={content.hero.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={fullName + " on GitHub"} className="icon-link"><GithubIcon size={17} /></a>
+                <a href={content.hero.linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label={fullName + " on LinkedIn"} className="icon-link"><LinkedinIcon size={17} /></a>
               </div>
             </figcaption>
           </figure>
