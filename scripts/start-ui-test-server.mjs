@@ -15,8 +15,8 @@ await writeFile(path.join(directory, "src/data/experiments.json"), JSON.stringif
 // Populate only the disposable app to exercise Recognition and navigation end to end.
 const fixtureContent = JSON.parse(await (await import("node:fs/promises")).readFile(path.join(directory, "src/data/content.json"), "utf8"));
 fixtureContent.recognition.awards = [{ id: "award-fixture", title: "Test award", organisation: "Test society", date: "2026", description: "Test fixture only." }];
-fixtureContent.recognition.certifications = Array.from({ length: 8 }, (_, index) => ({ id: "cert-" + index, title: "Test certificate " + (index + 1), organisation: "Test issuer", date: "October 2026", url: "https://example.com/credential/" + index, ...(index === 0 ? { image: "/images/photo2.png" } : {}) }));
-fixtureContent.recognition.volunteering = [{ id: "role-fixture", title: "Test volunteer role", organisation: "Test community", date: "2025 — Present", description: "Test fixture only.", image: "/images/photo2.png" }];
+fixtureContent.recognition.certifications = Array.from({ length: 8 }, (_, index) => ({ id: "cert-" + index, title: "Test certificate " + (index + 1), organisation: "Test issuer", date: "October 2026", url: "https://example.com/credential/" + index, ...(index === 0 ? { image: "/images/photo2.webp" } : {}) }));
+fixtureContent.recognition.volunteering = [{ id: "role-fixture", title: "Test volunteer role", organisation: "Test community", date: "2025 — Present", description: "Test fixture only.", image: "/images/photo2.webp" }];
 await writeFile(path.join(directory, "src/data/content.json"), JSON.stringify(fixtureContent));
 await symlink(path.join(root, "node_modules"), path.join(directory, "node_modules"), "dir");
 const repositories = Array.from({ length: 8 }, (_, index) => ({

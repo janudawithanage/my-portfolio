@@ -6,7 +6,7 @@
     "bio": "I build thoughtful web applications and cloud-backed services. Bringing together code, systems, and a growing focus on security.",
     "availability": "Open to opportunities & collaboration",
     "location": "Colombo, Sri Lanka",
-    "image": "/images/photo1.png",
+    "image": "/images/photo1.webp",
     "imageAlt": "Januda Withanage",
     "cvUrl": "/Januda-Withanage-CV.pdf",
     "primaryLabel": "Explore my work",
@@ -51,7 +51,7 @@
       "My studies inform my work across frontend, backend, and cloud. Recent projects include a Node.js microservices system with RabbitMQ and Kong, a TypeScript sports betting platform, and an ESP32 monitoring dashboard.",
       "Alongside development, I study web application security, work through CTF challenges, and explore system design and open-source tools. I also work with Azure and container-based deployment workflows."
     ],
-    "image": "/images/photo2.png",
+    "image": "/images/photo2.webp",
     "imageAlt": "Januda Withanage outdoors",
     "study": "UCSC · Computer Science",
     "location": "Colombo, Sri Lanka",

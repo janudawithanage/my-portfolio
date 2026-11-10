@@ -66,7 +66,7 @@ test("local server rejects foreign hosts, origins, missing tokens, unsafe paths 
   }
   assert.equal((await f.request("/api/unknown")).status, 404);
   assert.equal((await fetch(f.origin + "/src/data/projects.json")).status, 404);
-  assert.equal((await fetch(f.origin + "/images/projects/%2e%2e%2fphoto1.png")).status, 404);
+  assert.equal((await fetch(f.origin + "/images/projects/%2e%2e%2fphoto1.webp")).status, 404);
   await symlink(path.join(f.root, "src/data/projects.json"), path.join(f.root, "public/images/projects/secret.png"));
   assert.equal((await fetch(f.origin + "/images/projects/secret.png")).status, 404);
 });
@@ -300,8 +300,8 @@ test("all content sections save independently, preserve existing data, and rejec
   const original = JSON.parse(await readFile(path.join(f.root, "src/data/content.json"), "utf8"));
   const hero = await state("hero");
   const about = await state("about");
-  assert.equal(hero.content.image, "/images/photo1.png");
-  assert.equal(about.content.image, "/images/photo2.png");
+  assert.equal(hero.content.image, "/images/photo1.webp");
+  assert.equal(about.content.image, "/images/photo2.webp");
   for (const section of ["hero", "about", "education", "skills", "projects", "experience", "recognition", "contact"]) {
     const current = await state(section);
     const content = structuredClone(current.content);
@@ -354,7 +354,7 @@ test("content images are staged per section, validated, saved and discarded with
   assert.equal((await fetch(f.origin + content.image)).status, 200);
   assert.equal((await fetch(f.origin + stagedHero.image)).status, 404);
   assert.equal((await fetch(f.origin + stagedRecognition.image)).status, 200);
-  assert.equal((await fetch(f.origin + "/images/photo1.png")).status, 200);
+  assert.equal((await fetch(f.origin + "/images/photo1.webp")).status, 200);
   await f.request("/api/discard?section=recognition", { method: "POST" });
   assert.equal((await fetch(f.origin + stagedRecognition.image)).status, 404);
   assert.deepEqual((await (await f.request("/api/content?section=recognition")).json()).content, recognition.content);
@@ -459,7 +459,7 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   await choose("contact");
   assert.equal(await page.getByLabel("Contact email", { exact: true }).inputValue(), "new@example.com");
   disk = await read();
-  assert.equal(disk.about.image, "/images/photo2.png");
+  assert.equal(disk.about.image, "/images/photo2.webp");
   assert.match(disk.hero.image, /^\/images\/content\//);
   assert.equal(disk.education.entries.at(-1).institution, "Test university");
   assert.equal(disk.skills.entries.at(-1).skills.length, 2);

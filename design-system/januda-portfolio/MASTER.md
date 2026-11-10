@@ -14,7 +14,7 @@ Initial developer-portfolio query incorrectly selected documentation; the verifi
 `portfolio professional dark` selected Minimalism & Swiss Style and Hero + Features + CTA.
 Dials: variance 4, motion 2, density 3.
 The approved navy/cyan palette and Inter/Syne fonts override the generated light palette
-and alternative fonts. Motion uses the existing Framer Motion runtime and CSS.
+and alternative fonts. Motion is CSS-only.
 Next.js search verified responsive Image fill, reserved aspect ratios, and root font loading.
 Tailwind search verified wrapping chip collections. UX search verified unobscured keyboard focus.
 
@@ -35,7 +35,7 @@ Hero → About → Education → Skills → Projects → Experience → Recognit
 Section content is editable through the loopback-only editor at port 3033 and stored
 in `src/data/content.json`; selected projects retain `src/data/projects.json`.
 Open source & experiments is not rendered on the home page.
-Hero actions precede the square portrait on mobile. Preserve photo1.png/photo2.png
+Hero actions precede the square portrait on mobile. Preserve photo1.webp/photo2.webp
 unless the user explicitly replaces them in the editor. Projects use one/two columns.
 Skills use one/two/four categorized cards without proficiency meters.
 Experience highlights use native details; all existing content remains reachable.

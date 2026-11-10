@@ -13,7 +13,7 @@
       "Azure"
     ],
     "githubUrl": "https://github.com/janudawithanage/distributed-joke-system",
-    "image": "/images/projects/distributed-joke-system.png",
+    "image": "/images/projects/distributed-joke-system.webp",
     "featured": true,
     "status": "completed",
     "year": "2026"
@@ -31,7 +31,7 @@
       "MVC"
     ],
     "githubUrl": "https://github.com/Jeyaneedhan21/Rentigo",
-    "image": "/images/projects/rentigo.png",
+    "image": "/images/projects/rentigo.webp",
     "featured": true,
     "status": "completed",
     "year": "2026"
@@ -50,7 +50,7 @@
     ],
     "githubUrl": "https://github.com/janudawithanage/becute-dreams-luxe",
     "liveUrl": "https://becute-dreams-luxe.vercel.app",
-    "image": "/images/projects/becute-dreams-luxe.png",
+    "image": "/images/projects/becute-dreams-luxe.webp",
     "featured": true,
     "status": "completed",
     "year": "2026"
@@ -58,9 +58,18 @@
   {
     "id": "janudawithanage--smart-home-monitoring-control",
     "title": "smart home monitoring control",
-    "description": "An Expo and React Native app for device control, energy tracking, schedules, and security views. Supabase syncs device state with a companion web-based hardware simulator.",
+    "description": "Smart home monitoring and control app built with React Native, Expo, and Supabase. Features real-time device control, appliance scheduling, energy tracking, interactive floor plans, safety alerts, and a companion web-based hardware simulator.",
     "tech": [
-      "TypeScript"
+      "React Native",
+      "Expo",
+      "TypeScript",
+      "Expo Router",
+      "Supabase",
+      "PostgreSQL",
+      "React",
+      "Vite",
+      "Docker",
+      "Nginx"
     ],
     "githubUrl": "https://github.com/janudawithanage/smart-home-monitoring-control",
     "featured": true,
