@@ -113,15 +113,23 @@ export function createProjectEditor({ root, username = "janudawithanage", github
   }
   const contentStore = createContentStore({ root, staged, clearStaged, EditorError });
 
+  let tokenRejected = false;
   async function github(endpoint) {
+    const request = useToken => fetchImpl(`https://api.github.com${endpoint}`, {
+      headers: {
+        Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
+        ...(useToken ? { Authorization: `Bearer ${githubToken}` } : {}),
+      }, signal: AbortSignal.timeout(15000),
+    });
     let response;
     try {
-      response = await fetchImpl(`https://api.github.com${endpoint}`, {
-        headers: {
-          Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
-          ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
-        }, signal: AbortSignal.timeout(15000),
-      });
+      response = await request(githubToken && !tokenRejected);
+      // Public repositories don't need a token, so an expired or revoked one must not empty the picker.
+      if (response.status === 401 && githubToken && !tokenRejected) {
+        tokenRejected = true;
+        console.warn("Project editor: GitHub rejected GITHUB_TOKEN (expired or revoked). Continuing without it; replace or remove it in .env.local.");
+        response = await request(false);
+      }
     } catch { throw new EditorError(502, "Cannot reach GitHub. Try again; your project edits are still available."); }
     if (!response.ok) {
       const messages = {

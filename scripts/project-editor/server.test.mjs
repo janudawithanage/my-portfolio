@@ -71,6 +71,29 @@ test("local server rejects foreign hosts, origins, missing tokens, unsafe paths 
   assert.equal((await fetch(f.origin + "/images/projects/secret.png")).status, 404);
 });
 
+test("an expired GitHub token falls back to public access instead of emptying the picker", async t => {
+  const tempRoot = await mkdtemp(path.join(tmpdir(), "portfolio-editor-token-"));
+  await cp(path.join(root, "src/data"), path.join(tempRoot, "src/data"), { recursive: true });
+  const calls = [];
+  const server = createProjectEditor({
+    root: tempRoot, githubToken: "expired-token",
+    fetchImpl: async (url, options) => {
+      calls.push(Boolean(options.headers.Authorization));
+      return options.headers.Authorization ? Response.json({ message: "Bad credentials" }, { status: 401 }) : Response.json([repo(1), repo(2)]);
+    },
+  });
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); await rm(tempRoot, { recursive: true, force: true }); });
+  const origin = `http://127.0.0.1:${server.address().port}`;
+  const token = (await (await fetch(origin)).text()).match(/name="editor-token" content="([a-f0-9]+)"/)[1];
+  const load = () => fetch(origin + "/api/repos?page=1", { headers: { "X-Editor-Token": token } });
+  const first = await load();
+  assert.equal(first.status, 200);
+  assert.equal((await first.json()).repos.length, 2);
+  assert.equal((await load()).status, 200);
+  assert.deepEqual(calls, [true, false, false], "tries the token once, then stays public");
+});
+
 test("editor serves its own fonts, icon and texture, and brands the page with the hero's initials", async t => {
   const f = await fixture(t);
   for (const [asset, type] of [["/editor.css", "text/css"], ["/fonts/inter-latin.woff2", "font/woff2"], ["/fonts/syne-latin.woff2", "font/woff2"], ["/favicon.svg", "image/svg+xml"], ["/grain.svg", "image/svg+xml"]]) {
