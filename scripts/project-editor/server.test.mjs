@@ -541,6 +541,11 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   assert.equal(await nowSection.locator(".project-title").textContent(), "Now — switched off");
   await nowSection.getByRole("button", { name: "Move up" }).click();
   await save();
+  // The section picker follows the saved portfolio order and marks switched-off sections.
+  const pickerOrder = await page.locator("#section-picker option").evaluateAll(options => options.map(option => [option.value, option.textContent]));
+  assert.deepEqual(pickerOrder.slice(0, 5).map(([value]) => value), ["layout", "hero", "about", "now", "stats"]);
+  assert.equal(pickerOrder.find(([value]) => value === "now")[1], "Now (switched off)");
+  assert.deepEqual(pickerOrder.at(-1), ["contact", "Get in touch"]);
   await choose("testimonials");
   await page.getByRole("button", { name: "Add testimonial", exact: true }).click();
   card = page.locator('[data-collection="items"] details').last();

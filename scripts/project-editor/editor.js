@@ -317,6 +317,7 @@ $("#projects-form").addEventListener("submit", async event => {
     const state = await api(sectionUrl(dataEndpoint()), { method: "PUT", body: isContent() ? { content, revision } : { projects, revision, ...(section === "experiments" ? { mode } : {}) } });
     applyState(state);
     notice("Saved locally. Preview your portfolio, then commit and push the updated JSON and any new images to publish.", true);
+    if (section === "layout") orderPicker(content);
   } catch (error) { notice(error.message); }
   finally { busy = false; updateToolbar(); }
 });
@@ -371,7 +372,37 @@ $("#section-picker").addEventListener("change", async event => {
 });
 window.addEventListener("beforeunload", event => { if (hasUnsavedDrafts() || busy) { event.preventDefault(); event.returnValue = ""; } });
 
+/**
+ * Lists sections in the order the portfolio shows them: Hero, the saved section order,
+ * then Get in touch. Sections switched off in that order are marked.
+ */
+const sectionOptions = { projects: ["selected-work", "projects"] };
+function orderPicker(layout) {
+  const picker = $("#section-picker");
+  const option = value => picker.querySelector(`option[value="${value}"]`);
+  for (const node of picker.options) node.dataset.label ??= node.textContent;
+  const ordered = ["layout", "hero"];
+  for (const { id, visible } of layout?.sectionOrder ?? []) {
+    for (const value of sectionOptions[id] ?? [id]) {
+      const node = option(value);
+      if (!node) continue;
+      node.textContent = node.dataset.label + (visible ? "" : " (switched off)");
+      ordered.push(value);
+    }
+  }
+  ordered.push("contact");
+  for (const node of picker.options) if (!ordered.includes(node.value)) ordered.push(node.value);
+  const value = picker.value;
+  picker.append(...ordered.map(option).filter(Boolean));
+  picker.value = value;
+}
+async function refreshPickerOrder() {
+  try { orderPicker((await api(sectionUrl("/api/content", "layout"))).content); }
+  catch { /* Keep the default order if the layout can't be read. */ }
+}
+
 try {
   applyState(await api(sectionUrl("/api/projects")));
+  refreshPickerOrder();
   loadRepos();
 } catch (error) { notice(`${error.message} Reload this page to try again.`); }
