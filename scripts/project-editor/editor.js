@@ -1,6 +1,6 @@
 /* The editor is served only by the standalone loopback server. */
 import { contentFields } from "./content-fields.js";
-import { renderContent } from "./content-editor.js";
+import { renderContent, hideToggle } from "./content-editor.js";
 const $ = selector => document.querySelector(selector);
 const token = $('meta[name="editor-token"]').content;
 let projects = [];
@@ -65,7 +65,10 @@ function dirty() { return ready && snapshot() !== saved; }
 
 function updateToolbar(message) {
   rememberDraft();
-  $("#selection-count").textContent = isContent() ? sectionNames[section] : `${projects.length} selected ${projects.length === 1 ? "project" : "projects"}`;
+  const hiddenCount = projects.filter(project => project.hidden).length;
+  $("#selection-count").textContent = isContent()
+    ? sectionNames[section]
+    : `${projects.length} selected ${projects.length === 1 ? "project" : "projects"}` + (hiddenCount ? ` · ${hiddenCount} hidden` : "");
   $("#save-state").textContent = message ?? (dirty() ? "Unsaved changes" : "All changes saved locally");
   $("#save-state").classList.toggle("is-dirty", message === undefined && dirty());
   $("#save").disabled = !ready || busy || !dirty();
@@ -197,7 +200,7 @@ function field(labelText, project, name, options = {}) {
     if (name === "tech") project.tech = input.value.split(",").map(value => value.trim()).filter(Boolean);
     else if (input.value || options.required) project[name] = input.value;
     else delete project[name];
-    if (name === "title") document.getElementById(`project-${project.id}`).querySelector(".project-title").textContent = input.value || "Untitled project";
+    if (name === "title") document.getElementById(`project-${project.id}`).querySelector(".project-title").textContent = (input.value || "Untitled project") + (project.hidden ? " — hidden" : "");
     if (name === "year") document.getElementById(`project-${project.id}`).querySelector(".project-year").textContent = input.value;
     notice(); updateToolbar();
   });
@@ -235,7 +238,9 @@ function renderProjects() {
     card.addEventListener("toggle", () => { if (card.open) sectionOpened.add(project.id); else sectionOpened.delete(project.id); });
     const summary = element("summary");
     const title = element("span", "summary-text");
-    title.append(element("strong", "project-title", project.title), element("span", "project-year", project.year));
+    const name = element("strong", "project-title", project.title + (project.hidden ? " — hidden" : ""));
+    title.append(name, element("span", "project-year", project.year));
+    card.classList.toggle("is-hidden", Boolean(project.hidden));
     summary.append(element("span", "project-number", String(index + 1).padStart(2, "0")), title);
     const body = element("div", "project-body");
     const tools = element("div", "project-actions");
@@ -249,7 +254,12 @@ function renderProjects() {
       move.disabled = index + direction < 0 || index + direction >= projects.length;
       moves.append(move);
     });
-    tools.append(moves, button("Remove selection", () => {
+    // Hiding keeps the project and its images in place; only the portfolio stops showing it.
+    tools.append(moves, hideToggle(project, element, () => {
+      name.textContent = project.title + (project.hidden ? " — hidden" : "");
+      card.classList.toggle("is-hidden", Boolean(project.hidden));
+      notice(); updateToolbar();
+    }), button("Remove selection", () => {
       if (!window.confirm(`Remove ${project.title} from ${sectionNames[section]}? This does not delete the GitHub repository${section === "selected-work" ? " or its images" : ""}.`)) return;
       projects.splice(index, 1); opened.delete(project.id);
       notice(); renderProjects(); renderRepos(); updateToolbar();

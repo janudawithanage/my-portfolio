@@ -1,5 +1,6 @@
 import projectsData from "./projects.json";
 import contentData from "./content.json";
+import { withoutHidden } from "@/lib/hidden";
 import type {
   Education, Experience, LayoutContent, NowContent, Project, RecognitionContent, SecurityContent,
   SkillCategory, SocialLink, SocialProfile, StatsContent, TalksContent, TestimonialsContent, WritingContent,
@@ -26,7 +27,8 @@ export interface PortfolioContent {
   contact: Omit<Raw["contact"], "socials"> & { phone?: string; socials: SocialProfile[] };
 }
 
-export const content = contentData as unknown as PortfolioContent;
+/** content.json with every entry hidden in the editor already removed. */
+export const content = withoutHidden(contentData) as unknown as PortfolioContent;
 export const fullName = content.hero.firstName + " " + content.hero.lastName;
 
 const normalise = (href: string) => href.trim().toLowerCase().replace(/\/+$/, "");
@@ -40,7 +42,7 @@ export const socialLinks: SocialLink[] = [
   ...profiles.filter((link, index) => profiles.findIndex(other => normalise(other.href) === normalise(link.href)) === index),
   { label: "Email", href: "mailto:" + content.contact.email, icon: "mail" },
 ];
-export const featuredProjects = projectsData as Project[];
+export const featuredProjects = withoutHidden(projectsData) as Project[];
 export const skillCategories = content.skills.entries;
 export const educationData = content.education.entries;
 export const experienceData = content.experience.entries;

@@ -14,7 +14,11 @@ for (const entry of ["src", "public", "package.json", "package-lock.json", "tsco
 await writeFile(path.join(directory, "src/data/experiments.json"), JSON.stringify({ mode: "automatic", projects: [] }));
 // Populate only the disposable app to exercise Recognition and navigation end to end.
 const fixtureContent = JSON.parse(await (await import("node:fs/promises")).readFile(path.join(directory, "src/data/content.json"), "utf8"));
-fixtureContent.recognition.awards = [{ id: "award-fixture", title: "Test award", organisation: "Test society", date: "2026", description: "Test fixture only." }];
+fixtureContent.recognition.awards = [
+  { id: "award-fixture", title: "Test award", organisation: "Test society", date: "2026", description: "Test fixture only." },
+  // Hidden in the editor: kept in content.json, never rendered.
+  { id: "award-hidden", title: "Test hidden award", organisation: "Test society", date: "2026", hidden: true },
+];
 fixtureContent.recognition.certifications = Array.from({ length: 8 }, (_, index) => ({ id: "cert-" + index, title: "Test certificate " + (index + 1), organisation: "Test issuer", date: "October 2026", url: "https://example.com/credential/" + index, ...(index === 0 ? { image: "/images/photo2.webp" } : {}) }));
 fixtureContent.recognition.volunteering = [{ id: "role-fixture", title: "Test volunteer role", organisation: "Test community", date: "2025 — Present", description: "Test fixture only.", image: "/images/photo2.webp" }];
 // New optional sections: Stats, Security and Writing render; Now has an item but is switched off
@@ -30,7 +34,10 @@ fixtureContent.layout.sectionOrder = fixtureContent.layout.sectionOrder.map(entr
 fixtureContent.security.entries = [
   { id: "ctf-1", title: "Test CTF 2026", result: "Top 5%", date: "October 2026", description: "Test fixture only.", url: "https://example.com/writeup/1", tags: ["web", "crypto"] },
   { id: "ctf-2", title: "Test challenge platform", date: "2026", tags: [] },
+  { id: "ctf-hidden", title: "Test hidden CTF", date: "2026", tags: [], hidden: true },
 ];
+// Every testimonial is hidden, so the section itself must stay off along with its navigation link.
+fixtureContent.testimonials.items = [{ id: "testimonial-hidden", quote: "Test hidden quote.", name: "Test hidden name", hidden: true }];
 fixtureContent.writing.posts = Array.from({ length: 8 }, (_, index) => ({ id: "post-" + index, title: "Test article " + (index + 1), platform: "Test blog", date: "2026", url: "https://example.com/post/" + index, ...(index === 0 ? { excerpt: "Test fixture only.", cover: "/images/photo2.webp" } : {}) }));
 await writeFile(path.join(directory, "src/data/content.json"), JSON.stringify(fixtureContent));
 await symlink(path.join(root, "node_modules"), path.join(directory, "node_modules"), "dir");

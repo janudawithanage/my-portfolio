@@ -283,6 +283,11 @@ fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 .project-body { container-type: inline-size; padding: 0 1.25rem 1.25rem; }
 .project-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .625rem; margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 .project-actions button { padding-inline: 1rem; font-size: .8125rem; }
+/* Hiding an entry sits between reordering and removing: the same row, its own switch. */
+.project-actions .hide-toggle { flex: 0 0 auto; min-height: 0; margin-inline: auto .25rem; font-size: .8125rem; }
+/* A hidden entry stays readable but clearly set aside until it is switched back on. */
+.project.is-hidden > summary { opacity: .55; }
+.project.is-hidden > summary .project-title { text-decoration: line-through; text-decoration-color: var(--muted); }
 .project-fields { display: grid; gap: 1.125rem 1.25rem; }
 .field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.125rem 1rem; align-items: end; }
 @container (max-width: 22rem) {

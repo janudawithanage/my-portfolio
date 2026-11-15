@@ -40,6 +40,8 @@ const projectSchema = z.object({
   status: z.enum(["completed", "in-progress", "planned", "design-only"]),
   year: z.string().regex(/^\d{4}$/, "Enter a four-digit year."),
   date: z.string().trim().min(1).max(80).optional(),
+  // Switched off in the editor: the project stays in projects.json but off the portfolio.
+  hidden: z.literal(true).optional(),
 }).strict();
 
 class EditorError extends Error {

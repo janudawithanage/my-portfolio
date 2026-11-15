@@ -614,3 +614,74 @@ test("CV uploads accept only PDFs in Hero, publish to a stable /cv/ address and 
   assert.equal((await save({ ...current, content: withoutCv })).status, 200);
   assert.equal(JSON.parse(await readFile(path.join(f.root, "src/data/content.json"), "utf8")).hero.cvUrl, undefined);
 });
+
+test("the hide switch keeps an entry on disk, marks it in the editor, and only the portfolio drops it", { timeout: 60000 }, async t => {
+  const f = await fixture(t);
+  f.unavailable();
+  const read = async () => JSON.parse(await readFile(path.join(f.root, "src/data/content.json"), "utf8"));
+  const readProjects = async () => JSON.parse(await readFile(path.join(f.root, "src/data/projects.json"), "utf8"));
+
+  // The API accepts the flag on a content entry and on a project, and never rejects an entry without it.
+  const current = await f.request("/api/content?section=testimonials").then(response => response.json());
+  const content = structuredClone(current.content);
+  content.items.push({ id: "quote-shown", quote: "A thoughtful teammate.", name: "Shown person" });
+  content.items.push({ id: "quote-hidden", quote: "Not ready to share.", name: "Hidden person", hidden: true });
+  assert.equal((await f.request("/api/content?section=testimonials", { method: "PUT", body: { ...current, content } })).status, 200);
+  assert.deepEqual((await read()).testimonials.items.map(item => [item.id, item.hidden]), [["quote-shown", undefined], ["quote-hidden", true]]);
+  // `hidden: false` is never written by the editor, so the schema does not accept it.
+  const stale = await f.request("/api/content?section=testimonials").then(response => response.json());
+  const rejected = structuredClone(stale.content);
+  rejected.items[0].hidden = false;
+  assert.equal((await f.request("/api/content?section=testimonials", { method: "PUT", body: { ...stale, content: rejected } })).status, 400);
+
+  const browser = await chromium.launch({ channel: "chrome" });
+  t.after(() => browser.close());
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  page.setDefaultTimeout(10000);
+  const errors = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto(f.origin);
+  const save = async () => { await page.getByRole("button", { name: "Save changes", exact: true }).click(); await page.getByText("All changes saved locally", { exact: true }).waitFor(); };
+
+  // Selected work: hiding a project leaves it, its order and its image untouched on disk.
+  const before = await readProjects();
+  const first = page.locator("#projects > details").first();
+  await first.locator("summary").click();
+  await first.getByLabel("Hidden on my portfolio", { exact: true }).check();
+  await assert.doesNotReject(first.locator("summary", { hasText: "— hidden" }).waitFor());
+  await assert.doesNotReject(page.getByText("1 hidden", { exact: false }).waitFor());
+  await save();
+  const after = await readProjects();
+  assert.deepEqual(after.map(project => project.id), before.map(project => project.id));
+  assert.equal(after[0].hidden, true);
+  assert.equal(after[0].image, before[0].image);
+  assert.equal(after.filter(project => project.hidden).length, 1);
+
+  // Unchecking removes the flag rather than writing `false`.
+  await first.getByLabel("Hidden on my portfolio", { exact: true }).uncheck();
+  await save();
+  assert.equal("hidden" in (await readProjects())[0], false);
+
+  // Content sections: the same switch, on every entry of a list.
+  const select = page.getByLabel("Portfolio section", { exact: true });
+  await select.selectOption("education");
+  await page.waitForFunction(() => document.querySelector("#section-picker").value === "education" && !document.querySelector("#section-picker").disabled);
+  const entry = page.locator('[data-collection="entries"] > details').first();
+  await entry.locator("summary").click();
+  const institution = await entry.getByLabel("Institution", { exact: true }).inputValue();
+  await entry.getByLabel("Hidden on my portfolio", { exact: true }).check();
+  await assert.doesNotReject(entry.locator("summary", { hasText: "— hidden" }).waitFor());
+  await save();
+  const saved = (await read()).education.entries.find(item => item.institution === institution);
+  assert.equal(saved.hidden, true, "the entry is still on disk, only switched off");
+  assert.equal(saved.degree.length > 0, true, "every other detail survives hiding");
+
+  // Section order keeps its own switch and gains no per-entry one.
+  await select.selectOption("layout");
+  await page.waitForFunction(() => document.querySelector("#section-picker").value === "layout" && !document.querySelector("#section-picker").disabled);
+  const section = page.locator('[data-collection="sectionOrder"] > details').first();
+  await section.locator("summary").click();
+  assert.equal(await section.getByLabel("Hidden on my portfolio", { exact: true }).count(), 0);
+  assert.equal(await section.getByLabel("Show this section", { exact: true }).count(), 1);
+  assert.deepEqual(errors, []);
+});

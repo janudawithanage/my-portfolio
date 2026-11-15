@@ -1,5 +1,9 @@
 import { test, expect, type Page } from "@playwright/test";
 import selectedProjects from "../src/data/projects.json";
+import content from "../src/data/content.json";
+
+/** Entries switched off with the editor’s hide switch never reach the page. */
+const shown = <T>(entries: readonly T[]): T[] => entries.filter(entry => !(entry as { hidden?: boolean }).hidden);
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -7,10 +11,10 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("Selected Work uses saved project data and the public app exposes no editor endpoints", async ({ page, request }) => {
-  await expect(page.locator("#projects .project-title")).toHaveText(selectedProjects.map(project => project.title));
-  await expect(page.locator("#hero .hero-facts")).toContainText(`${selectedProjects.length} selected projects`);
+  await expect(page.locator("#projects .project-title")).toHaveText(shown(selectedProjects).map(project => project.title));
+  await expect(page.locator("#hero .hero-facts")).toContainText(`${shown(selectedProjects).length} selected projects`);
   const cards = page.locator("#projects article");
-  for (const [index, project] of selectedProjects.entries()) {
+  for (const [index, project] of shown(selectedProjects).entries()) {
     await expect(cards.nth(index)).toContainText(project.description);
     if (project.image) {
       const image = cards.nth(index).getByRole("img", { name: `${project.title} application preview` });
@@ -99,7 +103,7 @@ test("page order, responsive text, and touch targets across phones, tablets, and
   await page.evaluate(() => window.scrollTo(0, 0));
   const primary = await page.getByRole("link", { name: "Explore my work" }).boundingBox();
   expect(primary!.y + primary!.height).toBeLessThan(844);
-  await expect(page.locator("#skills article")).toHaveCount(4);
+  await expect(page.locator("#skills article")).toHaveCount(shown(content.skills.entries).length);
 });
 
 test("mobile navigation traps focus, restores it, supports backdrop dismissal and anchors", async ({ page }) => {
@@ -210,8 +214,20 @@ test("reduced motion, browser zoom reflow, and enlarged text retain content", as
   await expect(page.getByRole("link", { name: "Explore my work" })).toBeVisible();
 });
 
+test("entries hidden in the editor stay out of the portfolio", async ({ page }) => {
+  // Fixture: one hidden award and one hidden CTF entry sit beside visible ones.
+  await expect(page.locator("#recognition")).toContainText("Test award");
+  await expect(page.getByText("Test hidden award")).toHaveCount(0);
+  await expect(page.locator("#security article")).toHaveCount(2);
+  await expect(page.getByText("Test hidden CTF")).toHaveCount(0);
+  // The only testimonial is hidden, so the section is empty and drops out entirely.
+  await expect(page.getByText("Test hidden quote.")).toHaveCount(0);
+  await expect(page.locator("main #testimonials")).toHaveCount(0);
+  await expect(page.locator('a[href="#testimonials"]')).toHaveCount(0);
+});
+
 test("empty or switched-off sections never render, never reach navigation, and do not use up a number", async ({ page }) => {
-  // Fixture: Talks and Testimonials are empty; Now has an entry but is switched off in the section order.
+  // Fixture: Talks is empty, every Testimonial is hidden, and Now has an entry but is switched off in the section order.
   for (const id of ["talks", "testimonials", "now"]) {
     await expect(page.locator(`main #${id}`), `#${id} is not rendered`).toHaveCount(0);
     await expect(page.locator(`a[href="#${id}"]`), `#${id} is not linked`).toHaveCount(0);

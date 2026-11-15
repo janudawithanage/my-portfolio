@@ -13,6 +13,8 @@ export interface RecognitionEntry {
   url?: string;
   image?: string;
   logo?: string;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 export interface RecognitionContent {
@@ -37,6 +39,8 @@ export interface Project {
   year: string;
   /** Optional free-text date shown on the card, e.g. "Aug–Oct 2025". Falls back to `year`. */
   date?: string;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 export interface GitHubRepo {
@@ -79,6 +83,8 @@ export interface SkillCategory {
   icon: string;
   description: string;
   skills: SkillItem[];
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 // ─── Education ────────────────────────────────────────────────────────────────
@@ -97,6 +103,8 @@ export interface Education {
   description: string;
   highlights: string[];
   logo?: string;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 // ─── Experience ───────────────────────────────────────────────────────────────
@@ -111,6 +119,8 @@ export interface Experience {
   description: string;
   highlights: string[];
   tech: string[];
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 // ─── Social ───────────────────────────────────────────────────────────────────
@@ -146,6 +156,8 @@ export interface StatItem {
   id: string;
   value: string;
   label: string;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 export interface StatsContent {
@@ -161,6 +173,8 @@ export interface NowItem {
   text: string;
   emoji?: string;
   url?: string;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 export interface NowContent extends SectionIntro {
@@ -176,6 +190,8 @@ export interface SecurityEntry {
   description?: string;
   url?: string;
   tags: string[];
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 export interface SecurityContent extends SectionIntro {
@@ -190,6 +206,8 @@ export interface WritingPost {
   excerpt?: string;
   url: string;
   cover?: string;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 export interface WritingContent extends SectionIntro {
@@ -206,6 +224,8 @@ export interface TalkEntry {
   date: string;
   description?: string;
   url?: string;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 export interface TalksContent extends SectionIntro {
@@ -220,6 +240,8 @@ export interface Testimonial {
   company?: string;
   avatar?: string;
   url?: string;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }
 
 export interface TestimonialsContent extends SectionIntro {
@@ -233,4 +255,6 @@ export interface SocialProfile {
   label: string;
   url: string;
   icon: Exclude<SocialIcon, "mail">;
+  /** Set in the editor to keep this entry in `content.json` but off the portfolio. */
+  hidden?: boolean;
 }

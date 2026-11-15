@@ -6,6 +6,24 @@ function entryTitle(spec, entry) {
   return text ? (text.length > 80 ? text.slice(0, 77) + "…" : text) : `New ${spec.itemLabel}`;
 }
 
+/**
+ * "Hidden on my portfolio" switch for one entry. Hiding keeps every detail in
+ * content.json and only stops the portfolio showing it, so it can come back
+ * with one click. The flag is deleted rather than set to false, so an entry
+ * that was never hidden stays clean on disk.
+ */
+export function hideToggle(entry, element, onChange) {
+  const label = element("label", "checkbox-label hide-toggle");
+  const input = element("input");
+  input.type = "checkbox"; input.checked = Boolean(entry.hidden);
+  input.addEventListener("change", () => {
+    if (input.checked) entry.hidden = true; else delete entry.hidden;
+    onChange();
+  });
+  label.append(input, element("span", "", "Hidden on my portfolio"));
+  return label;
+}
+
 export function renderContent(container, fields, value, { element, button, changed, upload, opened }) {
   container.replaceChildren();
   function render(specs, object, parent, prefix = "content") {
@@ -36,7 +54,10 @@ export function renderContent(container, fields, value, { element, button, chang
           card.id = key; card.open = opened.has(key);
           card.addEventListener("toggle", () => { if (card.open) opened.add(key); else opened.delete(key); });
           const summary = element("summary");
-          const label = element("strong", "project-title", entryTitle(spec, entry));
+          // Hidden entries say so in their collapsed title, so nothing disappears without a reason.
+          const titleFor = () => entryTitle(spec, entry) + (entry.hidden ? " — hidden" : "");
+          const label = element("strong", "project-title", titleFor());
+          card.classList.toggle("is-hidden", Boolean(entry.hidden));
           summary.append(element("span", "project-number", String(index + 1).padStart(2, "0")), label);
           const body = element("div", "project-body");
           const tools = element("div", "project-actions");
@@ -50,14 +71,20 @@ export function renderContent(container, fields, value, { element, button, chang
             moves.append(move);
           }
           tools.append(moves);
+          // Fixed lists (section order) already have their own "Show this section" switch.
+          if (!spec.fixed) tools.append(hideToggle(entry, element, () => {
+            label.textContent = titleFor();
+            card.classList.toggle("is-hidden", Boolean(entry.hidden));
+            changed();
+          }));
           if (!spec.fixed) tools.append(button(`Remove ${spec.itemLabel}`, () => {
-            if (!window.confirm(`Remove ${label.textContent}? Save changes to apply the removal.`)) return;
+            if (!window.confirm(`Remove ${entryTitle(spec, entry)}? Save changes to apply the removal.`)) return;
             items.splice(index, 1); opened.delete(key); rerender(); changed();
             container.querySelector(`[data-collection="${spec.name}"]`)?.parentElement.querySelector("button")?.focus();
           }, "danger"));
           const nested = element("div", "project-fields");
           render(spec.fields, entry, nested, key);
-          const relabel = () => { label.textContent = entryTitle(spec, entry); };
+          const relabel = () => { label.textContent = titleFor(); };
           nested.addEventListener("input", relabel);
           nested.addEventListener("change", relabel);
           body.append(tools, nested); card.append(summary, body); list.append(card);
