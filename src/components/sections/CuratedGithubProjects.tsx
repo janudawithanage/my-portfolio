@@ -13,7 +13,7 @@ export function CuratedGithubProjects({ projects, profileUrl }: { projects: Proj
   return (
     <>
       <p className="text-xs text-text-muted mb-5" aria-live="polite" aria-atomic="true">Showing {visible.length} of {projects.length} selected {projects.length === 1 ? "repository" : "repositories"}</p>
-      <div id="github-repositories" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div id="github-repositories" className="auto-grid md-2 lg-3 [--gap:1rem]">
         {visible.map((project, index) => <ProjectCard key={project.id} project={project} index={index} showVisual={false} />)}
       </div>
       {projects.length === 0 && <div className="card py-12 px-6 text-center flex flex-col items-center gap-4" role="status"><FolderGit2 size={28} className="text-accent" aria-hidden="true" /><h3 className="text-subheadline">No experiments selected yet.</h3><p className="text-text-secondary">Explore my latest projects on GitHub.</p></div>}

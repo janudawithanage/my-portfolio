@@ -20,7 +20,7 @@ export function Now({ data = content.now }: { data?: NowContent }) {
       <div className="container-section">
         <SectionHeader eyebrow={sectionEyebrow("now")} title={data.title} titleId="now-title" description={data.description} />
         {hasContent(data.updated) && <p className="text-meta -mt-4 mb-8" data-reveal="">Updated {data.updated}</p>}
-        <ul className="now-grid" data-stagger="">
+        <ul className="auto-grid sm-2 lg-3 [--gap:1rem]" data-stagger="">
           {items.map(item => {
             const kind = kinds[item.kind] ?? kinds.building;
             const Icon = kind.icon;

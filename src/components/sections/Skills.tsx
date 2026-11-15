@@ -13,7 +13,7 @@ export function Skills() {
     <SectionWrapper id="skills" className="section-border" labelledBy="skills-title">
       <div className="container-section">
         <SectionHeader eyebrow={sectionEyebrow("skills")} title={content.skills.title} titleId="skills-title" description={content.skills.description} />
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5" data-stagger="">
+        <ul className="auto-grid sm-2 lg-4 [--gap:1rem] lg:[--gap:1.25rem]" data-stagger="">
           {categories.map((category, index) => {
             const Icon = icons[category.icon as keyof typeof icons] ?? Monitor;
             return (

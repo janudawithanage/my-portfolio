@@ -69,7 +69,7 @@ export function GithubProjectsGrid({ result, profileUrl, renderedAt }: GithubPro
             <p aria-live="polite" aria-atomic="true">Showing {visibleRepos.length} of {result.repos.length} public {result.repos.length === 1 ? "repository" : "repositories"}</p>
             <time dateTime={result.syncedAt}>Last refreshed {relative ?? formatGitHubDate(result.syncedAt)}</time>
           </div>
-          <div id="github-repositories" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div id="github-repositories" className="auto-grid md-2 lg-3 [--gap:1rem]">
             {visibleRepos.map(repo => <RepoCard key={repo.id} repo={repo} referenceTime={referenceTime} />)}
           </div>
         </>

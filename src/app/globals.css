@@ -226,12 +226,11 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .photo-frame { position: relative; padding: .625rem; border: 1px solid var(--color-border); border-radius: 1.75rem; background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); box-shadow: var(--glass-highlight), var(--shadow-soft); }
 .photo-frame > div { position: relative; overflow: hidden; border-radius: 1.25rem; }
 .about-lead { font-family: var(--font-syne), sans-serif; font-size: clamp(1.375rem, 2.4vw, 1.875rem); font-weight: 500; letter-spacing: -.025em; line-height: 1.35; color: var(--color-ink); }
-.stats-band { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); overflow: hidden; padding: 0; }
-.stat { display: grid; gap: .375rem; padding: 1.75rem 1.5rem; border-top: 1px solid var(--color-border); }
-.stat:first-child { border-top: 0; }
+/* Two stats per row on phones, three on tablets, one row on desktop; a short last row stretches to fill the band. */
+.stats-band { display: flex; flex-wrap: wrap; overflow: hidden; padding: 0; }
+.stat { display: grid; flex: 1 1 calc(50% - 1px); align-content: start; gap: .375rem; padding: 1.75rem 1.5rem; box-shadow: -1px -1px 0 var(--color-border); }
 .stat-value { font-family: var(--font-syne), sans-serif; font-size: clamp(2.25rem, 4vw, 3.25rem); font-weight: 600; letter-spacing: -.05em; line-height: 1; color: var(--color-ink); font-variant-numeric: tabular-nums; }
 .stat-label { color: var(--color-text-secondary); font-size: .875rem; }
-.now-grid { display: grid; gap: 1rem; }
 .now-card { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; padding: 1.5rem; }
 .now-card .glass-icon { font-size: 1.375rem; line-height: 1; }
 
@@ -282,7 +281,7 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .project-media { position: relative; overflow: hidden; margin: .5rem .5rem 0; border-radius: 1.125rem; border: 1px solid var(--color-border); background: linear-gradient(160deg, #fff, var(--color-bg-secondary)); aspect-ratio: 16 / 10; }
 .project-media img { transition: transform 1.2s var(--ease-out-expo); }
 .project-card:hover .project-media img { transform: scale(1.035); }
-.project-art { position: relative; min-height: 11rem; margin: .5rem .5rem 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.125rem; background-color: rgb(255 255 255 / .55); background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 2.5rem 2.5rem; }
+.project-art { position: relative; aspect-ratio: 16 / 10; margin: .5rem .5rem 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.125rem; background-color: rgb(255 255 255 / .55); background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 2.5rem 2.5rem; }
 .project-art::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 55%, transparent 20%, rgb(246 245 241 / .9) 75%); }
 .project-art > * { position: relative; }
 .project-art-meta { display: flex; justify-content: space-between; gap: .75rem; color: var(--color-text-muted); font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -298,6 +297,12 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .repo-name { display: flex; min-height: 2.75rem; align-items: center; justify-content: space-between; gap: 1rem; color: var(--color-ink); font-weight: 600; overflow-wrap: anywhere; }
 .repo-name:hover { color: var(--color-accent); }
 .repo-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; padding-top: 1rem; margin-top: auto; border-top: 1px solid var(--color-border); color: var(--color-text-muted); font-size: .75rem; }
+
+/* ─── Auto grid: cards share each row's height and a short last row is centred ─
+   Used by every card list, so adding, removing or editing entries never leaves a
+   lone card hugging the left edge or cards of mismatched height side by side. */
+.auto-grid { --cols: 1; --gap: 1.25rem; display: flex; flex-wrap: wrap; justify-content: center; gap: var(--gap); }
+.auto-grid > * { flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols)); min-width: 0; height: auto; }
 
 /* ─── Lists: security, recognition, writing, talks ────────────────────────── */
 .list-grid { display: grid; gap: 1.25rem; align-items: start; }
@@ -398,9 +403,8 @@ h1, h2, h3, h4 { text-wrap: balance; }
   .container-section { width: min(100% - 3rem, 75rem); }
   .hero-tech-track { font-size: .8125rem; }
   .project-content, .repo-card { padding: 1.5rem 1.5rem 1.125rem; }
-  .now-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .stat { border-top: 0; border-left: 1px solid var(--color-border); }
-  .stat:first-child { border-left: 0; }
+  .auto-grid.sm-2 { --cols: 2; }
+  .stat { flex-basis: calc(33.333% - 1px); }
   .testimonial-slide { padding: 2.75rem 3rem; }
 }
 @media (min-width: 768px) {
@@ -413,7 +417,7 @@ h1, h2, h3, h4 { text-wrap: balance; }
   .edu-logo { width: 7rem; height: 7rem; border-radius: 1.5rem; }
   .row-card { grid-template-columns: 1fr auto; align-items: start; }
   .row-card-aside { flex-direction: column; align-items: flex-end; text-align: right; }
-  .recognition-grid, .list-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .auto-grid.md-2 { --cols: 2; }
   .recognition-timeline .recognition-entry:has(.recognition-image) { display: grid; grid-template-columns: 15rem 1fr; }
   .recognition-timeline .recognition-image { margin: .5rem 0 .5rem .5rem; display: grid; align-items: center; }
 }
@@ -423,8 +427,9 @@ h1, h2, h3, h4 { text-wrap: balance; }
   .hero-section { padding-top: calc(var(--header-height) + 4.5rem); }
   .hero-layout { grid-template-columns: 1.35fr .85fr; gap: 4.5rem; min-height: 32rem; }
   .hero-bio { font-size: 1.125rem; }
-  .now-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .recognition-grid, .list-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .auto-grid.lg-3 { --cols: 3; }
+  .auto-grid.lg-4 { --cols: 4; }
+  .stat { flex-basis: 0; }
 }
 @media (max-width: 359px) {
   .hero-name { font-size: 2.625rem; }

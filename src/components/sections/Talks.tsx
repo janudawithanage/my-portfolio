@@ -20,7 +20,7 @@ export function Talks({ data = content.talks }: { data?: TalksContent }) {
     <SectionWrapper id="talks" className="section-border" labelledBy="talks-title">
       <div className="container-section">
         <SectionHeader eyebrow={sectionEyebrow("talks")} title={data.title} titleId="talks-title" description={data.description} />
-        <Expandable id="talks-list" noun="talks and publications" className="list-grid list-grid-2" items={data.entries.map(entry => {
+        <Expandable id="talks-list" noun="talks and publications" className="auto-grid md-2" items={data.entries.map(entry => {
           const type = types[entry.type] ?? types.talk;
           const Icon = type.icon;
           return (
