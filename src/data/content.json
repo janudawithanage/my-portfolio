@@ -60,7 +60,7 @@
     "location": "Colombo, Sri Lanka",
     "image": "/images/photo1.webp",
     "imageAlt": "Januda Withanage",
-    "cvUrl": "/Januda-Withanage-CV.pdf",
+    "cvUrl": "/cv/Januda-Withanage-CV.pdf",
     "primaryLabel": "Explore my work",
     "secondaryLabel": "Let's talk",
     "cvLabel": "Download CV",
@@ -132,6 +132,7 @@
         "location": "Colombo, Sri Lanka",
         "description": "Computer Science studies at UCSC, covering algorithms, networks, operating systems, distributed systems, software engineering, and databases.",
         "highlights": [],
+        "gpa": "3.2",
         "logo": "/images/education/ucsc.jpg"
       },
       {
@@ -143,8 +144,8 @@
         "endDate": "2022",
         "location": "Matara, Sri Lanka",
         "description": "Secondary education and Advanced Level studies in the Physical Science stream.",
-        "result": "AAB",
         "highlights": [],
+        "result": "AAB",
         "logo": "/images/education/rahula-college.png"
       }
     ]

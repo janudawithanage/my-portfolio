@@ -75,5 +75,29 @@
     "featured": true,
     "status": "completed",
     "year": "2026"
+  },
+  {
+    "id": "janudawithanage--movie-app",
+    "title": "movie app",
+    "description": "A lightweight React + Vite app to browse and favorite movies using a simple movie API. Clean responsive UI with a Browse page, Favorites list, and reusable MovieCard and Navbar components.",
+    "tech": [
+      "JavaScript"
+    ],
+    "githubUrl": "https://github.com/janudawithanage/movie-app",
+    "featured": true,
+    "status": "completed",
+    "year": "2026"
+  },
+  {
+    "id": "janudawithanage--esp32-sensovault",
+    "title": "esp32 sensovault",
+    "description": "Real-time temperature, humidity, and light monitoring system using an ESP32, MQTT, and a web dashboard.",
+    "tech": [
+      "HTML"
+    ],
+    "githubUrl": "https://github.com/janudawithanage/esp32-sensovault",
+    "featured": true,
+    "status": "completed",
+    "year": "2026"
   }
 ]
