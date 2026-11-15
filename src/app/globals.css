@@ -308,13 +308,14 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .list-grid { display: grid; gap: 1.25rem; align-items: start; }
 .row-card { display: grid; gap: 1rem; padding: 1.5rem; }
 .row-card-aside { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; }
-.recognition-categories { display: grid; gap: 4rem; }
+.recognition-categories { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4rem; }
+.recognition-category, .recognition-image { min-width: 0; }
 .recognition-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
 .recognition-heading h3 { display: flex; gap: .875rem; align-items: center; }
 .recognition-heading h3 .glass-icon { width: 2.75rem; height: 2.75rem; }
-.recognition-grid { display: grid; gap: 1.25rem; align-items: start; }
-.recognition-entry { overflow: hidden; }
-.recognition-content { display: grid; gap: .625rem; padding: 1.5rem; }
+.recognition-entry { display: flex; flex-direction: column; overflow: hidden; }
+.recognition-content { display: flex; flex: 1; flex-direction: column; gap: .625rem; padding: 1.5rem; }
+.recognition-content > .text-link { margin-top: auto; padding-top: .25rem; }
 .recognition-content h4 { font-family: var(--font-syne), sans-serif; font-size: 1.25rem; font-weight: 600; line-height: 1.3; letter-spacing: -.02em; color: var(--color-ink); overflow-wrap: anywhere; }
 .recognition-content p { overflow-wrap: anywhere; }
 .recognition-top { display: flex; align-items: center; gap: .875rem; }
@@ -322,7 +323,26 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .recognition-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 .recognition-date { color: var(--color-gold-deep); font-size: .6875rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
 .recognition-image { margin: .5rem .5rem 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.125rem; background: linear-gradient(160deg, #fff, var(--color-bg-secondary)); }
-.recognition-image img { width: 100%; height: 14rem; object-fit: contain; }
+.recognition-image { position: relative; display: block; }
+.recognition-image img { display: block; width: 100%; height: auto; max-height: 30rem; object-fit: contain; transition: transform var(--duration-slow) var(--ease-out-expo); }
+.recognition-image:hover img { transform: scale(1.015); }
+.recognition-zoom { position: absolute; right: .75rem; bottom: .75rem; display: inline-flex; align-items: center; gap: .375rem; padding: .375rem .75rem; border-radius: 999px; background: rgb(14 20 36 / .72); color: #fff; font-size: .75rem; font-weight: 600; opacity: 0; transition: opacity var(--duration-normal) ease; }
+.recognition-image:is(:hover, :focus-visible) .recognition-zoom { opacity: 1; }
+@media (hover: none) { .recognition-zoom { opacity: 1; } }
+/* In a category where at least half the entries have images, every card gets the same 3:2 frame so rows line up. */
+.auto-grid .recognition-image { aspect-ratio: 3 / 2; }
+.auto-grid .recognition-image img { height: 100%; max-height: none; }
+@media (min-width: 768px) {
+  .recognition-inline { flex-direction: row; align-items: center; }
+  .recognition-inline .recognition-image { flex: 0 0 42%; margin: .5rem 0 .5rem .5rem; }
+}
+/* One column on phones: nothing to line up with, so placeholders would only add empty space. */
+@media (max-width: 767px) { .recognition-placeholder { display: none !important; } }
+.recognition-placeholder { display: grid; place-items: center; background: radial-gradient(90% 80% at 50% 30%, #fff, var(--color-bg-secondary)); }
+.recognition-placeholder .glass-icon { width: 4.5rem; height: 4.5rem; }
+.recognition-placeholder-logo { display: grid; place-items: center; width: 6rem; height: 6rem; padding: .5rem; border: 1px solid var(--color-border); border-radius: 1.25rem; background: #fff; box-shadow: var(--glass-highlight), 0 6px 16px -10px rgb(14 20 36 / .25); }
+.recognition-placeholder-logo img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+
 .post-card { display: flex; flex-direction: column; overflow: hidden; }
 .post-cover { position: relative; margin: .5rem .5rem 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.125rem; aspect-ratio: 16 / 9; background: var(--color-bg-secondary); }
 .post-body { display: flex; flex: 1; flex-direction: column; gap: .75rem; padding: 1.5rem; }

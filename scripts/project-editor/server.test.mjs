@@ -478,7 +478,7 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   await card.getByLabel("Title / role", { exact: true }).fill("First award");
   await card.getByLabel("Organisation / issuer", { exact: true }).fill("Test society");
   await card.getByLabel("Date / date range", { exact: true }).fill("2026");
-  await card.getByLabel("Supporting image (optional)", { exact: true }).setInputFiles({ name: "award.webp", mimeType: "image/webp", buffer: pixels });
+  await card.getByLabel("Certificate or photo (optional, shown large)", { exact: true }).setInputFiles({ name: "award.webp", mimeType: "image/webp", buffer: pixels });
   await page.waitForFunction(() => !document.querySelector("#section-picker").disabled);
   await page.getByRole("button", { name: "Add award", exact: true }).click();
   card = page.locator('[data-collection="awards"] details').last();

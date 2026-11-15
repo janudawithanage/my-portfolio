@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowUpRight, Award, BadgeCheck, HeartHandshake } from "lucide-react";
+import { ArrowUpRight, Award, BadgeCheck, HeartHandshake, Maximize2, type LucideIcon } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
 import { Expandable } from "@/components/ui/Expandable";
@@ -15,13 +15,32 @@ const categories = [
 
 type CategoryKey = (typeof categories)[number]["key"];
 
-function RecognitionCard({ entry, kind }: { entry: RecognitionEntry; kind: CategoryKey }) {
+/**
+ * `framed`: the category has at least one image, so cards without one get a matching frame
+ * (their logo, or the category icon) and every card in the grid lines up.
+ */
+function RecognitionCard({ entry, kind, framed = false, inGrid = false, icon: Icon }: { entry: RecognitionEntry; kind: CategoryKey; framed?: boolean; inGrid?: boolean; icon: LucideIcon }) {
+  const placeholder = framed && !hasContent(entry.image);
+  // When few cards in the grid have images, an image sits beside the text so the card stays as compact as its neighbours.
+  const inline = inGrid && !framed && hasContent(entry.image);
   return (
-    <article className="glass recognition-entry" data-tilt="">
-      {hasContent(entry.image) && <div className="recognition-image"><Image src={entry.image!} alt={`${entry.title} — ${entry.organisation}`} width={640} height={400} sizes="(min-width: 1024px) 380px, (min-width: 768px) 45vw, calc(100vw - 4rem)" /></div>}
+    <article className={inline ? "glass recognition-entry recognition-inline" : "glass recognition-entry"} data-tilt="">
+      {placeholder && (
+        <div className="recognition-image recognition-placeholder" aria-hidden="true">
+          {hasContent(entry.logo)
+            ? <span className="recognition-placeholder-logo"><Image src={entry.logo!} alt="" width={96} height={96} sizes="96px" /></span>
+            : <span className="glass-icon"><Icon size={28} strokeWidth={1.5} /></span>}
+        </div>
+      )}
+      {hasContent(entry.image) && (
+        <a href={entry.image} target="_blank" rel="noopener noreferrer" className="recognition-image" aria-label={`Open the full image for ${entry.title} in a new tab`}>
+          <Image src={entry.image!} alt={`${entry.title} — ${entry.organisation}`} width={1200} height={800} sizes="(min-width: 1280px) 400px, (min-width: 1024px) 33vw, (min-width: 768px) 50vw, calc(100vw - 3rem)" />
+          <span className="recognition-zoom" aria-hidden="true"><Maximize2 size={14} />View full size</span>
+        </a>
+      )}
       <div className="recognition-content">
         <div className="recognition-top">
-          {hasContent(entry.logo) && <span className="glass-icon recognition-logo"><Image src={entry.logo!} alt={`${entry.organisation} logo`} width={40} height={40} sizes="40px" /></span>}
+          {hasContent(entry.logo) && !placeholder && <span className="glass-icon recognition-logo"><Image src={entry.logo!} alt={`${entry.organisation} logo`} width={40} height={40} sizes="40px" /></span>}
           <p className="recognition-date">{entry.date}</p>
         </div>
         <h4>{entry.title}</h4>
@@ -53,11 +72,11 @@ export function Recognition({ data }: { data: RecognitionContent }) {
                   <Expandable id={`recognition-${key}`} noun={noun} className="timeline recognition-timeline" items={entries.map(entry => (
                     <div className="timeline-item" key={entry.id}>
                       <div className="timeline-node" aria-hidden="true"><span className="timeline-dot" /></div>
-                      <RecognitionCard entry={entry} kind={key} />
+                      <RecognitionCard entry={entry} kind={key} icon={Icon} />
                     </div>
                   ))} />
                 ) : (
-                  <Expandable id={`recognition-${key}`} noun={noun} className="recognition-grid" items={entries.map(entry => <RecognitionCard key={entry.id} entry={entry} kind={key} />)} />
+                  <Expandable id={`recognition-${key}`} noun={noun} className="auto-grid md-2 lg-3" items={entries.map(entry => <RecognitionCard key={entry.id} entry={entry} kind={key} icon={Icon} inGrid framed={entries.filter(item => hasContent(item.image)).length * 2 >= entries.length} />)} />
                 )}
               </div>
             );

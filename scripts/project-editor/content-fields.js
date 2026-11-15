@@ -3,7 +3,7 @@ const optional = (name, label, type = "text", extra = {}) => field(name, label, 
 const header = [field("title", "Section title"), field("description", "Section introduction", "textarea", { optional: true, keepEmpty: true })];
 const collection = (name, label, fields, initial, itemLabel, extra = {}) => field(name, label, "collection", { fields, initial, itemLabel, ...extra });
 const dates = [field("startDate", "Start date"), field("endDate", "End date (or Present)")];
-const recognitionFields = [field("title", "Title / role"), field("organisation", "Organisation / issuer"), field("date", "Date / date range"), optional("description", "Description (optional)", "textarea"), optional("url", "Credential / supporting URL (optional)", "url"), optional("logo", "Organisation logo (optional)", "image"), optional("image", "Supporting image (optional)", "image")];
+const recognitionFields = [field("title", "Title / role"), field("organisation", "Organisation / issuer"), field("date", "Date / date range"), optional("description", "Description (optional)", "textarea"), optional("url", "Credential / supporting URL (optional)", "url"), optional("image", "Certificate or photo (optional, shown large)", "image"), optional("logo", "Organisation logo (optional, small icon)", "image")];
 const emptyListHelp = "Empty lists stay hidden on your portfolio until you save their first entry.";
 /** Shown on every section with a list, next to the per-entry hide switch. */
 const hideHelp = " Switch any single entry off with “Hidden on my portfolio” to keep its details here without showing it.";
