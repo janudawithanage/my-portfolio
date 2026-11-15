@@ -27,7 +27,7 @@ const sectionOrder = z.array(z.object({ id: z.enum(sectionIds), visible: z.boole
 });
 const phone = z.string().trim().max(40).regex(/^\+?[0-9][0-9 ().-]{5,39}$/, "Enter a phone number using digits, spaces, +, (, ), . or -.").optional();
 export const contentSchemas = {
-  hero: z.object({ firstName: text(100), lastName: text(100), role: text(200), bio: text(3000), availability: text(200), location: text(200), image, imageAlt: text(250), cvUrl: z.union([url, z.string().regex(/^\/[a-zA-Z0-9/_-]+\.pdf$/i)]), primaryLabel: text(80), secondaryLabel: text(80), cvLabel: text(80), facts: z.array(z.object({ value: text(80), label: text(120) }).strict()).max(10), capabilities: strings, marquee: strings, githubUrl: url, linkedinUrl: url }).strict(),
+  hero: z.object({ firstName: text(100), lastName: text(100), role: text(200), bio: text(3000), availability: text(200), location: text(200), image, imageAlt: text(250), cvUrl: z.union([url, z.string().regex(/^\/[a-zA-Z0-9/_-]+\.pdf$/i), z.string().regex(/^\/staged\/[a-f0-9-]+$/)]).optional(), primaryLabel: text(80), secondaryLabel: text(80), cvLabel: text(80), facts: z.array(z.object({ value: text(80), label: text(120) }).strict()).max(10), capabilities: strings, marquee: strings, githubUrl: url, linkedinUrl: url }).strict(),
   about: z.object({ ...header, lead: text(3000), paragraphs: z.array(text(5000)).max(20), image, imageAlt: text(250), study: text(200), location: text(200), linkLabel: text(200) }).strict(),
   education: z.object({ ...header, entries: entries(z.object({ id, institution: text(250), degree: text(200), field: text(200), startDate: text(100), endDate: text(100), location: text(200), description: z.string().trim().max(5000), highlights: strings, gpa: optionalText(100), result: optionalText(100), logo: image.optional() }).strict()) }).strict(),
   skills: z.object({ ...header, entries: entries(z.object({ id, title: text(200), icon: z.enum(["monitor", "server", "cloud", "shield"]), description: z.string().trim().max(1000), skills: z.array(z.object({ name: text(100), level: z.number().min(1).max(100).optional(), icon: optionalText(100) }).strict()).max(60) }).strict()) }).strict(),
@@ -50,6 +50,9 @@ function imageReferences(value) {
   return Object.entries(value).flatMap(([key, child]) => imageKeys.includes(key) && typeof child === "string" ? [{ object: value, key, value: child }] : imageReferences(child));
 }
 
+/** Uploaded CVs keep one stable, shareable address per name: /cv/First-Last-CV.pdf. */
+const cvName = hero => ([hero.firstName, hero.lastName].join("-").normalize("NFKD").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 120) || "My") + "-CV.pdf";
+
 export function createContentStore({ root, staged, clearStaged, EditorError }) {
   const filename = path.join(root, "src/data/content.json");
   const publicRoot = path.join(root, "public");
@@ -68,15 +71,27 @@ export function createContentStore({ root, staged, clearStaged, EditorError }) {
     const references = imageReferences(content);
     const canonicalPublicRoot = await realpath(publicRoot);
     for (const reference of references) {
-      if (reference.value.startsWith("/staged/") && staged.get(reference.value)?.section === section) continue;
+      if (reference.value.startsWith("/staged/") && staged.get(reference.value)?.section === section && staged.get(reference.value).extension !== "pdf") continue;
       if (reference.value.startsWith("/staged/")) throw new EditorError(400, "This image belongs to another section or expired. Upload it again.");
       const target = path.join(publicRoot, reference.value.slice(1));
       const canonicalTarget = await realpath(target).catch(() => "");
       const info = await lstat(target).catch(() => null);
       if (!canonicalTarget.startsWith(canonicalPublicRoot + path.sep) || !info?.isFile() || info.isSymbolicLink()) throw new EditorError(400, "Image is missing or invalid. Upload it again.");
     }
-    let temporaryPath;
+    const stagedCv = section === "hero" && content.cvUrl?.startsWith("/staged/") ? staged.get(content.cvUrl) : undefined;
+    if (section === "hero" && content.cvUrl?.startsWith("/staged/") && (stagedCv?.section !== "hero" || stagedCv.extension !== "pdf")) throw new EditorError(400, "This CV upload expired. Upload it again.");
+    let temporaryPath, cvTemporary, cvTarget;
     try {
+      if (stagedCv) {
+        const cvDirectory = path.join(publicRoot, "cv");
+        await mkdir(cvDirectory, { recursive: true });
+        if (await realpath(cvDirectory) !== path.join(canonicalPublicRoot, "cv")) throw new EditorError(400, "public/cv must be a normal folder.");
+        const name = cvName(content);
+        cvTarget = path.join(cvDirectory, name);
+        cvTemporary = path.join(cvDirectory, `.${name}.${randomUUID()}.tmp`);
+        await writeFile(cvTemporary, stagedCv.bytes, { flag: "wx" });
+        content.cvUrl = `/cv/${name}`;
+      }
       const savedImages = new Map();
       for (const reference of references) {
         if (!reference.value.startsWith("/staged/")) continue;
@@ -95,9 +110,13 @@ export function createContentStore({ root, staged, clearStaged, EditorError }) {
       if (hash(await readFile(filename)) !== hash(original)) throw new EditorError(409, "Content changed on disk during save. Copy your edits, then Discard to reload.");
       await rename(temporaryPath, filename);
       temporaryPath = undefined;
+      if (cvTemporary) { await rename(cvTemporary, cvTarget); cvTemporary = undefined; }
       clearStaged(section);
       return { content, revision: hash(JSON.stringify(content)) };
-    } finally { if (temporaryPath) await rm(temporaryPath, { force: true }); }
+    } finally {
+      if (temporaryPath) await rm(temporaryPath, { force: true });
+      if (cvTemporary) await rm(cvTemporary, { force: true });
+    }
   }
   return { state, save };
 }

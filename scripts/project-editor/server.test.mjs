@@ -575,3 +575,43 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   assert.deepEqual(disk.contact.socials.map(({ label, url, icon }) => ({ label, url, icon })), [{ label: "Medium", url: "https://medium.com/@januda", icon: "medium" }]);
   assert.deepEqual(errors, []);
 });
+
+test("CV uploads accept only PDFs in Hero, publish to a stable /cv/ address and can be removed", async t => {
+  const f = await fixture(t);
+  const state = () => f.request("/api/content?section=hero").then(response => response.json());
+  const save = body => f.request("/api/content?section=hero", { method: "PUT", body });
+  const upload = (bytes, section = "hero") => f.request(`/api/uploads?section=${section}&kind=cv`, { method: "POST", body: bytes, raw: true });
+  const pdf = Buffer.from("%PDF-1.4\n1 0 obj << /Type /Catalog >> endobj\ntrailer << /Root 1 0 R >>\n%%EOF\n");
+  // Only real PDFs, only in Hero.
+  assert.equal((await upload(Buffer.from("not a pdf"))).status, 400);
+  assert.equal((await upload(await sharp({ create: { width: 2, height: 2, channels: 3, background: "red" } }).png().toBuffer())).status, 400);
+  assert.equal((await upload(pdf, "about")).status, 400);
+  const response = await upload(pdf);
+  assert.equal(response.status, 201);
+  const { cv } = await response.json();
+  assert.match(cv, /^\/staged\/[a-f0-9-]+$/);
+  const preview = await fetch(f.origin + cv);
+  assert.equal(preview.headers.get("content-type"), "application/pdf");
+  assert.deepEqual(Buffer.from(await preview.arrayBuffer()), pdf);
+  // A staged PDF can't pose as an image.
+  let current = await state();
+  assert.equal((await save({ ...current, content: { ...current.content, image: cv } })).status, 400);
+  // Saving writes the PDF to /cv/First-Last-CV.pdf and points the hero at it.
+  const saved = await save({ ...current, content: { ...current.content, cvUrl: cv } });
+  assert.equal(saved.status, 200, await saved.clone().text());
+  const name = `/cv/${current.content.firstName}-${current.content.lastName}-CV.pdf`.replace(/\s+/g, "-");
+  assert.equal((await saved.json()).content.cvUrl, name);
+  assert.deepEqual(await readFile(path.join(f.root, "public", name)), pdf);
+  assert.deepEqual((await readdir(path.join(f.root, "public/cv"))).filter(file => file.endsWith(".tmp")), []);
+  assert.equal((await fetch(f.origin + name, { method: "HEAD" })).status, 200);
+  assert.equal((await fetch(f.origin + "/cv/missing-CV.pdf", { method: "HEAD" })).status, 404);
+  assert.equal((await fetch(f.origin + "/cv/../src/data/content.json")).status, 404);
+  // The staged upload is consumed by the save.
+  current = await state();
+  assert.equal((await save({ ...current, content: { ...current.content, cvUrl: cv } })).status, 400);
+  // Removing the CV clears the link; the file stays in the project.
+  const { cvUrl, ...withoutCv } = current.content;
+  assert.ok(cvUrl);
+  assert.equal((await save({ ...current, content: withoutCv })).status, 200);
+  assert.equal(JSON.parse(await readFile(path.join(f.root, "src/data/content.json"), "utf8")).hero.cvUrl, undefined);
+});

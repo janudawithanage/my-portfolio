@@ -4,13 +4,14 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowUpRight, Check, Mail, MapPin, Phone, Send } from "lucide-react";
+import { ArrowUpRight, Check, Download, FileText, Mail, MapPin, Phone, Send } from "lucide-react";
 import { SectionWrapper, SectionHeader } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 import { SocialGlyph } from "@/components/ui/SocialGlyph";
 import { content, socialLinks } from "@/data";
 import { hasContent } from "@/lib/has-content";
 import { sectionEyebrow } from "@/lib/sections";
+import type { CvFile } from "@/lib/cv";
 
 // Zod's JIT probes `new Function`, which the production CSP blocks and reports. Four fields don't need it.
 z.config({ jitless: true });
@@ -47,7 +48,28 @@ function Detail({ icon, label, children }: { icon: React.ReactNode; label: strin
   );
 }
 
-export function Contact() {
+/** The CV download area: what the file is, then download and view. */
+function CvCard({ cv }: { cv: CvFile }) {
+  return (
+    <div className="cv-card">
+      <span className="glass-icon" aria-hidden="true"><FileText size={19} /></span>
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-ink">Curriculum vitae</p>
+        <p className="text-meta mt-1">{cv.size ? "PDF · " + cv.size : "PDF"}</p>
+      </div>
+      <div className="cv-card-actions">
+        {cv.external
+          ? <Button asChild size="sm"><a href={cv.href} target="_blank" rel="noopener noreferrer">{cv.label}<ArrowUpRight size={15} aria-hidden="true" /></a></Button>
+          : <>
+              <Button asChild size="sm"><a href={cv.href} download="">{cv.label}<Download size={15} aria-hidden="true" /></a></Button>
+              <Button asChild size="sm" variant="secondary"><a href={cv.href} target="_blank" rel="noopener noreferrer">View<span className="sr-only"> CV in a new tab</span><ArrowUpRight size={15} aria-hidden="true" /></a></Button>
+            </>}
+      </div>
+    </div>
+  );
+}
+
+export function Contact({ cv }: { cv?: CvFile | null }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -123,6 +145,7 @@ export function Contact() {
                 <p className="text-sm font-semibold text-ink">{content.contact.location}</p>
               </Detail>
             </div>
+            {cv && <CvCard cv={cv} />}
             <div className="flex flex-wrap gap-2.5">{socialLinks.filter(s => s.icon !== "mail").map(social => <a key={social.href} href={social.href} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label={social.label}><SocialGlyph icon={social.icon} /></a>)}</div>
           </div>
           {submitted ? (

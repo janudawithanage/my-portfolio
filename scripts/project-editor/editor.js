@@ -213,10 +213,11 @@ function renderProjects() {
     renderContent(contentContainer, contentFields[section].fields, content, {
       element, button, opened,
       changed: () => { notice(); updateToolbar(); },
-      upload: async (file, apply) => {
-        if (file.size > 10 * 1024 * 1024) { notice("Choose an image smaller than 10 MB."); return; }
-        busy = true; updateToolbar("Checking and staging image…"); notice();
-        try { apply(await api(sectionUrl("/api/uploads"), { method: "POST", body: file, raw: true })); }
+      upload: async (file, apply, kind = "image") => {
+        const cv = kind === "cv";
+        if (file.size > 10 * 1024 * 1024) { notice(cv ? "Choose a PDF smaller than 10 MB." : "Choose an image smaller than 10 MB."); return; }
+        busy = true; updateToolbar(cv ? "Checking and staging CV…" : "Checking and staging image…"); notice();
+        try { apply(await api(sectionUrl("/api/uploads") + (cv ? "&kind=cv" : ""), { method: "POST", body: file, raw: true })); }
         catch (error) { notice(error.message); }
         finally { busy = false; updateToolbar(); }
       },

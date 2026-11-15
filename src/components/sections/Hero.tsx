@@ -1,5 +1,3 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
 import { Fragment } from "react";
 import Image from "next/image";
 import { ArrowDown, ArrowUpRight, Download, MapPin } from "lucide-react";
@@ -8,17 +6,13 @@ import { CountUp } from "@/components/motion/CountUp";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { content, fullName, featuredProjects } from "@/data";
 import { hasContent } from "@/lib/has-content";
-
-/** A site-relative CV only gets a button once its PDF exists in public/, so the link never 404s. */
-function isCvAvailable(cvUrl: string) {
-  return /^https?:\/\//i.test(cvUrl) || existsSync(path.join(process.cwd(), "public", cvUrl));
-}
+import { getCv } from "@/lib/cv";
 
 const enter = (index: number) => ({ "--i": index }) as React.CSSProperties;
 
 export function Hero() {
   const { hero } = content;
-  const cvAvailable = isCvAvailable(hero.cvUrl);
+  const cv = getCv();
   const facts = [...hero.facts.slice(0, 1), { value: String(featuredProjects.length), label: "selected projects" }, ...hero.facts.slice(1)].filter(fact => hasContent(fact.value));
   const marquee = <>{hero.marquee.map(item => <Fragment key={item}>{item} <i aria-hidden="true">✦</i> </Fragment>)}</>;
   return (
@@ -33,7 +27,7 @@ export function Hero() {
             <div className="hero-actions hero-enter" style={enter(3)}>
               <Button asChild size="lg" magnetic><a href="#projects">{hero.primaryLabel}<ArrowDown size={17} aria-hidden="true" /></a></Button>
               <Button asChild variant="secondary" size="lg" magnetic><a href="#contact">{hero.secondaryLabel}<ArrowUpRight size={17} aria-hidden="true" /></a></Button>
-              {cvAvailable && <Button asChild variant="secondary" size="lg"><a href={hero.cvUrl} download>{hero.cvLabel}<Download size={17} aria-hidden="true" /></a></Button>}
+              {cv && <Button asChild variant="secondary" size="lg"><a href={cv.href} {...(cv.external ? { target: "_blank", rel: "noopener noreferrer" } : { download: "" })}>{cv.label}<Download size={17} aria-hidden="true" /></a></Button>}
             </div>
             {facts.length > 0 && (
               <div className="hero-facts hero-enter" style={enter(4)}>

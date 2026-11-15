@@ -20,6 +20,9 @@ const staticFiles = new Map([
   ["/favicon.svg", "image/svg+xml"], ["/grain.svg", "image/svg+xml"],
   ["/fonts/inter-latin.woff2", "font/woff2"], ["/fonts/syne-latin.woff2", "font/woff2"],
 ]);
+/** A real PDF starts with its header and ends with an end-of-file marker. */
+const isPdf = bytes => bytes.subarray(0, 5).toString("latin1") === "%PDF-" && bytes.subarray(-2048).toString("latin1").includes("%%EOF");
+const pdfPath = /^\/(?:cv\/)?[a-zA-Z0-9][a-zA-Z0-9_-]*\.pdf$/;
 const escapeHtml = value => value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 const text = max => z.string().trim().min(1).max(max);
 const httpUrl = z.string().max(2048).refine(value => {
@@ -110,6 +113,16 @@ export function createProjectEditor({ root, username = "janudawithanage", github
 
   function clearStaged(section) {
     for (const [key, upload] of staged) if (upload.section === section) staged.delete(key);
+  }
+  /** A regular file inside public/, never through a symlink. */
+  async function readPublic(pathname, missing) {
+    const filename = path.join(root, "public", pathname.slice(1));
+    const canonicalRoot = await realpath(path.join(root, "public")).catch(() => "");
+    const canonicalFile = await realpath(filename).catch(() => "");
+    if (!canonicalRoot || !canonicalFile.startsWith(canonicalRoot + path.sep)) throw new EditorError(404, missing);
+    const info = await lstat(filename).catch(() => null);
+    if (!info?.isFile() || info.isSymbolicLink()) throw new EditorError(404, missing);
+    return readFile(filename);
   }
   const contentStore = createContentStore({ root, staged, clearStaged, EditorError });
 
@@ -212,6 +225,11 @@ export function createProjectEditor({ root, username = "janudawithanage", github
       res.writeHead(status, { "Content-Type": type });
       res.end(type.startsWith("application/json") ? JSON.stringify(value) : value);
     };
+    /** PDFs open in the browser's own viewer, which the page's CSP would block. */
+    const sendPdf = bytes => {
+      res.removeHeader("Content-Security-Policy");
+      return send(200, bytes, "application/pdf");
+    };
     try {
       const origin = `http://127.0.0.1:${server.address().port}`;
       if (req.headers.host !== new URL(origin).host || (req.headers.origin && req.headers.origin !== origin) || req.headers["sec-fetch-site"] === "cross-site") {
@@ -258,13 +276,20 @@ export function createProjectEditor({ root, username = "janudawithanage", github
           return send(200, publicRepo(repo));
         }
         if (method === "POST" && url.pathname === "/api/uploads") {
-          if (section === "experiments") {
+          const cvUpload = url.searchParams.get("kind") === "cv";
+          if (cvUpload ? section !== "hero" : section === "experiments") {
             req.resume();
-            throw new EditorError(400, "Images are only supported in Selected Work.");
+            throw new EditorError(400, cvUpload ? "Upload your CV in the Hero section." : "Images are only supported in Selected Work.");
           }
           const bytes = await readBody(req, maxImageBytes);
           const total = [...staged.values()].reduce((sum, upload) => sum + upload.bytes.length, 0);
-          if (total + bytes.length > 64 * 1024 * 1024) throw new EditorError(413, "Upload staging is full. Save or discard before uploading more images.");
+          if (total + bytes.length > 64 * 1024 * 1024) throw new EditorError(413, "Upload staging is full. Save or discard before uploading more files.");
+          if (cvUpload) {
+            if (!isPdf(bytes)) throw new EditorError(400, "Upload your CV as a PDF file (up to 10 MB).");
+            const cv = `${stagedPrefix}${randomUUID()}`;
+            staged.set(cv, { bytes, extension: "pdf", section });
+            return send(201, { cv });
+          }
           let metadata;
           try {
             const image = sharp(bytes, { limitInputPixels: 40_000_000, failOn: "warning" });
@@ -278,7 +303,7 @@ export function createProjectEditor({ root, username = "janudawithanage", github
         }
         throw new EditorError(404, "Editor endpoint not found.");
       }
-      if (method !== "GET") throw new EditorError(405, "Method not allowed.");
+      if (method !== "GET" && !(method === "HEAD" && pdfPath.test(url.pathname))) throw new EditorError(405, "Method not allowed.");
       if (url.pathname === "/") {
         // The brand mark shows the hero's initials, as on the portfolio's navbar.
         const initials = await readFile(path.join(root, "src/data/content.json"), "utf8").then(json => {
@@ -293,19 +318,16 @@ export function createProjectEditor({ root, username = "janudawithanage", github
       if (staticFiles.has(url.pathname)) return send(200, await readFile(path.join(directory, url.pathname.slice(1))), staticFiles.get(url.pathname));
       if (staged.has(url.pathname)) {
         const upload = staged.get(url.pathname);
+        if (upload.extension === "pdf") return sendPdf(upload.bytes);
         return send(200, upload.bytes, `image/${upload.extension === "jpg" ? "jpeg" : upload.extension}`);
       }
       if (url.pathname.startsWith("/images/")) {
         if (!/^\/images\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9][a-zA-Z0-9._-]*\.(png|jpe?g|webp)$/i.test(url.pathname)) throw new EditorError(404, "Image not found.");
-        const filename = path.join(root, "public", url.pathname.slice(1));
-        const name = path.basename(filename);
-        const canonicalRoot = await realpath(path.join(root, "public"));
-        const canonicalFile = await realpath(filename).catch(() => "");
-        if (!canonicalFile.startsWith(canonicalRoot + path.sep)) throw new EditorError(404, "Image not found.");
-        const info = await lstat(filename).catch(() => null);
-        if (!info?.isFile() || info.isSymbolicLink()) throw new EditorError(404, "Image not found.");
-        return send(200, await readFile(filename), `image/${/\.jpe?g$/i.test(name) ? "jpeg" : name.split(".").pop().toLowerCase()}`);
+        const name = path.basename(url.pathname);
+        return send(200, await readPublic(url.pathname, "Image not found."), `image/${/\.jpe?g$/i.test(name) ? "jpeg" : name.split(".").pop().toLowerCase()}`);
       }
+      // The CV, so the editor can show whether it exists and preview it.
+      if (pdfPath.test(url.pathname)) return sendPdf(await readPublic(url.pathname, "CV not found."));
       throw new EditorError(404, "Not found.");
     } catch (error) {
       if (!(error instanceof EditorError)) console.error("Project editor:", error);

@@ -311,6 +311,20 @@ fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 .content-image > .preview { width: 100%; max-height: 22rem; margin-bottom: 0; }
 .content-image > .image-note { margin-top: -.25rem; }
 .content-image > button { justify-self: start; }
+/* CV: a status row (what visitors get), then upload, note and remove. */
+.content-cv { display: grid; gap: .75rem; max-width: 36rem; }
+.content-cv > .image-note { margin-top: -.25rem; }
+.content-cv > button { justify-self: start; }
+.cv-status { display: flex; flex-wrap: wrap; align-items: center; gap: .875rem 1rem; padding: 1rem 1.125rem; border: 1px solid var(--border); border-radius: 1.125rem; background: linear-gradient(160deg, rgb(255 255 255 / .9), rgb(255 255 255 / .6)); }
+.cv-badge { display: grid; place-items: center; flex: 0 0 auto; width: 2.75rem; height: 3.25rem; border-radius: .5rem .875rem .5rem .5rem; background: linear-gradient(160deg, #fff, var(--bg-secondary)); border: 1px solid var(--border-subtle); color: var(--accent); font-size: .6875rem; font-weight: 700; letter-spacing: .08em; }
+.cv-copy { display: grid; gap: .125rem; flex: 1 1 14rem; min-width: 0; }
+.cv-copy p { margin: 0; overflow-wrap: anywhere; font-size: .875rem; }
+.cv-open { display: inline-flex; align-items: center; min-height: 2.75rem; padding-inline: 1rem; border: 1px solid var(--border-subtle); border-radius: 999px; background: #fff; font-size: .875rem; font-weight: 600; text-decoration: none; }
+.cv-open:hover { border-color: var(--accent); }
+.cv-status[data-state="live"] .cv-copy strong::before { content: ""; display: inline-block; width: .4375rem; height: .4375rem; margin-right: .5rem; border-radius: 50%; background: var(--success); vertical-align: middle; }
+.cv-status[data-state="new"] { border-color: rgb(54 81 207 / .35); }
+.cv-status[data-state="missing"] { border-color: rgb(180 35 53 / .3); }
+.cv-status[data-state="missing"] .cv-copy strong { color: var(--error); }
 
 /* ─── Section forms: one glass panel, nested cards without a second blur ─── */
 .content-fields { display: grid; gap: 1.25rem; padding: 1.25rem; }

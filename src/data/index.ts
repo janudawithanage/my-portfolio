@@ -10,7 +10,7 @@ type Raw = typeof contentData;
 /** content.json, typed. Optional fields may be absent and new lists start empty. */
 export interface PortfolioContent {
   layout: LayoutContent;
-  hero: Raw["hero"];
+  hero: Omit<Raw["hero"], "cvUrl"> & { cvUrl?: string };
   about: Raw["about"];
   stats: StatsContent;
   now: NowContent;

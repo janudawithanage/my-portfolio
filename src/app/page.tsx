@@ -13,6 +13,7 @@ import { Talks } from "@/components/sections/Talks";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { content } from "@/data";
+import { getCv } from "@/lib/cv";
 import { visibleSections } from "@/lib/sections";
 import type { SectionId } from "@/types";
 
@@ -40,7 +41,7 @@ export default function Home() {
         const Section = sections[id];
         return <Section key={id} />;
       })}
-      <Contact />
+      <Contact cv={getCv()} />
     </>
   );
 }

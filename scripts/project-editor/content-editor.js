@@ -85,6 +85,10 @@ export function renderContent(container, fields, value, { element, button, chang
         parent.append(block);
         continue;
       }
+      if (spec.type === "cv") {
+        parent.append(cvField(spec, object));
+        continue;
+      }
       if (spec.type === "checkbox") {
         const label = element("label", "checkbox-label");
         const input = element("input");
@@ -117,6 +121,50 @@ export function renderContent(container, fields, value, { element, button, chang
       });
       label.append(input); parent.append(label);
     }
+  }
+  /** CV upload: shows what visitors get, then lets the owner upload, preview or remove the PDF. */
+  function cvField(spec, object) {
+    const value = object[spec.name];
+    const block = element("div", "content-cv");
+    const status = element("div", "cv-status");
+    const badge = element("span", "cv-badge", "PDF"); badge.setAttribute("aria-hidden", "true");
+    const copy = element("div", "cv-copy");
+    const title = element("strong");
+    const detail = element("p", "muted");
+    const open = element("a", "cv-open", "Open PDF");
+    open.target = "_blank"; open.rel = "noopener";
+    const label = element("label");
+    const labelText = element("span", "", "Upload CV (PDF)");
+    const show = (heading, text, href, state = "") => {
+      title.textContent = heading; detail.textContent = text; status.dataset.state = state;
+      labelText.textContent = ["empty", "missing"].includes(state) ? "Upload CV (PDF)" : "Replace CV (PDF)";
+      if (href) { open.href = href; open.hidden = false; } else open.hidden = true;
+    };
+    copy.append(title, detail);
+    status.append(badge, copy, open);
+    if (!value) show("No CV yet", "Upload a PDF to show a download button on your portfolio.", null, "empty");
+    else if (value.startsWith("/staged/")) show("New CV ready", "Save changes to publish it on your portfolio.", value, "new");
+    else if (/^https?:\/\//i.test(value)) show("Linked CV", value, value);
+    else {
+      show("Checking your CV…", value, null);
+      fetch(value, { method: "HEAD" }).then(response => {
+        if (response.ok) show("Your CV is live", `Visitors download it from ${value}.`, value, "live");
+        else show("CV file missing", `${value} isn’t in your project, so the portfolio hides the CV button. Upload your CV PDF.`, null, "missing");
+      }, () => show("CV file missing", "Upload your CV PDF.", null, "missing"));
+    }
+    const input = element("input"); input.type = "file"; input.accept = "application/pdf,.pdf";
+    input.addEventListener("change", async () => {
+      const file = input.files[0]; if (!file) return;
+      await upload(file, result => { object[spec.name] = result.cv; rerender(); changed(); }, "cv");
+      input.value = "";
+    });
+    label.append(labelText, input);
+    block.append(status, label, element("p", "muted image-note", "PDF · up to 10 MB · saved as /cv/Your-Name-CV.pdf when you save this section"));
+    if (value) block.append(button("Remove CV", () => {
+      if (!window.confirm("Remove the CV from your portfolio? The download button disappears after you save. The PDF file itself stays in your project.")) return;
+      delete object[spec.name]; rerender(); changed();
+    }));
+    return block;
   }
   function rerender() { renderContent(container, fields, value, { element, button, changed, upload, opened }); }
   render(fields, value, container);
