@@ -90,6 +90,8 @@ export interface Education {
   startDate: string;
   endDate: string | "Present";
   gpa?: string;
+  /** The GPA's maximum, e.g. "4.0", shown as "3.2 / 4.0" with a progress bar. */
+  gpaScale?: string;
   result?: string;
   location: string;
   description: string;

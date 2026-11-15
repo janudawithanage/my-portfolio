@@ -252,6 +252,20 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .arrow-list { display: grid; gap: .625rem; color: var(--color-text-secondary); }
 .arrow-list > li { display: grid; grid-template-columns: auto 1fr; gap: .75rem; }
 .arrow-list > li::before { content: "→"; color: var(--color-accent); font-weight: 600; }
+/* Education: the logo leads each card; GPA and results sit in a quiet row at the end. */
+.edu-head { display: flex; align-items: center; gap: 1.25rem; }
+.edu-logo { display: flex; flex: none; align-items: center; justify-content: center; width: 6rem; height: 6rem; padding: .25rem; overflow: hidden; border: 1px solid var(--color-border); border-radius: 1rem; background: #fff; box-shadow: var(--glass-highlight), 0 6px 16px -10px rgb(14 20 36 / .25); }
+.edu-logo img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+@media (max-width: 479px) { .edu-head { flex-direction: column; align-items: flex-start; gap: .875rem; } }
+.edu-scores { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; margin-top: 1.25rem; padding-top: 1.125rem; border-top: 1px solid var(--color-border); }
+.edu-score dt { color: var(--color-text-muted); font-size: .6875rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.edu-score dd { display: flex; align-items: center; gap: .875rem; min-height: 2rem; margin-top: .375rem; }
+.edu-score strong { font-family: var(--font-syne), sans-serif; font-size: 1.375rem; font-weight: 600; letter-spacing: -.02em; color: var(--color-ink); }
+.edu-score-scale { color: var(--color-text-muted); font-size: .875rem; font-weight: 500; }
+.edu-score-bar { display: block; width: 5.5rem; height: .25rem; overflow: hidden; border-radius: 999px; background: var(--color-border-subtle); }
+.edu-score-bar > span { display: block; width: calc(var(--fill) * 100%); height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--color-accent-dim), var(--color-accent)); }
+.edu-grades { display: flex; gap: .375rem; }
+.edu-grades > span { display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid rgb(184 149 90 / .35); border-radius: .5rem; background: rgb(243 231 207 / .55); color: var(--color-gold-deep); font-family: var(--font-syne), sans-serif; font-size: 1rem; font-weight: 600; }
 .result-chip { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .625rem; padding: .625rem 1rem; border: 1px solid rgb(184 149 90 / .38); border-radius: 1rem; background: linear-gradient(160deg, rgb(243 231 207 / .85), rgb(243 231 207 / .45)); color: var(--color-gold-deep); }
 .result-chip strong { font-family: var(--font-syne), sans-serif; font-size: 1.375rem; font-weight: 600; letter-spacing: -.02em; }
 .journey-details { margin-top: 1rem; }
@@ -396,6 +410,7 @@ h1, h2, h3, h4 { text-wrap: balance; }
   .timeline-card, .row-card { padding: 1.75rem 2rem; }
   .timeline { --rail: 1.75rem; --gap: 2.25rem; gap: 1.25rem; }
   .timeline-logo { width: 3.5rem; height: 3.5rem; padding: .375rem; }
+  .edu-logo { width: 7rem; height: 7rem; border-radius: 1.5rem; }
   .row-card { grid-template-columns: 1fr auto; align-items: start; }
   .row-card-aside { flex-direction: column; align-items: flex-end; text-align: right; }
   .recognition-grid, .list-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }

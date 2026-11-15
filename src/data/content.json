@@ -133,6 +133,7 @@
         "description": "Computer Science studies at UCSC, covering algorithms, networks, operating systems, distributed systems, software engineering, and databases.",
         "highlights": [],
         "gpa": "3.2",
+        "gpaScale": "4.0",
         "logo": "/images/education/ucsc.jpg"
       },
       {
@@ -391,7 +392,15 @@
   "recognition": {
     "title": "Recognition & contributions.",
     "description": "Awards, continued learning, and the communities I contribute to.",
-    "awards": [],
+    "awards": [
+      {
+        "id": "87516af2-63c0-4c25-a791-3e4368c331da",
+        "title": "j",
+        "organisation": "j",
+        "date": "n",
+        "logo": "/images/content/content-553baa7b-cfbf-4822-8051-28967d76c9cb.jpg"
+      }
+    ],
     "certifications": [],
     "volunteering": []
   },
