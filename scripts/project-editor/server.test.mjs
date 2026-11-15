@@ -5,7 +5,6 @@ import { mkdtemp, cp, readFile, readdir, writeFile, rename, symlink, rm } from "
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { execFileSync } from "node:child_process";
 import sharp from "sharp";
 import { chromium } from "@playwright/test";
 import { createProjectEditor } from "./server.mjs";
@@ -19,8 +18,8 @@ async function fixture(t) {
   const tempRoot = await mkdtemp(path.join(tmpdir(), "portfolio-editor-test-"));
   await cp(path.join(root, "src/data"), path.join(tempRoot, "src/data"), { recursive: true });
   await writeFile(path.join(tempRoot, "src/data/experiments.json"), JSON.stringify({ mode: "automatic", projects: [] }));
-  // Use the committed data, so edits you make in the live editor don't change what the tests expect.
-  for (const file of ["projects.json", "content.json"]) await writeFile(path.join(tempRoot, "src/data", file), execFileSync("git", ["show", `HEAD:src/data/${file}`], { cwd: root }));
+  // Fixed sample data (four projects), so editing the real portfolio never changes what the tests expect.
+  for (const file of ["projects.json", "content.json"]) await cp(path.join(root, "scripts/project-editor/test-fixtures", file), path.join(tempRoot, "src/data", file));
   await cp(path.join(root, "public/images"), path.join(tempRoot, "public/images"), { recursive: true });
   const calls = [];
   let githubAvailable = true;
