@@ -3,6 +3,7 @@ import { ArrowRight, ArrowUpRight, Building2, Database, FileCheck2, Globe, House
 import { Badge } from "@/components/ui/Badge";
 import { GithubIcon } from "@/components/ui/icons";
 import { hasContent } from "@/lib/has-content";
+import { cn } from "@/lib/utils";
 import type { Project } from "@/types";
 
 const visuals = {
@@ -20,7 +21,7 @@ const statuses: Record<Project["status"], { label: string; variant: "success" | 
   "design-only": { label: "Design only", variant: "gold" },
 };
 
-export function ProjectCard({ project, index, showVisual = true }: { project: Project; index: number; showVisual?: boolean }) {
+export function ProjectCard({ project, index, showVisual = true, className }: { project: Project; index: number; showVisual?: boolean; className?: string }) {
   const visual = visuals[project.id as keyof typeof visuals] ?? {
     label: "Software project", icons: [Globe, Network, Database],
     caption: project.tech.slice(0, 3).join(" / ") || "Built to explore",
@@ -29,7 +30,7 @@ export function ProjectCard({ project, index, showVisual = true }: { project: Pr
   const number = String(index + 1).padStart(2, "0");
   const live = project.liveUrl?.startsWith("http") ? project.liveUrl : undefined;
   return (
-    <article className="card project-card h-full" data-tilt="">
+    <article className={cn("card project-card h-full", className)} data-tilt="">
       {showVisual && (project.image ? (
         <div className="project-media">
           <Image src={project.image} alt={`${project.title} application preview`} fill sizes="(min-width: 1280px) 580px, (min-width: 768px) calc((100vw - 5rem) / 2), calc(100vw - 3rem)" className="object-contain" />
