@@ -521,9 +521,6 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   card = page.locator('[data-collection="entries"] details').last();
   for (const [label, value] of [["Company / organisation", "Test team"], ["Role", "Developer"], ["Start date", "2026"], ["Location", "Colombo"]]) await card.getByLabel(label, { exact: true }).fill(value);
   await save();
-  await choose("projects");
-  await page.getByLabel("Section title", { exact: true }).fill("My selected work");
-  await save();
   await choose("contact");
   await page.getByLabel("Contact email", { exact: true }).fill("new@example.com");
   await page.getByLabel("Phone (optional)", { exact: true }).fill("+94 71 234 5678");
@@ -546,15 +543,9 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   await save();
   // The section picker follows the saved portfolio order and marks switched-off sections.
   const pickerOrder = await page.locator("#section-picker option").evaluateAll(options => options.map(option => [option.value, option.textContent]));
-  assert.deepEqual(pickerOrder.slice(0, 5).map(([value]) => value), ["layout", "hero", "about", "now", "stats"]);
-  assert.equal(pickerOrder.find(([value]) => value === "now")[1], "Now (switched off)");
+  // Only the sections the owner edits are offered.
+  assert.deepEqual(pickerOrder.map(([value]) => value), ["layout", "hero", "about", "education", "skills", "selected-work", "experience", "recognition", "contact"]);
   assert.deepEqual(pickerOrder.at(-1), ["contact", "Get in touch"]);
-  await choose("testimonials");
-  await page.getByRole("button", { name: "Add testimonial", exact: true }).click();
-  card = page.locator('[data-collection="items"] details').last();
-  await card.getByLabel("Quote", { exact: true }).fill("Calm under pressure and great to build with.");
-  await card.getByLabel("Name", { exact: true }).fill("A collaborator");
-  await save();
   await choose("selected-work");
   assert.equal(await page.locator("details").count(), 4);
   await choose("recognition");
@@ -580,7 +571,6 @@ test("browser edits every section, preserves drafts and photos, and manages Reco
   assert.equal(disk.skills.entries.at(-1).skills.length, 2);
   assert.equal(disk.experience.entries.at(-1).role, "Developer");
   assert.deepEqual(disk.layout.sectionOrder.slice(0, 3), [{ id: "about", visible: true }, { id: "now", visible: false }, { id: "stats", visible: true }]);
-  assert.equal(disk.testimonials.items[0].name, "A collaborator");
   assert.equal(disk.contact.phone, "+94 71 234 5678");
   assert.deepEqual(disk.contact.socials.map(({ label, url, icon }) => ({ label, url, icon })), [{ label: "Medium", url: "https://medium.com/@januda", icon: "medium" }]);
   assert.deepEqual(errors, []);

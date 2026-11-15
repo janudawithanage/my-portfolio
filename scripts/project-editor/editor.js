@@ -374,9 +374,10 @@ window.addEventListener("beforeunload", event => { if (hasUnsavedDrafts() || bus
 
 /**
  * Lists sections in the order the portfolio shows them: Hero, the saved section order,
- * then Get in touch. Sections switched off in that order are marked.
+ * then Get in touch. Sections switched off in that order are marked. Only sections that
+ * have an option in index.html are offered; the rest stay out of the editor.
  */
-const sectionOptions = { projects: ["selected-work", "projects"] };
+const sectionOptions = { projects: ["selected-work"] };
 function orderPicker(layout) {
   const picker = $("#section-picker");
   const option = value => picker.querySelector(`option[value="${value}"]`);
