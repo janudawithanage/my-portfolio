@@ -281,7 +281,8 @@
             "name": "CTF Challenges",
             "level": 55
           }
-        ]
+        ],
+        "hidden": true
       }
     ]
   },
@@ -395,10 +396,11 @@
     "awards": [
       {
         "id": "87516af2-63c0-4c25-a791-3e4368c331da",
-        "title": "j",
-        "organisation": "j",
-        "date": "n",
-        "logo": "/images/content/content-553baa7b-cfbf-4822-8051-28967d76c9cb.jpg"
+        "title": "ML Opsidian: Genesis Hackathon — Top 10",
+        "organisation": "IEEE Student Branch of UCSC · Machine Learning Hackathon",
+        "date": "June 2026",
+        "description": "Secured a place in the Top 10 in the final round with Team Tensor Titans, earning a Certificate of Excellence. The hackathon ran from 11 to 19 June 2026, organized by the IEEE Student Branch of the University of Colombo School of Computing.",
+        "image": "/images/content/content-553baa7b-cfbf-4822-8051-28967d76c9cb.jpg"
       }
     ],
     "certifications": [],
