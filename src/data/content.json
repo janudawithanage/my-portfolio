@@ -401,10 +401,33 @@
         "date": "June 2026",
         "description": "Secured a place in the Top 10 in the final round with Team Tensor Titans, earning a Certificate of Excellence. The hackathon ran from 11 to 19 June 2026, organized by the IEEE Student Branch of the University of Colombo School of Computing.",
         "image": "/images/content/content-553baa7b-cfbf-4822-8051-28967d76c9cb.jpg"
+      },
+      {
+        "id": "ucsc-freshers-hockey-2024",
+        "title": "Freshers' Hockey (Men's) — 1st Runner-Up",
+        "organisation": "University of Colombo · Team UCSC",
+        "date": "2024",
+        "description": "Captained Team UCSC's men's hockey team to a 1st runner-up finish in the University of Colombo freshers' tournament in my first year, and received the award at the university's sports awards ceremony.",
+        "image": "/images/content/ucsc-freshers-hockey-runner-up.jpg"
       }
     ],
     "certifications": [],
-    "volunteering": []
+    "volunteering": [
+      {
+        "id": "rotaract-ucsc-finance",
+        "title": "Finance Team Member",
+        "organisation": "Rotaract Club of UCSC",
+        "date": "Jun 2026",
+        "description": "Supported event budgeting and financial management."
+      },
+      {
+        "id": "reidxtreme-4-finance",
+        "title": "Finance Team Member",
+        "organisation": "ReidXtreme 4.0 · Hackathon",
+        "date": "2024",
+        "description": "Supported financial coordination for the hackathon."
+      }
+    ]
   },
   "writing": {
     "title": "Notes from the build.",
