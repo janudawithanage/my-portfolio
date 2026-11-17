@@ -2,15 +2,14 @@
   {
     "id": "distributed-joke-system",
     "title": "Distributed Joke System",
-    "description": "Node.js microservices route submissions through RabbitMQ to an Auth0-protected moderation UI. Approved jokes are stored in MySQL and served through Kong; the stack runs locally in Docker.",
+    "description": "Node.js microservices route joke submissions through RabbitMQ to an Auth0-protected moderation UI, served from MySQL behind a Kong gateway.",
     "tech": [
       "Node.js",
       "RabbitMQ",
       "MySQL",
       "Kong",
       "Docker",
-      "Auth0",
-      "Azure"
+      "Auth0"
     ],
     "githubUrl": "https://github.com/janudawithanage/distributed-joke-system",
     "image": "/images/projects/distributed-joke-system.webp",
@@ -21,7 +20,7 @@
   {
     "id": "rentigo",
     "title": "Rentigo",
-    "description": "A team-built rental property management system using PHP and MySQL. I contributed tenant-facing property search, booking and lease workflows, rent payment tracking, and maintenance issue views.",
+    "description": "Team-built PHP and MySQL rental platform. I built the tenant side — property search, booking, lease workflows, rent tracking and maintenance views.",
     "tech": [
       "PHP",
       "MySQL",
@@ -39,14 +38,14 @@
   {
     "id": "becute-dreams-luxe",
     "title": "Becute Dreams Luxe",
-    "description": "A frontend storefront demo for a sticker boutique, with product browsing, filters, detail pages, and a cart saved in local storage. Checkout and account pages demonstrate the interface without payment or authentication backends.",
+    "description": "A full-stack sticker boutique on Supabase Postgres: storefront browsing, cart and checkout, plus a role-protected admin dashboard for catalogue and orders.",
     "tech": [
       "React",
       "TypeScript",
-      "React Router",
+      "Supabase",
+      "PostgreSQL",
       "Tailwind CSS",
-      "Zustand",
-      "Framer Motion"
+      "Cloudinary"
     ],
     "githubUrl": "https://github.com/janudawithanage/becute-dreams-luxe",
     "liveUrl": "https://becute-dreams-luxe.vercel.app",
@@ -57,19 +56,15 @@
   },
   {
     "id": "janudawithanage--smart-home-monitoring-control",
-    "title": "smart home monitoring control",
-    "description": "Smart home monitoring and control app built with React Native, Expo, and Supabase. Features real-time device control, appliance scheduling, energy tracking, interactive floor plans, safety alerts, and a companion web-based hardware simulator.",
+    "title": "Smart Home Monitoring & Control",
+    "description": "React Native and Supabase app for real-time device control, scheduling and energy tracking, with interactive floor plans and a companion hardware simulator.",
     "tech": [
       "React Native",
       "Expo",
       "TypeScript",
-      "Expo Router",
       "Supabase",
       "PostgreSQL",
-      "React",
-      "Vite",
-      "Docker",
-      "Nginx"
+      "Docker"
     ],
     "githubUrl": "https://github.com/janudawithanage/smart-home-monitoring-control",
     "featured": true,
@@ -77,25 +72,101 @@
     "year": "2026"
   },
   {
-    "id": "janudawithanage--movie-app",
-    "title": "movie app",
-    "description": "A lightweight React + Vite app to browse and favorite movies using a simple movie API. Clean responsive UI with a Browse page, Favorites list, and reusable MovieCard and Navbar components.",
+    "id": "janudawithanage--maze-to-savor-game-c",
+    "title": "Maze to Savor",
+    "description": "A three-player, turn-based 3D maze game in C. Dice drive movement across floors of walls, stairs and poles, with player capture and loop detection.",
     "tech": [
-      "JavaScript"
+      "C",
+      "Data structures",
+      "File I/O",
+      "Game logic",
+      "GCC"
     ],
-    "githubUrl": "https://github.com/janudawithanage/movie-app",
+    "githubUrl": "https://github.com/janudawithanage/maze-to-savor-game-c",
     "featured": true,
     "status": "completed",
     "year": "2026"
   },
   {
     "id": "janudawithanage--esp32-sensovault",
-    "title": "esp32 sensovault",
-    "description": "Real-time temperature, humidity, and light monitoring system using an ESP32, MQTT, and a web dashboard.",
+    "title": "SensorVault",
+    "description": "ESP32 monitor publishing DHT11 and LDR readings over MQTT to a live dashboard, with automatic lighting, a heat alarm and AC relay control.",
     "tech": [
-      "HTML"
+      "ESP32",
+      "C++",
+      "Arduino",
+      "MQTT",
+      "HiveMQ Cloud",
+      "Chart.js"
     ],
     "githubUrl": "https://github.com/janudawithanage/esp32-sensovault",
+    "featured": true,
+    "status": "completed",
+    "year": "2026"
+  },
+  {
+    "id": "janudawithanage--lawyers-management-system",
+    "title": "Lawyers Management System",
+    "description": "A legal practice front end on React 19 and Vite, with client, lawyer and admin workspaces for lawyer search, appointments, case tracking and verification.",
+    "tech": [
+      "React 19",
+      "Vite",
+      "React Router",
+      "Tailwind CSS",
+      "Framer Motion",
+      "JavaScript"
+    ],
+    "githubUrl": "https://github.com/janudawithanage/lawyers-management-system",
+    "liveUrl": "https://lawyers-management-system-sand.vercel.app/",
+    "featured": true,
+    "status": "in-progress",
+    "year": "2026"
+  },
+  {
+    "id": "janudawithanage--compiler-construction",
+    "title": "Mini C Interpreter",
+    "description": "A recursive-descent parser and interpreter in C for a minimal language: int declarations, print() statements, arithmetic precedence and line-numbered errors.",
+    "tech": [
+      "C",
+      "Lexical analysis",
+      "Recursive descent",
+      "Interpreters",
+      "GCC"
+    ],
+    "githubUrl": "https://github.com/janudawithanage/compiler-construction",
+    "featured": true,
+    "status": "completed",
+    "year": "2026"
+  },
+  {
+    "id": "janudawithanage--git-happens-frontend",
+    "title": "GIT Happens",
+    "description": "A Next.js delivery operations front end with dispatcher, driver, loader and store-manager workspaces for live tracking, planning and exception handling.",
+    "tech": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "App Router"
+    ],
+    "githubUrl": "https://github.com/janudawithanage/GIT-Happens-Frontend",
+    "featured": true,
+    "status": "completed",
+    "year": "2026"
+  },
+  {
+    "id": "janudawithanage--movie-app",
+    "title": "Movie App",
+    "description": "A React and Vite app for browsing popular films and searching the TMDB catalogue, with a favourites list kept in React context.",
+    "tech": [
+      "React",
+      "Vite",
+      "React Router",
+      "Context API",
+      "TMDB API",
+      "CSS"
+    ],
+    "githubUrl": "https://github.com/janudawithanage/movie-app",
     "featured": true,
     "status": "completed",
     "year": "2026"

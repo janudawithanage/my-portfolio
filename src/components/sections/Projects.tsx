@@ -12,7 +12,7 @@ export function Projects() {
     <SectionWrapper id="projects" className="section-border" labelledBy="projects-title">
       <div className="container-section">
         <SectionHeader eyebrow={sectionEyebrow("projects")} title={content.projects.title} titleId="projects-title" description={content.projects.description} />
-        <Expandable id="projects-list" noun="projects" initial={4} className="auto-grid md-2 [--gap:1.25rem] lg:[--gap:1.75rem]" items={featuredProjects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} />)} />
+        <Expandable id="projects-list" noun="projects" initial={6} className="auto-grid md-2 lg-3 [--gap:1.25rem] lg:[--gap:1.5rem]" items={featuredProjects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} />)} />
         {hasContent(content.projects.linkLabel) && <a href={content.hero.githubUrl} target="_blank" rel="noopener noreferrer" className="text-link mt-8 ml-1">{content.projects.linkLabel}<ArrowRight size={16} aria-hidden="true" /></a>}
       </div>
     </SectionWrapper>
