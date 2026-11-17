@@ -57,12 +57,11 @@ export const metadata: Metadata = {
     description: siteDescription,
     ...(siteUrl ? { images: [socialImage.url] } : {}),
   },
+  // favicon.ico and apple-icon.png are picked up from the app directory by file convention;
+  // the SVG is listed so modern browsers prefer the crisp, scalable mark.
   icons: {
-    icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-    ],
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
   robots: {
     index: true,
